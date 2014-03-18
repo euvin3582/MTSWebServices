@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace iTarycerSection
+namespace iTarycerSection.Validation
 {
-    public class Class1
+    class Validate
     {
     }
 }
