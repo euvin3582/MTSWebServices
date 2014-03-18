@@ -13,7 +13,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FacadeRestService</RootNamespace>
     <AssemblyName>FacadeRestService</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <UseIISExpress>false</UseIISExpress>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -84,6 +84,24 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Other\MTSUtilities\MTSUtilities\MTSUtilities.csproj">
+      <Project>{2b502462-9dc2-4407-b935-d10215ce486a}</Project>
+      <Name>MTSUtilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\WebSuite\DataLayer\DataLayer.csproj">
+      <Project>{fe665455-9d20-4657-84d6-5883ed15ead0}</Project>
+      <Name>DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WebServiceProxyClient\WebServiceProxyClient\WebServiceProxyClient.csproj">
+      <Project>{7cb54ef8-bdee-40bd-9e44-fba454e57a0b}</Project>
+      <Name>WebServiceProxyClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\iTraycerSection\iTraycerSection.csproj">
+      <Project>{59a49911-b7c0-481d-b3b0-bf45500ee250}</Project>
+      <Name>iTraycerSection</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

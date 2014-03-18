@@ -1,15 +1,15 @@
-﻿using DataLayer.domains;
-using MTSUtility.;
-using System;
+﻿using System;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using DataLayer.domains;
+using MTSUtilities.Conversions;
 
 namespace iTarycerSection.Session
 {
     public class Session : Validation.Validate
     {
-        public static void CreateUserSession(String email, String pass, iTraycerDeviceInfo itd)
+        public static String CreateUserSession(String email, String pass, iTraycerDeviceInfo itd)
         {
             // encrypt password before storing it
             string hashPass = DataLayer.Controller.CreateHash(pass);
@@ -22,13 +22,13 @@ namespace iTarycerSection.Session
             if (userInfo == null)
             {
                 Console.Write("No valid user was found");
-                return;
+                return null;
             }
 
             if (!ValidateApplicationDeviceInfo(userInfo, itd))
             {
                 Console.Write("No valid device was specified");
-                return;
+                return null;
             }
 
             // create session GUID, start session timer
@@ -36,15 +36,14 @@ namespace iTarycerSection.Session
             its.RepId = userInfo.Id;
             its.Guid = Guid.NewGuid().ToString();
             its.SessionStartDateTime = DateTime.UtcNow;
-            its.UserInfo = Common.ObjSerializer(userInfo);
+            its.UserInfo = Serialization.ObjSerializer(userInfo);
 
             if (DataLayer.Controller.InsertiTraycerSessionInfo(its) == 0)
             {
                 Console.Write("Fail to insert create row in session table");
-                return;
+                return null;
             }
-
-            return 
+            return its.Guid;
         }
     }
 }
