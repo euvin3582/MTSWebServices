@@ -1,5 +1,11 @@
-﻿using System;
+﻿using DataLayer.domains;
+using Newtonsoft.Json;
+using System;
+using System.IO;
 using System.ServiceModel;
+using System.ServiceModel.Activation;
+using System.ServiceModel.Web;
+using System.Web;
 using System.Xml;
 
 namespace FacadeRestService
@@ -9,9 +15,9 @@ namespace FacadeRestService
     {
         #region IRestService Members
 
-        public string XmlData(string id)
+        public string GUID()
         {
-            return "Your requested product " + id;
+            return "Your requested product";
         }
 
         public string JsonData(string id)
@@ -19,23 +25,32 @@ namespace FacadeRestService
             return "Your requested product " + id;
         }
 
-        public string JsonDataPost()
+        public string CreateSession()
         {
-            string x = OperationContext.Current.RequestContext.RequestMessage.ToString();
-            String CoID = "";
-            String RepID = "";
+            string bodyRequest = OperationContext.Current.RequestContext.RequestMessage.ToString();
+            string guid = null;
+
+            String user = "";
+            String pass = "";
 
             XmlDocument payload = new XmlDocument();
-            payload.LoadXml(x);
-            XmlNode nCoID = payload.SelectSingleNode("//CoID");
-            XmlNode nRepID = payload.SelectSingleNode("//RepID");
+            payload.LoadXml(bodyRequest);
+            XmlNode nEmail = payload.SelectSingleNode("//Email");
+            XmlNode nPassword = payload.SelectSingleNode("//Passcode");
 
-            if(nCoID!=null)
-                CoID = nCoID.InnerText;
-            if(nRepID!=null)
-                RepID = nRepID.InnerText;
+            if (nEmail != null && nPassword != null)
+            {
+                user = nEmail.InnerText;
+                pass = nPassword.InnerText;
+            }
+            else
+                return "Unable to authenticate user";
 
-            return "Your requested CoID is: " + CoID + ". Your requested RepID is: " + RepID;
+            iTraycerDeviceInfo device = new iTraycerDeviceInfo();
+
+            iTarycerSection.Session.Session.CreateUserSession(user, pass, device);
+
+            return guid;
         }
 
         #endregion

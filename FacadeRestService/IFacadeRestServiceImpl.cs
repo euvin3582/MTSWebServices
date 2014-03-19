@@ -9,11 +9,11 @@ namespace FacadeRestService
     public interface IFacadeRestServiceImpl
     {
         [OperationContract]
-        [WebInvoke(Method = "GET",
-            ResponseFormat = WebMessageFormat.Xml,
-            BodyStyle = WebMessageBodyStyle.Wrapped,
-            UriTemplate = "xml/{id}")]
-        string XmlData(string id);
+        [WebGet(UriTemplate = "/",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Wrapped)]
+        string GUID();
 
 /*         [OperationContract]
         [WebInvoke(Method = "GET",
@@ -26,7 +26,28 @@ namespace FacadeRestService
         [WebInvoke(Method = "POST",
             ResponseFormat = WebMessageFormat.Json,
             RequestFormat = WebMessageFormat.Json,
-            UriTemplate = "json/")]
-        string JsonDataPost();
+            UriTemplate = "jcreate/")]
+        string CreateSession();
+
+        //[OperationContract]
+        //[WebGet(UriTemplate = "/"),
+        //ResponseFormat = WebMessageFormat.Json]
+        //FacadeRestServiceImpl[] GetAllProducts();
+
+        //[OperationContract]
+        //[WebGet(UriTemplate = "/{id}")]
+        //FacadeRestServiceImpl GetProductById(string id);
+
+        //[OperationContract]
+        //[WebInvoke(UriTemplate = "/create", Method = "POST")]//, RequestFormat=WebMessageFormat.Xml, BodyStyle=WebMessageBodyStyle.Bare)]
+        //void CreateProduct(FacadeRestServiceImpl facade);
+
+        //[OperationContract]
+        //[WebInvoke(UriTemplate = "/{id}", Method = "PUT")]
+        //void UpdateProduct(string id, FacadeRestServiceImpl facade);
+
+        //[OperationContract]
+        //[WebInvoke(UriTemplate = "/{id}", Method = "DELETE")]
+        //void DeleteProduct(string id);
     }
 }
