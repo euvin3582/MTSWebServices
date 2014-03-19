@@ -47,8 +47,9 @@ namespace FacadeRestService
                 return "Unable to authenticate user";
 
             iTraycerDeviceInfo device = new iTraycerDeviceInfo();
-
-            iTarycerSection.Session.Session.CreateUserSession(user, pass, device);
+            
+           // before you run this we need to pass a device to the json envelope to fill in the device info 
+            //iTarycerSection.Session.Session.CreateUserSession(user, pass, device);
 
             return guid;
         }
