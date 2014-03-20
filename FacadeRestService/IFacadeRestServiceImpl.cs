@@ -26,7 +26,7 @@ namespace FacadeRestService
         [WebInvoke(Method = "POST",
             ResponseFormat = WebMessageFormat.Json,
             RequestFormat = WebMessageFormat.Json,
-            UriTemplate = "jcreate/")]
+            UriTemplate = "ISession/")]
         string CreateSession();
 
         //[OperationContract]

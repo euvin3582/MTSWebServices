@@ -1,11 +1,7 @@
 ﻿using System.Configuration;
-using DataLayer.domains;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DataLayer.domains;
 
 namespace iTarycerSection.Validation
 {

@@ -33,6 +33,12 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DataLayer">
+      <HintPath>..\_ThirdPartyDll\iTraycer\DataLayer.dll</HintPath>
+    </Reference>
+    <Reference Include="MTSUtilities">
+      <HintPath>..\_ThirdPartyDll\iTraycer\MTSUtilities.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -46,16 +52,6 @@
     <Compile Include="Session\Session.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Validation\Validate.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Other\MTSUtilities\MTSUtilities\MTSUtilities.csproj">
-      <Project>{2b502462-9dc2-4407-b935-d10215ce486a}</Project>
-      <Name>MTSUtilities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\WebSuite\DataLayer\DataLayer.csproj">
-      <Project>{FE665455-9D20-4657-84D6-5883ED15EAD0}</Project>
-      <Name>DataLayer</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

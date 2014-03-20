@@ -46,32 +46,42 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DataLayer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\_ThirdPartyDll\iTraycer\DataLayer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common">
-      <HintPath>..\..\MiscAssemblies\Microsoft\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\_ThirdPartyDll\Microsoft\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Data, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\MiscAssemblies\Microsoft\Microsoft.Practices.EnterpriseLibrary.Data.dll</HintPath>
+      <HintPath>..\_ThirdPartyDll\Microsoft\Microsoft.Practices.EnterpriseLibrary.Data.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Data.SqlCe, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\MiscAssemblies\Microsoft\Microsoft.Practices.EnterpriseLibrary.Data.SqlCe.dll</HintPath>
+      <HintPath>..\_ThirdPartyDll\Microsoft\Microsoft.Practices.EnterpriseLibrary.Data.SqlCe.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\MiscAssemblies\Microsoft\Microsoft.Practices.ServiceLocation.dll</HintPath>
+      <HintPath>..\_ThirdPartyDll\Microsoft\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Unity, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\MiscAssemblies\Microsoft\Microsoft.Practices.Unity.dll</HintPath>
+      <HintPath>..\_ThirdPartyDll\Microsoft\Microsoft.Practices.Unity.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Practices.Unity.Interception">
-      <HintPath>..\..\MiscAssemblies\Microsoft\Microsoft.Practices.Unity.Interception.dll</HintPath>
+    <Reference Include="Microsoft.Practices.Unity.Interception, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\_ThirdPartyDll\Microsoft\Microsoft.Practices.Unity.Interception.dll</HintPath>
+    </Reference>
+    <Reference Include="MTSUtilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\_ThirdPartyDll\iTraycer\MTSUtilities.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\MiscAssemblies\JSON\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\_ThirdPartyDll\JSON\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.DynamicData" />
@@ -114,18 +124,6 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Other\MTSUtilities\MTSUtilities\MTSUtilities.csproj">
-      <Project>{2b502462-9dc2-4407-b935-d10215ce486a}</Project>
-      <Name>MTSUtilities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\WebSuite\DataLayer\DataLayer.csproj">
-      <Project>{fe665455-9d20-4657-84d6-5883ed15ead0}</Project>
-      <Name>DataLayer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\WebServiceProxyClient\WebServiceProxyClient\WebServiceProxyClient.csproj">
-      <Project>{7cb54ef8-bdee-40bd-9e44-fba454e57a0b}</Project>
-      <Name>WebServiceProxyClient</Name>
-    </ProjectReference>
     <ProjectReference Include="..\iTraycerSection\iTraycerSection.csproj">
       <Project>{59a49911-b7c0-481d-b3b0-bf45500ee250}</Project>
       <Name>iTraycerSection</Name>
