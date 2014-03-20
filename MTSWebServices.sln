@@ -4,12 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacadeRestService", "FacadeRestService\FacadeRestService.csproj", "{17E4B3F0-D06C-476B-9653-FDAD4A8613C6}"
 	ProjectSection(ProjectDependencies) = postProject
 		{59A49911-B7C0-481D-B3B0-BF45500EE250} = {59A49911-B7C0-481D-B3B0-BF45500EE250}
-		{FE665455-9D20-4657-84D6-5883ED15EAD0} = {FE665455-9D20-4657-84D6-5883ED15EAD0}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iTraycerSection", "iTraycerSection\iTraycerSection.csproj", "{59A49911-B7C0-481D-B3B0-BF45500EE250}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLayer", "..\..\WebSuite\DataLayer\DataLayer.csproj", "{FE665455-9D20-4657-84D6-5883ED15EAD0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,14 +28,6 @@ Global
 		{59A49911-B7C0-481D-B3B0-BF45500EE250}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59A49911-B7C0-481D-B3B0-BF45500EE250}.Release|Any CPU.Build.0 = Release|Any CPU
 		{59A49911-B7C0-481D-B3B0-BF45500EE250}.Release|x64.ActiveCfg = Release|Any CPU
-		{FE665455-9D20-4657-84D6-5883ED15EAD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FE665455-9D20-4657-84D6-5883ED15EAD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FE665455-9D20-4657-84D6-5883ED15EAD0}.Debug|x64.ActiveCfg = Debug|x64
-		{FE665455-9D20-4657-84D6-5883ED15EAD0}.Debug|x64.Build.0 = Debug|x64
-		{FE665455-9D20-4657-84D6-5883ED15EAD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FE665455-9D20-4657-84D6-5883ED15EAD0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FE665455-9D20-4657-84D6-5883ED15EAD0}.Release|x64.ActiveCfg = Release|x64
-		{FE665455-9D20-4657-84D6-5883ED15EAD0}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
