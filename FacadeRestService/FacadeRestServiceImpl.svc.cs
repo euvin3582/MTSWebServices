@@ -29,11 +29,7 @@ namespace FacadeRestService
         public string CreateSession()
         {
             string bodyRequest = OperationContext.Current.RequestContext.RequestMessage.ToString();
-            string guid = null;
-
-            String user = "";
-            String pass = "";
-
+           
             XmlDocument payload = new XmlDocument();
             payload.LoadXml(bodyRequest);
 
@@ -41,21 +37,24 @@ namespace FacadeRestService
             XmlSerializer xmlSer = new XmlSerializer(typeof(JsonEnvelope));
 
             jenvelope = (JsonEnvelope)xmlSer.Deserialize(new StringReader(payload.OuterXml));
-            //if (jenvelope. != null && nPassword != null)
-            //{
-            //    user = nEmail.InnerText;
-            //    pass = nPassword.InnerText;
-            //}
-            //else
-            //    return "Unable to authenticate user";
 
             iTraycerDeviceInfo device = new iTraycerDeviceInfo();
-            device.DeviceId = 
+            String email = "";
+            String pass = "";
+            String guid = null;
+
+            if (jenvelope.ServiceQueues.Length > 0)
+            {
+                device.DeviceId = (jenvelope.ServiceQueues)[0].Parameters.DeviceID;
+                device.DeviceOsVersion = (jenvelope.ServiceQueues)[0].Parameters.DeviceOSVersion;
+                device.Platform = (jenvelope.ServiceQueues)[0].Parameters.DevicePlatform;
+                email = (jenvelope.ServiceQueues)[0].Parameters.Email;
+                pass = (jenvelope.ServiceQueues)[0].Parameters.Password;
+            }
+            else return "No divice info found";
             
            // before you run this we need to pass a device to the json envelope to fill in the device info 
-            iTarycerSection.Session.Session.CreateUserSession(user, pass, device);
-
-            return guid;
+            return iTarycerSection.Session.Session.CreateUserSession(email, pass, device);
         }
 
         #endregion

@@ -43,28 +43,28 @@ namespace FacadeRestService
         [DataMember(Name = "AppLaunchCount")]
         public string AppLaunchCount { get; set; }
 
-        [XmlElement(ElementName = "INSERT")]
-        [DataMember(Name = "INSERT")]
+        [XmlElement(ElementName = "Insert")]
+        [DataMember(Name = "Insert")]
         public string Insert { get; set; }
 
-        [XmlElement(ElementName = "UPDATE")]
-        [DataMember(Name = "UPDATE")]
+        [XmlElement(ElementName = "Update")]
+        [DataMember(Name = "Update")]
         public string Update { get; set; }
 
-        [XmlElement(ElementName = "DELETE")]
-        [DataMember(Name = "DELETE")]
+        [XmlElement(ElementName = "Delete")]
+        [DataMember(Name = "Delete")]
         public string Delete { get; set; }
 
-        [XmlElement(ElementName = "CREATE")]
-        [DataMember(Name = "CREATE")]
+        [XmlElement(ElementName = "Create")]
+        [DataMember(Name = "Create")]
         public string Create { get; set; }
 
         [XmlElement(ElementName = "ServiceQueue")]
         [DataMember(Name = "ServiceQueue")]
-        public string ServiceQueue { get; set; }
+        public ServiceQueue[] ServiceQueues { get; set; }
 
-        [XmlElement(ElementName = "COMMIT")]
-        [DataMember(Name = "COMMIT")]
+        [XmlElement(ElementName = "Commit")]
+        [DataMember(Name = "Commit")]
         public string Commit { get; set; }
     }
 
@@ -72,9 +72,49 @@ namespace FacadeRestService
     [XmlRoot("ServiceQueue")]
     public class ServiceQueue
     {
-        [XmlElement(ElementName = "ServiceQueue")]
-        [DataMember(Name = "COMMIT")]
-        public string Commit { get; set; }
+        [XmlElement(ElementName = "ServieName")]
+        [DataMember(Name = "ServieName")]
+        public string ServieName { get; set; }
 
+        [XmlElement(ElementName = "Parameters")]
+        [DataMember(Name = "Parameters")]
+        public Parameter Parameters { get; set; }
+
+        [XmlElement(ElementName = "Response")]
+        [DataMember(Name = "Response")]
+        public string Response { get; set; }
+
+        [XmlElement(ElementName = "ResponseMessage")]
+        [DataMember(Name = "ResponseMessage")]
+        public string ResponseMessage { get; set; }
+
+        [XmlElement(ElementName = "EC_Code")]
+        [DataMember(Name = "EC_Code")]
+        public string ECCode { get; set; }
+    }
+
+    [DataContract]
+    [XmlRoot("Parameters")]
+    public class Parameter
+    {
+        [XmlElement(ElementName = "Email")]
+        [DataMember(Name = "Email")]
+        public string Email { get; set; }
+
+        [XmlElement(ElementName = "Password")]
+        [DataMember(Name = "Password")]
+        public string Password { get; set; }
+
+        [XmlElement(ElementName = "DeviceID")]
+        [DataMember(Name = "DeviceID")]
+        public string DeviceID { get; set; }
+
+        [XmlElement(ElementName = "DevicePlatform")]
+        [DataMember(Name = "DevicePlatform")]
+        public string DevicePlatform { get; set; }
+
+        [XmlElement(ElementName = "DeviceOSVersion")]
+        [DataMember(Name = "DeviceOSVersion")]
+        public string DeviceOSVersion { get; set; }
     }
 }
