@@ -103,15 +103,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FacadeRestServiceImpl.svc" />
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
-    <Content Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FacadeRestServiceImpl.svc.cs">
@@ -133,6 +124,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\PublishProfiles\LocalDeploy.pubxml" />
+    <Content Include="Web.config" />
+    <None Include="Properties\PublishProfiles\WebService.pubxml" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
