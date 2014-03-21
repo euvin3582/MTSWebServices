@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Web;
 using System.Xml.Serialization;
 
 namespace FacadeRestService
@@ -70,7 +69,7 @@ namespace FacadeRestService
 
         [XmlElement(ElementName = "Response")]
         [DataMember(Name = "Response")]
-        public string Response { get; set; }
+        public ArrayList Response { get; set; }
 
         [XmlElement(ElementName = "ResponseMessage")]
         [DataMember(Name = "ResponseMessage")]

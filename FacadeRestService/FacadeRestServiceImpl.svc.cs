@@ -1,6 +1,7 @@
 ﻿using DataLayer.domains;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.IO;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
@@ -70,8 +71,10 @@ namespace FacadeRestService
                         responseEnvelope.Commit = "true";
                     }
                     else
+                    {
                         responseEnvelope.ServiceQueues.ResponseMessage = "Failed to authenticate user";
                         responseEnvelope.Commit = "false";
+                    }
                     break;
 
                 case "MTSOther":
@@ -80,6 +83,7 @@ namespace FacadeRestService
 
             responseEnvelope.SyncResponseTime = DateTime.UtcNow.ToString();
             return JsonConvert.SerializeObject(responseEnvelope);
+           
         }
     }
 }
