@@ -43,25 +43,13 @@ namespace FacadeRestService
         [DataMember(Name = "AppLaunchCount")]
         public string AppLaunchCount { get; set; }
 
-        [XmlElement(ElementName = "Insert")]
-        [DataMember(Name = "Insert")]
-        public string Insert { get; set; }
-
-        [XmlElement(ElementName = "Update")]
-        [DataMember(Name = "Update")]
-        public string Update { get; set; }
-
-        [XmlElement(ElementName = "Delete")]
-        [DataMember(Name = "Delete")]
-        public string Delete { get; set; }
-
-        [XmlElement(ElementName = "Create")]
-        [DataMember(Name = "Create")]
-        public string Create { get; set; }
+        [XmlElement(ElementName = "SQL")]
+        [DataMember(Name = "SQL")]
+        public string SQL { get; set; }
 
         [XmlElement(ElementName = "ServiceQueue")]
         [DataMember(Name = "ServiceQueue")]
-        public ServiceQueue[] ServiceQueues { get; set; }
+        public ServiceQueue ServiceQueues { get; set; }
 
         [XmlElement(ElementName = "Commit")]
         [DataMember(Name = "Commit")]
@@ -72,9 +60,9 @@ namespace FacadeRestService
     [XmlRoot("ServiceQueue")]
     public class ServiceQueue
     {
-        [XmlElement(ElementName = "ServieName")]
-        [DataMember(Name = "ServieName")]
-        public string ServieName { get; set; }
+        [XmlElement(ElementName = "ServiceName")]
+        [DataMember(Name = "ServiceName")]
+        public string ServiceName { get; set; }
 
         [XmlElement(ElementName = "Parameters")]
         [DataMember(Name = "Parameters")]

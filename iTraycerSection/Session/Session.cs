@@ -9,7 +9,7 @@ namespace iTarycerSection.Session
 {
     public class Session : Validation.Validate
     {
-        public static String CreateUserSession(String email, String pass, iTraycerDeviceInfo itd)
+        public static String[] CreateUserSession(String email, String pass, iTraycerDeviceInfo itd)
         {
             // encrypt password before storing it
             string hashPass = DataLayer.Controller.CreateHash(pass);
@@ -43,7 +43,7 @@ namespace iTarycerSection.Session
                 Console.Write("Fail to insert create row in session table");
                 return null;
             }
-            return its.Guid;
+            return new string[]{userInfo.CustomerId.ToString(), userInfo.Id.ToString(), its.Guid};
         }
     }
 }
