@@ -124,7 +124,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\PublishProfiles\LocalDeploy.pubxml" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="Properties\PublishProfiles\WebService.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

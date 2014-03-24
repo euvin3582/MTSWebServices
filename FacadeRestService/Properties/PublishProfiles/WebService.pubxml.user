@@ -6,46 +6,59 @@ by editing this MSBuild file. In order to learn more about this please visit htt
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>E:\Projects\iTraycer\Build\Services\MTSWebServices</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="bin/DataLayer.dll">
-      <publishTime>03/21/2014 16:39:23</publishTime>
+      <publishTime>03/20/2014 16:35:25</publishTime>
     </File>
     <File Include="bin/FacadeRestService.dll">
-      <publishTime>03/21/2014 16:46:55</publishTime>
+      <publishTime>03/24/2014 16:07:41</publishTime>
     </File>
     <File Include="bin/iTarycerSection.dll">
-      <publishTime>03/21/2014 16:44:55</publishTime>
+      <publishTime>03/21/2014 16:41:25</publishTime>
     </File>
     <File Include="bin/Microsoft.Practices.EnterpriseLibrary.Common.dll">
-      <publishTime>03/21/2014 16:39:23</publishTime>
+      <publishTime>03/18/2014 15:55:05</publishTime>
     </File>
     <File Include="bin/Microsoft.Practices.EnterpriseLibrary.Data.dll">
-      <publishTime>03/21/2014 16:39:23</publishTime>
+      <publishTime>03/18/2014 15:55:05</publishTime>
     </File>
     <File Include="bin/Microsoft.Practices.EnterpriseLibrary.Data.SqlCe.dll">
-      <publishTime>03/21/2014 16:39:23</publishTime>
+      <publishTime>03/18/2014 15:55:05</publishTime>
     </File>
     <File Include="bin/Microsoft.Practices.ServiceLocation.dll">
-      <publishTime>03/21/2014 16:39:23</publishTime>
+      <publishTime>03/18/2014 15:55:05</publishTime>
     </File>
     <File Include="bin/Microsoft.Practices.Unity.dll">
-      <publishTime>03/21/2014 16:39:23</publishTime>
+      <publishTime>03/18/2014 15:55:05</publishTime>
     </File>
     <File Include="bin/Microsoft.Practices.Unity.Interception.dll">
-      <publishTime>03/21/2014 16:39:23</publishTime>
+      <publishTime>03/18/2014 15:55:05</publishTime>
     </File>
     <File Include="bin/MTSUtilities.dll">
-      <publishTime>03/21/2014 16:39:23</publishTime>
+      <publishTime>03/20/2014 13:51:18</publishTime>
     </File>
     <File Include="bin/Newtonsoft.Json.dll">
-      <publishTime>03/21/2014 16:39:23</publishTime>
+      <publishTime>03/18/2014 15:55:04</publishTime>
     </File>
     <File Include="FacadeRestServiceImpl.svc">
-      <publishTime>03/21/2014 16:39:23</publishTime>
+      <publishTime>03/10/2014 09:49:14</publishTime>
+    </File>
+    <File Include="FacadeRestServiceImpl.wsdl">
+      <publishTime>03/24/2014 11:15:16</publishTime>
+    </File>
+    <File Include="FacadeRestServiceImpl.xsd0">
+      <publishTime>03/24/2014 10:45:32</publishTime>
+    </File>
+    <File Include="FacadeRestServiceImpl.xsd1">
+      <publishTime>03/24/2014 10:45:32</publishTime>
+    </File>
+    <File Include="PrecompiledApp.config">
+      <publishTime>03/24/2014 16:15:04</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>03/21/2014 16:46:56</publishTime>
+      <publishTime>03/24/2014 14:25:08</publishTime>
     </File>
   </ItemGroup>
 </Project>
