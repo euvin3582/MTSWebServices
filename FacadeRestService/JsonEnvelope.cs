@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
@@ -48,60 +49,10 @@ namespace FacadeRestService
 
         [XmlElement(ElementName = "ServiceQueue")]
         [DataMember(Name = "ServiceQueue")]
-        public ServiceQueue ServiceQueues { get; set; }
+        public object[] ServiceQueues { get; set; }
 
         [XmlElement(ElementName = "Commit")]
         [DataMember(Name = "Commit")]
         public string Commit { get; set; }
-    }
-
-    [DataContract]
-    [XmlRoot("ServiceQueue")]
-    public class ServiceQueue
-    {
-        [XmlElement(ElementName = "ServiceName")]
-        [DataMember(Name = "ServiceName")]
-        public string ServiceName { get; set; }
-
-        [XmlElement(ElementName = "Parameters")]
-        [DataMember(Name = "Parameters")]
-        public Parameter Parameters { get; set; }
-
-        [XmlElement(ElementName = "Response")]
-        [DataMember(Name = "Response")]
-        public ArrayList Response { get; set; }
-
-        [XmlElement(ElementName = "ResponseMessage")]
-        [DataMember(Name = "ResponseMessage")]
-        public string ResponseMessage { get; set; }
-
-        [XmlElement(ElementName = "EC_Code")]
-        [DataMember(Name = "EC_Code")]
-        public string ECCode { get; set; }
-    }
-
-    [DataContract]
-    [XmlRoot("Parameters")]
-    public class Parameter
-    {
-        [XmlElement(ElementName = "Email")]
-        [DataMember(Name = "Email")]
-        public string Email { get; set; }
-
-        [XmlElement(ElementName = "Password")]
-        [DataMember(Name = "Password")]
-        public string Password { get; set; }
-
-        [XmlElement(ElementName = "DeviceID")]
-        [DataMember(Name = "DeviceID")]
-        public string DeviceID { get; set; }
-
-        [XmlElement(ElementName = "DevicePlatform")]
-        [DataMember(Name = "DevicePlatform")]
-        public string DevicePlatform { get; set; }
-
-        [XmlElement(ElementName = "DeviceOSVersion")]
-        [DataMember(Name = "DeviceOSVersion")]
-        public string DeviceOSVersion { get; set; }
     }
 }

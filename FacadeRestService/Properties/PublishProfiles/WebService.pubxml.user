@@ -13,10 +13,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/25/2014 10:22:12</publishTime>
     </File>
     <File Include="bin/FacadeRestService.dll">
-      <publishTime>03/25/2014 10:24:18</publishTime>
+      <publishTime>03/26/2014 15:21:33</publishTime>
+    </File>
+    <File Include="bin/FacadeRestService.pdb">
+      <publishTime>03/26/2014 15:21:33</publishTime>
     </File>
     <File Include="bin/iTarycerSection.dll">
-      <publishTime>03/25/2014 10:24:17</publishTime>
+      <publishTime>03/26/2014 14:21:01</publishTime>
+    </File>
+    <File Include="bin/iTarycerSection.pdb">
+      <publishTime>03/26/2014 14:21:01</publishTime>
     </File>
     <File Include="bin/Microsoft.Practices.EnterpriseLibrary.Common.dll">
       <publishTime>03/25/2014 10:22:13</publishTime>
@@ -42,6 +48,12 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="bin/Newtonsoft.Json.dll">
       <publishTime>03/25/2014 10:22:13</publishTime>
     </File>
+    <File Include="FacadeRestService.csproj">
+      <publishTime>03/25/2014 16:11:26</publishTime>
+    </File>
+    <File Include="FacadeRestService.csproj.user">
+      <publishTime>03/25/2014 16:11:26</publishTime>
+    </File>
     <File Include="FacadeRestServiceImpl.svc">
       <publishTime>03/25/2014 10:22:12</publishTime>
     </File>
@@ -55,10 +67,22 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/24/2014 10:45:32</publishTime>
     </File>
     <File Include="PrecompiledApp.config">
-      <publishTime>03/25/2014 10:51:46</publishTime>
+      <publishTime>03/26/2014 16:03:02</publishTime>
+    </File>
+    <File Include="Properties/PublishProfiles/LocalDeploy.pubxml">
+      <publishTime>03/25/2014 10:22:12</publishTime>
+    </File>
+    <File Include="Properties/PublishProfiles/WebService.pubxml">
+      <publishTime>03/26/2014 11:58:14</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>03/25/2014 10:51:46</publishTime>
+      <publishTime>03/26/2014 14:31:43</publishTime>
+    </File>
+    <File Include="Web.Debug.config">
+      <publishTime>03/25/2014 10:22:12</publishTime>
+    </File>
+    <File Include="Web.Release.config">
+      <publishTime>03/25/2014 10:22:12</publishTime>
     </File>
   </ItemGroup>
 </Project>
