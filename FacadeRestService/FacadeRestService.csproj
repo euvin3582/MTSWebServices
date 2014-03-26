@@ -118,12 +118,6 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\iTraycerSection\iTraycerSection.csproj">
-      <Project>{59a49911-b7c0-481d-b3b0-bf45500ee250}</Project>
-      <Name>iTraycerSection</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Properties\PublishProfiles\LocalDeploy.pubxml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -135,6 +129,12 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\iTraycerSection\iTraycerSection.csproj">
+      <Project>{59a49911-b7c0-481d-b3b0-bf45500ee250}</Project>
+      <Name>iTraycerSection</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

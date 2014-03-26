@@ -28,13 +28,29 @@ namespace FacadeRestService
 
             XmlSerializer xmlSer = new XmlSerializer(typeof(JsonEnvelope));
             requestEnvelope = (JsonEnvelope)xmlSer.Deserialize(new StringReader(payload.OuterXml));
-            //servieQueue = (ServiceQueue)xmlSer.Deserialize(new StringReader(payload.OuterXml));
 
             // build response envelope
             JsonEnvelope responseEnvelope = new JsonEnvelope();
 
             // get service name to access
-            string serviceName = ""; //requestEnvelope.ServiceQueues[0].MTSMobileAuths.ToString();
+            if (requestEnvelope.ServiceQueues.Length > 0)
+            {
+                XmlNode[] nodes = (XmlNode[])requestEnvelope.ServiceQueues.GetValue(0);
+
+                if (nodes.Length > 1)
+                {
+                    payload = new XmlDocument();
+                    XmlElement element = (XmlElement)nodes.GetValue(1);
+                    payload.LoadXml(element.InnerXml);
+                }
+            }
+
+            if (payload == null)
+            {
+
+            }
+
+            string serviceName = requestEnvelope.ServiceQueues.ToString();
 
             //if (String.IsNullOrEmpty(serviceName))
                //responseEnvelope.ServiceQueues[0].ResponseMessage = "No service name was specified";
@@ -79,6 +95,8 @@ namespace FacadeRestService
             }
 
             responseEnvelope.SyncResponseTime = DateTime.UtcNow.ToString();
+            Guid guid = Guid.NewGuid();
+            responseEnvelope.MtsToken = guid.ToString() + ":1000";
             return JsonConvert.SerializeObject(responseEnvelope);
            
         }
