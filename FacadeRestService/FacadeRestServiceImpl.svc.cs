@@ -19,10 +19,16 @@ namespace FacadeRestService
         public string CreateSession()
         {
             string bodyRequest = OperationContext.Current.RequestContext.RequestMessage.ToString();
-           
+           //System.Runtime.Remoting.Contexts.Context.
             XmlDocument payload = new XmlDocument();
             payload.LoadXml(bodyRequest);
-
+            object response = new object();
+            List<string> temp = new List<string>();
+            temp.Add("MTSAuth");
+            temp.Add("Response:");
+            temp.Add("Fail");
+            var something = temp;
+            response = something;
             // deserialize payload
             JsonEnvelope requestEnvelope = new JsonEnvelope();
 
@@ -47,13 +53,13 @@ namespace FacadeRestService
 
             if (payload == null)
             {
-                responseEnvelope.ResponseMessage = "Service Name was not found";
+                //responseEnvelope.ServiceQueues = "Service Name was not found";
             }
 
             string serviceName = payload.DocumentElement.Name;
 
             if (String.IsNullOrEmpty(serviceName))
-                responseEnvelope.ResponseMessage = "No service name was specified";
+                //responseEnvelope.ResponseMessage = "No service name was specified";
 
             switch (serviceName)
             {
@@ -70,7 +76,7 @@ namespace FacadeRestService
 
                     if (DeviceId != null)
                            device.DeviceId = DeviceId.InnerText;
-                    else responseEnvelope.ResponseMessage = "No device info was found";
+                    //else responseEnvelope.ResponseMessage = "No device info was found";
                     if (DeviceOsVersion != null)
                            device.DeviceOsVersion = DeviceOsVersion.InnerText;
                     if (DevicePlatform != null)
@@ -87,12 +93,12 @@ namespace FacadeRestService
                         responseEnvelope.CoID = resposne[0];
                         responseEnvelope.RepID = resposne[1];
                         responseEnvelope.MtsToken = resposne[2];
-                        responseEnvelope.ResponseMessage = "Succesfully authenticated user";
+                        //responseEnvelope.ResponseMessage = "Succesfully authenticated user";
                         responseEnvelope.Commit = "true";
                     }
                     else
                     {
-                        responseEnvelope.ResponseMessage = "Failed to authenticate user";
+                        //responseEnvelope.ResponseMessage = "Failed to authenticate user";
                         responseEnvelope.Commit = "false";
                     }
                     break;
@@ -100,10 +106,10 @@ namespace FacadeRestService
                 case "FacadeRestService.MTSOther":
                     break;
             }
-
+            object[] ServiceQueues = new object[3];
+            responseEnvelope.ServiceQueues = ServiceQueues;
+            responseEnvelope.ServiceQueues[0] = response;
             responseEnvelope.SyncResponseTime = DateTime.UtcNow.ToString();
-            Guid guid = Guid.NewGuid();
-            responseEnvelope.MtsToken = guid.ToString() + ":180";
             return JsonConvert.SerializeObject(responseEnvelope);
            
         }
