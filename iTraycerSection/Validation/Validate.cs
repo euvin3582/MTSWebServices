@@ -3,7 +3,7 @@ using System;
 using System.Data;
 using DataLayer.domains;
 
-namespace iTarycerSection.Validation
+namespace iTraycerSection.Validation
 {
     public class Validate
     {
@@ -19,24 +19,23 @@ namespace iTarycerSection.Validation
             return userInfo;
         }
 
-        public static bool ValidateApplicationDeviceInfo(UserInfo userInfo, iTraycerDeviceInfo itd)
+        public static bool ValidateApplicationDeviceInfo(int repId, int coId, iTraycerDeviceInfo itd)
         {
-            DataTable DevAppTable = DataLayer.Controller.GetItraycerApplicationDeviceInfoByRepCoDevId(userInfo.Id, userInfo.CustomerId, itd.DeviceId);
+            DataTable DevAppTable = DataLayer.Controller.GetItraycerApplicationDeviceInfoDevId(itd.DeviceId);
 
             if (DevAppTable.Rows.Count == 0)
             {
                 if (DataLayer.Controller.GetiTraycerDeviceInfoByDeviceId(itd.DeviceId) == null)
                 {
-                    if (DataLayer.Controller.InsertiTraycerDeviceInfo(itd) == 0)
-                        Console.Write("Fail to write to db");
+                    Device.Device.AddDeviceInfo(itd);    
                 }
 
-                if (DataLayer.Controller.GetiTraycerApplicationInfoByRepIdCoIdDeviceId(userInfo.Id, userInfo.CustomerId, itd.DeviceId) == null)
+                if (DataLayer.Controller.GetiTraycerApplicationInfoByRepIdCoIdDeviceId(repId, coId, itd.DeviceId) == null)
                 {
                     iTraycerApplication ita = new iTraycerApplication();
                     // create iTraycerApplication object
-                    ita.RepId = userInfo.Id;
-                    ita.CoId = userInfo.CustomerId;
+                    ita.RepId = repId;
+                    ita.CoId = coId;
                     ita.CreatedDate = DateTime.UtcNow;
                     ita.LastSync = DateTime.UtcNow;
                     ita.DeviceId = itd.DeviceId;
@@ -50,7 +49,7 @@ namespace iTarycerSection.Validation
             }
             else
             {
-                if (DataLayer.Controller.UpdateiTraycerApplicationLaunchCount(userInfo.Id, userInfo.CustomerId, itd.DeviceId) > 0)
+                if (DataLayer.Controller.UpdateiTraycerApplicationLaunchCount(repId, coId, itd.DeviceId) > 0)
                     return true;
             }
             return false;

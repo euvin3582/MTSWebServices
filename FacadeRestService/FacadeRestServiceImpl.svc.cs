@@ -1,15 +1,12 @@
-﻿using DataLayer.domains;
-using Newtonsoft.Json;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.ServiceModel;
-using System.ServiceModel.Activation;
-using System.ServiceModel.Web;
-using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
+using DataLayer.domains;
+using Newtonsoft.Json;
+using iTraycerSection.Session;
 
 namespace FacadeRestService
 {
@@ -22,13 +19,7 @@ namespace FacadeRestService
            //System.Runtime.Remoting.Contexts.Context.
             XmlDocument payload = new XmlDocument();
             payload.LoadXml(bodyRequest);
-            object response = new object();
-            List<string> temp = new List<string>();
-            temp.Add("MTSAuth");
-            temp.Add("Response:");
-            temp.Add("Fail");
-            var something = temp;
-            response = something;
+            
             // deserialize payload
             JsonEnvelope requestEnvelope = new JsonEnvelope();
 
@@ -37,17 +28,111 @@ namespace FacadeRestService
 
             // build response envelope
             JsonEnvelope responseEnvelope = new JsonEnvelope();
+            object[] ServiceQueues;
 
             // get service name to access
             if (requestEnvelope.ServiceQueues.Length > 0)
             {
-                XmlNode[] nodes = (XmlNode[])requestEnvelope.ServiceQueues.GetValue(0);
+                // keeps track of which service the response message needs to go into
+                object response;
+                List<string> responseVariables = null;
+                XmlNodeList serviceQueueNodes = ((XmlElement)((XmlNode[])requestEnvelope.ServiceQueues.GetValue(0)).GetValue(1)).ChildNodes;
 
-                if (nodes.Length > 1)
+                // create response object in return envelope
+                ServiceQueues = new object[serviceQueueNodes.Count];
+                responseEnvelope.ServiceQueues = ServiceQueues;
+
+                for (int i = 0; i < serviceQueueNodes.Count; i++)
                 {
-                    payload = new XmlDocument();
-                    XmlElement element = (XmlElement)nodes.GetValue(1);
-                    payload.LoadXml(element.InnerXml);
+                    // create new response object and initialize list
+                    response = new object();
+                    responseVariables = new List<string>();
+
+                    // creat the payload child
+                    XmlDocument payloadChild = new XmlDocument();
+                    payloadChild.LoadXml(serviceQueueNodes.Item(i).OuterXml);
+                    
+
+                    // gets the service name from the object
+                    string serviceName = payloadChild.DocumentElement.Name;
+
+                    if (!String.IsNullOrEmpty(serviceName))
+                        responseVariables.Add(serviceName);
+                    else
+                        responseVariables.Add("No service name was specified"); 
+
+                    switch (serviceName)
+                    {
+                        case "MTSMobileAuth":
+                            XmlNode email = payload.SelectSingleNode("//Email");
+                            XmlNode password = payload.SelectSingleNode("//Password");
+                            string[] authResponse = new string[3];
+
+                            // validate the user
+                            if (email != null && password != null)
+                                authResponse = Session.CreateUserSession(email.InnerText, password.InnerText);
+
+                            if (authResponse.Length > 0)
+                            {
+                                responseEnvelope.CoID = authResponse[0];
+                                responseEnvelope.RepID = authResponse[1];
+                                responseEnvelope.MtsToken = authResponse[2];
+                                responseVariables.Add("Succesfully authenticated user");
+                                responseEnvelope.Commit = "true";
+                            }
+                            else
+                            {
+                                responseVariables.Add("Failed to authenticate user");
+                                responseEnvelope.Commit = "false";
+                            }
+
+                            response = responseVariables;
+                            responseEnvelope.ServiceQueues[i] = response;
+                            break;
+
+                        case "MobileDeviceRegister":
+                            iTraycerDeviceInfo device = new iTraycerDeviceInfo();
+                            XmlNode DeviceId = payloadChild.SelectSingleNode("//DeviceID");
+                            XmlNode DeviceOsVersion = payloadChild.SelectSingleNode("//DeviceOSVersion");
+                            XmlNode DevicePlatform = payloadChild.SelectSingleNode("//DevicePlatform");
+                            int repId = Session.userInfo.Id;
+                            
+                            if (DeviceId != null)
+                                   device.DeviceId = DeviceId.InnerText;
+                            //else responseEnvelope.ResponseMessage = "No device info was found";
+                            if (DeviceOsVersion != null)
+                                   device.DeviceOsVersion = DeviceOsVersion.InnerText;
+                            if (DevicePlatform != null)
+                                   device.Platform = DevicePlatform.InnerText;
+
+                            if (iTraycerSection.Device.Device.CheckIfExist(device.DeviceId))
+                            {
+                                responseVariables.Add("Device already exist in database");
+                                responseEnvelope.Commit = "false";
+                            }
+                            else
+                            {
+                                if (iTraycerSection.Device.Device.AddDeviceInfo(device))
+                                {
+                                    responseVariables.Add("Successfully resgistered device");
+                                    responseEnvelope.Commit = "true";
+                                }
+                                else
+                                {
+                                    responseVariables.Add("Failed to register device");
+                                    responseEnvelope.Commit = "false";
+                                }
+                            }
+
+                            if (iTraycerSection.Validation.Validate.ValidateApplicationDeviceInfo(Session.userInfo.Id, Session.userInfo.CustomerId, device))
+                            {
+                                responseVariables.Add("Successfully validate device and application info");
+                            }
+
+                            response = responseVariables;
+                            responseEnvelope.ServiceQueues[i] = response;
+                            break;
+                    }
                 }
             }
 
@@ -56,59 +141,11 @@ namespace FacadeRestService
                 //responseEnvelope.ServiceQueues = "Service Name was not found";
             }
 
-            string serviceName = payload.DocumentElement.Name;
 
-            if (String.IsNullOrEmpty(serviceName))
-                //responseEnvelope.ResponseMessage = "No service name was specified";
 
-            switch (serviceName)
-            {
-                case "MTSMobileAuth":
-                    iTraycerDeviceInfo device = new iTraycerDeviceInfo();
-                    String email = "";
-                    String pass = "";
 
-                    XmlNode DeviceId = payload.SelectSingleNode("//DeviceID");
-                    XmlNode DeviceOsVersion = payload.SelectSingleNode("//DeviceOSVersion");
-                    XmlNode DevicePlatform = payload.SelectSingleNode("//DevicePlatform");
-                    XmlNode Email = payload.SelectSingleNode("//Email");
-                    XmlNode Password = payload.SelectSingleNode("//Password");
-
-                    if (DeviceId != null)
-                           device.DeviceId = DeviceId.InnerText;
-                    //else responseEnvelope.ResponseMessage = "No device info was found";
-                    if (DeviceOsVersion != null)
-                           device.DeviceOsVersion = DeviceOsVersion.InnerText;
-                    if (DevicePlatform != null)
-                           device.Platform = DevicePlatform.InnerText;
-                    if (Email != null)
-                           email = Email.InnerText;
-                    if (Password != null)
-                           pass = Password.InnerText;
             
-                    string[] resposne = iTarycerSection.Session.Session.CreateUserSession(email, pass, device);
-
-                    if (resposne.Length > 0)
-                    {
-                        responseEnvelope.CoID = resposne[0];
-                        responseEnvelope.RepID = resposne[1];
-                        responseEnvelope.MtsToken = resposne[2];
-                        //responseEnvelope.ResponseMessage = "Succesfully authenticated user";
-                        responseEnvelope.Commit = "true";
-                    }
-                    else
-                    {
-                        //responseEnvelope.ResponseMessage = "Failed to authenticate user";
-                        responseEnvelope.Commit = "false";
-                    }
-                    break;
-
-                case "FacadeRestService.MTSOther":
-                    break;
-            }
-            object[] ServiceQueues = new object[3];
-            responseEnvelope.ServiceQueues = ServiceQueues;
-            responseEnvelope.ServiceQueues[0] = response;
+           
             responseEnvelope.SyncResponseTime = DateTime.UtcNow.ToString();
             return JsonConvert.SerializeObject(responseEnvelope);
            
