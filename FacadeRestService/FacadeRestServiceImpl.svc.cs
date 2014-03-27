@@ -47,32 +47,39 @@ namespace FacadeRestService
 
             if (payload == null)
             {
-
+                responseEnvelope.ResponseMessage = "Service Name was not found";
             }
 
-            string serviceName = requestEnvelope.ServiceQueues.ToString();
+            string serviceName = payload.DocumentElement.Name;
 
-            //if (String.IsNullOrEmpty(serviceName))
-               //responseEnvelope.ServiceQueues[0].ResponseMessage = "No service name was specified";
+            if (String.IsNullOrEmpty(serviceName))
+                responseEnvelope.ResponseMessage = "No service name was specified";
 
             switch (serviceName)
             {
-                case "FacadeRestService.MTSMobileAuth":
+                case "MTSMobileAuth":
                     iTraycerDeviceInfo device = new iTraycerDeviceInfo();
                     String email = "";
                     String pass = "";
 
-                    //if (requestEnvelope.ServiceQueues[0].MTSMobileAuth != null)
-                    //{
-                    //    device.DeviceId = (requestEnvelope.ServiceQueues[0]).MTSMobileAuth.DeviceID;
-                    //    device.DeviceOsVersion = (requestEnvelope.ServiceQueues[0]).MTSMobileAuth.DeviceOSVersion;
-                    //    device.Platform = (requestEnvelope.ServiceQueues[0]).MTSMobileAuth.DevicePlatform;
-                    //    email = (requestEnvelope.ServiceQueues[0]).MTSMobileAuth.Email;
-                    //    pass = (requestEnvelope.ServiceQueues[0]).MTSMobileAuth.Password;
-                    //}
-                    //else return "No divice info found";
+                    XmlNode DeviceId = payload.SelectSingleNode("//DeviceID");
+                    XmlNode DeviceOsVersion = payload.SelectSingleNode("//DeviceOSVersion");
+                    XmlNode DevicePlatform = payload.SelectSingleNode("//DevicePlatform");
+                    XmlNode Email = payload.SelectSingleNode("//Email");
+                    XmlNode Password = payload.SelectSingleNode("//Password");
+
+                    if (DeviceId != null)
+                           device.DeviceId = DeviceId.InnerText;
+                    else responseEnvelope.ResponseMessage = "No device info was found";
+                    if (DeviceOsVersion != null)
+                           device.DeviceOsVersion = DeviceOsVersion.InnerText;
+                    if (DevicePlatform != null)
+                           device.Platform = DevicePlatform.InnerText;
+                    if (Email != null)
+                           email = Email.InnerText;
+                    if (Password != null)
+                           pass = Password.InnerText;
             
-                    // before you run this we need to pass a device to the json envelope to fill in the device info 
                     string[] resposne = iTarycerSection.Session.Session.CreateUserSession(email, pass, device);
 
                     if (resposne.Length > 0)
@@ -80,12 +87,12 @@ namespace FacadeRestService
                         responseEnvelope.CoID = resposne[0];
                         responseEnvelope.RepID = resposne[1];
                         responseEnvelope.MtsToken = resposne[2];
-                       // responseEnvelope.ServiceQueues[0].ResponseMessage = "Succesfully authenticated user";
+                        responseEnvelope.ResponseMessage = "Succesfully authenticated user";
                         responseEnvelope.Commit = "true";
                     }
                     else
                     {
-                        //responseEnvelope.ServiceQueues[0].ResponseMessage = "Failed to authenticate user";
+                        responseEnvelope.ResponseMessage = "Failed to authenticate user";
                         responseEnvelope.Commit = "false";
                     }
                     break;
@@ -96,7 +103,7 @@ namespace FacadeRestService
 
             responseEnvelope.SyncResponseTime = DateTime.UtcNow.ToString();
             Guid guid = Guid.NewGuid();
-            responseEnvelope.MtsToken = guid.ToString() + ":1000";
+            responseEnvelope.MtsToken = guid.ToString() + ":180";
             return JsonConvert.SerializeObject(responseEnvelope);
            
         }
