@@ -16,7 +16,7 @@ namespace FacadeRestService
         public string CreateSession()
         {
             string bodyRequest = OperationContext.Current.RequestContext.RequestMessage.ToString();
-           //System.Runtime.Remoting.Contexts.Context.
+           
             XmlDocument payload = new XmlDocument();
             payload.LoadXml(bodyRequest);
             
@@ -36,13 +36,13 @@ namespace FacadeRestService
                 // keeps track of which service the response message needs to go into
                 object response;
                 List<string> responseVariables = null;
-                XmlNodeList serviceQueueNodes = ((XmlElement)((XmlNode[])requestEnvelope.ServiceQueues.GetValue(0)).GetValue(1)).ChildNodes;
+                XmlNode[] serviceQueueNodes = (XmlNode[])requestEnvelope.ServiceQueues[0];
 
                 // create response object in return envelope
-                ServiceQueues = new object[serviceQueueNodes.Count];
+                ServiceQueues = new object[serviceQueueNodes.Length];
                 responseEnvelope.ServiceQueues = ServiceQueues;
 
-                for (int i = 0; i < serviceQueueNodes.Count; i++)
+                for (int i = 0; i < serviceQueueNodes.Length; i++)
                 {
                     // create new response object and initialize list
                     response = new object();
@@ -50,7 +50,7 @@ namespace FacadeRestService
 
                     // creat the payload child
                     XmlDocument payloadChild = new XmlDocument();
-                    payloadChild.LoadXml(serviceQueueNodes.Item(i).OuterXml);
+                    payloadChild.LoadXml(serviceQueueNodes[i].ChildNodes.Item(0).OuterXml);
                     
 
                     // gets the service name from the object

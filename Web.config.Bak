@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
   <!--
     For a description of web.config changes for .NET 4.5 see http://go.microsoft.com/fwlink/?LinkId=235367.
@@ -9,8 +9,9 @@
       </system.Web>
   -->
   <system.web>
-    <compilation targetFramework="4.5" />
+    <compilation debug="true" targetFramework="4.5" />
     <pages controlRenderingCompatibilityVersion="4.0" />
+	<customErrors mode="On"/>
   </system.web>
   <system.serviceModel>
     <services>
@@ -36,7 +37,7 @@
       <serviceBehaviors>
         <behavior name="ServiceBahavior">
           <!-- To avoid disclosing metadata information, set the value below to false and remove the metadata endpoint above before deployment -->
-          <serviceMetadata httpGetEnabled="false" httpsGetEnabled="true"/>
+          <serviceMetadata httpGetEnabled="false" httpsGetEnabled="true" />
           <!-- To receive exception details in faults for debugging purposes, set the value below to true.  Set to false before deployment to avoid disclosing exception information -->
           <serviceDebug includeExceptionDetailInFaults="true" />
         </behavior>
@@ -55,6 +56,5 @@
   </system.webServer>
   <connectionStrings>
     <add name="mtsConnectionString" connectionString="Data Source=10.32.11.201;Initial Catalog=SpineWaveDev;Persist Security Info=True;User ID=swadmin;Password=Itraycer2458" providerName="System.Data.SqlClient" />
-    <!--<add name="mtsConnectionString" connectionString="Data Source=ITRAYCER-HP\SPINEWAVE;Initial Catalog=SpineWaveDev;Trusted_Connection=Yes" providerName="System.Data.SqlClient" />-->
   </connectionStrings>
 </configuration>
