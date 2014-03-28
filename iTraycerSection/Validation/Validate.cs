@@ -2,21 +2,22 @@
 using System;
 using System.Data;
 using DataLayer.domains;
+using DataLayer.utilities;
 
 namespace iTraycerSection.Validation
 {
     public class Validate
     {
-        public static UserInfo ValidateUser(UserInfo userInfo)
+        public static UserInfo ValidateUser(string txtUserCode, string txtPassword)
         {
             // use to validate the user name and pass
-            userInfo = DataLayer.Controller.GetUserInfoFromEmailPassword(userInfo.RepEmail, userInfo.PassCode);
+            UserInfo obj = AuthenticateUser.HasAccessControl(txtUserCode.Trim(), txtPassword.Trim());
 
-            if (userInfo == null)
+            if (obj == null)
             {
                 return null;
             }
-            return userInfo;
+            return obj;
         }
 
         public static bool ValidateApplicationDeviceInfo(int repId, int coId, iTraycerDeviceInfo itd)

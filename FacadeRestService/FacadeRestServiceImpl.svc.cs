@@ -64,8 +64,8 @@ namespace FacadeRestService
                     switch (serviceName)
                     {
                         case "MTSMobileAuth":
-                            XmlNode email = payload.SelectSingleNode("//Email");
-                            XmlNode password = payload.SelectSingleNode("//Password");
+                            XmlNode email = payloadChild.SelectSingleNode("//Email");
+                            XmlNode password = payloadChild.SelectSingleNode("//Password");
                             string[] authResponse = new string[3];
 
                             // validate the user

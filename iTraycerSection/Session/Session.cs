@@ -13,13 +13,7 @@ namespace iTraycerSection.Session
 
         public static String[] CreateUserSession(String email, String pass)
         {
-            // encrypt password before storing it
-            string hashPass = DataLayer.Controller.CreateHash(pass);
-            
-            userInfo.RepEmail = email;
-            userInfo.PassCode = hashPass;
-
-            userInfo = ValidateUser(userInfo);
+            userInfo = ValidateUser(email, pass);
 
             if (userInfo == null)
             {
