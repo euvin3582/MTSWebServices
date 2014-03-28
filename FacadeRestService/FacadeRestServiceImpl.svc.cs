@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using DataLayer.domains;
 using Newtonsoft.Json;
 using iTraycerSection.Session;
+using MTSUtilities.Conversions;
 
 namespace FacadeRestService
 {
@@ -50,7 +51,7 @@ namespace FacadeRestService
 
                     // creat the payload child
                     XmlDocument payloadChild = new XmlDocument();
-                    payloadChild.LoadXml(serviceQueueNodes[i].ChildNodes.Item(0).OuterXml);
+                    payloadChild.LoadXml(serviceQueueNodes[i+1].ChildNodes[0].OuterXml);
                     
 
                     // gets the service name from the object
@@ -129,6 +130,13 @@ namespace FacadeRestService
                                 responseVariables.Add("Successfully validate device and application info");
                             }
 
+                            response = responseVariables;
+                            responseEnvelope.ServiceQueues[i] = response;
+                            break;
+
+                        case "OtherServiceName":
+                            string data = JsonConvert.SerializeObject(DataLayer.Controller.GetSchedulesByRep(Session.userInfo));
+                            responseVariables.Add(data);
                             response = responseVariables;
                             responseEnvelope.ServiceQueues[i] = response;
                             break;
