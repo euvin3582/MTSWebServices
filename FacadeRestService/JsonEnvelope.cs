@@ -48,8 +48,11 @@ namespace FacadeRestService
         public string SQL { get; set; }
 
         [XmlElement(ElementName = "ServiceQueue")]
-        [DataMember(Name = "ServiceQueue")]
         public object[] ServiceQueues { get; set; }
+
+        [XmlElement(ElementName = "Response")]
+        [DataMember(Name = "Response")]
+        public List<object> Response { get; set; }
 
         [XmlElement(ElementName = "Command")]
         [DataMember(Name = "Command")]

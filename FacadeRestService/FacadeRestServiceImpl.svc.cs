@@ -41,6 +41,7 @@ namespace FacadeRestService
 
                 // create response object in return envelope
                 ServiceQueues = new object[serviceQueueNodes.Length];
+                responseEnvelope.Response = new List<object>();
                 responseEnvelope.ServiceQueues = ServiceQueues;
 
                 for (int i = 0; i < serviceQueueNodes.Length-1; i++)
@@ -88,7 +89,7 @@ namespace FacadeRestService
                             }
 
                             response = responseVariables;
-                            responseEnvelope.ServiceQueues[i] = response;
+                            responseEnvelope.Response.Add(response);
                             break;
 
                         case "MobileDeviceRegister":
@@ -131,14 +132,17 @@ namespace FacadeRestService
                             }
 
                             response = responseVariables;
-                            responseEnvelope.ServiceQueues[i] = response;
+                            responseEnvelope.Response.Add(response);
                             break;
 
                         case "OtherServiceName":
-                            string data = JsonConvert.SerializeObject(DataLayer.Controller.GetSchedulesByRep(Session.userInfo));
+                            string data = JsonConvert.SerializeObject(
+                                Session.userInfo.IsSuperUser ? 
+                                    DataLayer.Controller.GetSchedulesByCustomerId(Session.userInfo.CustomerId) : 
+                                    DataLayer.Controller.GetSchedulesByRep(Session.userInfo));
                             responseVariables.Add(data);
                             response = responseVariables;
-                            responseEnvelope.ServiceQueues[i] = response;
+                            responseEnvelope.Response.Add(response);
                             break;
                     }
                 }
@@ -149,11 +153,6 @@ namespace FacadeRestService
                 //responseEnvelope.ServiceQueues = "Service Name was not found";
             }
 
-
-
-
-            
-           
             responseEnvelope.SyncResponseTime = DateTime.UtcNow.ToString();
             return JsonConvert.SerializeObject(responseEnvelope);
            
