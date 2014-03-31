@@ -51,7 +51,6 @@ namespace FacadeRestService
                     XmlDocument payloadChild = new XmlDocument();
                     payloadChild.LoadXml(serviceQueueNodes[i+1].ChildNodes[0].OuterXml);
                     
-
                     // gets the service name from the object
                     string serviceName = payloadChild.DocumentElement.Name;
 
@@ -85,8 +84,7 @@ namespace FacadeRestService
                                 responseEnvelope.Commit = "false";
                             }
 
-                            response = responseVariables;
-                            responseEnvelope.Response.Add(response);
+                            responseEnvelope.Response = responseVariables;
                             break;
 
                         case "MobileDeviceRegister":
@@ -128,8 +126,7 @@ namespace FacadeRestService
                                 responseVariables.Add("Successfully validate device and application info");
                             }
 
-                            response = responseVariables;
-                            responseEnvelope.Response.Add(response);
+                            responseEnvelope.Response = responseVariables;
                             break;
 
                         case "OtherServiceName":
@@ -138,8 +135,7 @@ namespace FacadeRestService
                                     DataLayer.Controller.GetSchedulesByCustomerId(Session.userInfo.CustomerId) : 
                                     DataLayer.Controller.GetSchedulesByRep(Session.userInfo));
                             responseVariables.Add(data);
-                            response = responseVariables;
-                            responseEnvelope.Response.Add(response);
+                            responseEnvelope.Response = responseVariables;
                             break;
                     }
                 }
