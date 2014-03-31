@@ -1,9 +1,14 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations;
+using iTraycerSection.AttributeLocalization;
+using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Security.AccessControl;
 using System.Xml.Serialization;
+using Microsoft.Practices.EnterpriseLibrary.Common.Properties;
 
 namespace FacadeRestService
 {
@@ -51,7 +56,7 @@ namespace FacadeRestService
         public object[] ServiceQueues { get; set; }
 
         [DataMember(Name = "ServiceQueue")]
-        public object Response { get; set; }
+        public List<object> Response { get; set; }
 
         [XmlElement(ElementName = "Command")]
         [DataMember(Name = "Command")]
