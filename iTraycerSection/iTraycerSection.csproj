@@ -33,6 +33,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DataLayer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\_ThirdPartyDll\iTraycer\DataLayer.dll</HintPath>
+    </Reference>
     <Reference Include="MTSUtilities">
       <HintPath>..\_ThirdPartyDll\iTraycer\MTSUtilities.dll</HintPath>
     </Reference>
@@ -50,12 +54,6 @@
     <Compile Include="Session\Session.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Validation\Validate.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\WebSuite\DataLayer\DataLayer.csproj">
-      <Project>{fe665455-9d20-4657-84d6-5883ed15ead0}</Project>
-      <Name>DataLayer</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -43,7 +43,7 @@ namespace FacadeRestService
                 ServiceQueues = new object[serviceQueueNodes.Length];
                 responseEnvelope.ServiceQueues = ServiceQueues;
 
-                for (int i = 0; i < serviceQueueNodes.Length; i++)
+                for (int i = 0; i < serviceQueueNodes.Length-1; i++)
                 {
                     // create new response object and initialize list
                     response = new object();
