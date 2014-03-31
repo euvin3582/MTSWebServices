@@ -29,7 +29,6 @@ namespace FacadeRestService
 
             // build response envelope
             JsonEnvelope responseEnvelope = new JsonEnvelope();
-            object[] ServiceQueues;
 
             // get service name to access
             if (requestEnvelope.ServiceQueues.Length > 0)
@@ -40,16 +39,14 @@ namespace FacadeRestService
                 XmlNode[] serviceQueueNodes = (XmlNode[])requestEnvelope.ServiceQueues[0];
 
                 // create response object in return envelope
-                ServiceQueues = new object[serviceQueueNodes.Length];
                 responseEnvelope.Response = new List<object>();
-                responseEnvelope.ServiceQueues = ServiceQueues;
+
+                // create new response object and initialize list
+                response = new object();
+                responseVariables = new List<string>();
 
                 for (int i = 0; i < serviceQueueNodes.Length-1; i++)
                 {
-                    // create new response object and initialize list
-                    response = new object();
-                    responseVariables = new List<string>();
-
                     // creat the payload child
                     XmlDocument payloadChild = new XmlDocument();
                     payloadChild.LoadXml(serviceQueueNodes[i+1].ChildNodes[0].OuterXml);

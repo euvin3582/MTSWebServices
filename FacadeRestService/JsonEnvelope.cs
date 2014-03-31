@@ -50,8 +50,7 @@ namespace FacadeRestService
         [XmlElement(ElementName = "ServiceQueue")]
         public object[] ServiceQueues { get; set; }
 
-        [XmlElement(ElementName = "Response")]
-        [DataMember(Name = "Response")]
+        [DataMember(Name = "ServiceQueue")]
         public List<object> Response { get; set; }
 
         [XmlElement(ElementName = "Command")]
