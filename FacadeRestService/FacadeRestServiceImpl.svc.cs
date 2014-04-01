@@ -85,7 +85,7 @@ namespace FacadeRestService
                             XmlNode DeviceOsVersion = payloadChild.SelectSingleNode("//DeviceOSVersion");
                             XmlNode DevicePlatform = payloadChild.SelectSingleNode("//DevicePlatform");
                             resp = new Dictionary<object, string>();
-                            String msg = null;
+                            String msg = "";
                             
                             if (DeviceId != null)
                                    device.DeviceId = DeviceId.InnerText;
@@ -116,8 +116,9 @@ namespace FacadeRestService
 
                             if (iTraycerSection.Validation.Validate.ValidateApplicationDeviceInfo(Session.userInfo.Id, Session.userInfo.CustomerId, device))
                             {
-                                resp.Add(serviceName, msg + ", Successfully validate device and application info");
+                                msg = msg + ", Successfully validate device and application info";
                             }
+                            resp.Add(serviceName, msg);
                             responseEnvelope.Response.Add(resp);
                             break;
 
