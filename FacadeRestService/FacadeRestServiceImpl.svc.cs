@@ -35,34 +35,29 @@ namespace FacadeRestService
             {
                 XmlNode[] serviceQueueNodes = (XmlNode[])requestEnvelope.ServiceQueues[0];
 
-                // create response object in return envelope
+                // create response dictionary and create response envelope
+                Dictionary<object, string> resp = null;
                 responseEnvelope.Response = new List<object>();
-
-                // create new response object and initialize list
-                List<string> responseVariables = null;
 
                 for (int i = 0; i < serviceQueueNodes.Length-1; i++)
                 {
                     // creat the payload child
                     XmlDocument payloadChild = new XmlDocument();
                     payloadChild.LoadXml(serviceQueueNodes[i+1].ChildNodes[0].OuterXml);
-                    
-                    // create response dictionary
-                    Dictionary<object, List<string>> resp = new Dictionary<object, List<string>>();
 
                     // gets the service name from the object
                     string serviceName = payloadChild.DocumentElement.Name;
 
                     if (String.IsNullOrEmpty(serviceName))
-                        responseVariables.Add("No service name was specified"); 
+                        resp.Add("Error", "No service name was specified"); 
 
                     switch (serviceName)
                     {
                         case "MTSMobileAuth":
                             XmlNode email = payloadChild.SelectSingleNode("//Email");
                             XmlNode password = payloadChild.SelectSingleNode("//Password");
+                            resp = new Dictionary<object, string>();
                             string[] authResponse = new string[3];
-                            responseVariables = new List<string>();
 
                             // validate the user
                             if (email != null && password != null)
@@ -73,26 +68,24 @@ namespace FacadeRestService
                                 responseEnvelope.CoID = authResponse[0];
                                 responseEnvelope.RepID = authResponse[1];
                                 responseEnvelope.MtsToken = authResponse[2];
-                                responseVariables.Add("Succesfully authenticated user");
+                                resp.Add(serviceName, "Successfully authenticated user");
                                 responseEnvelope.Commit = "true";
                             }
                             else
                             {
-                                responseVariables.Add("Failed to authenticate user");
+                                resp.Add(serviceName, "Failed to authenticate user");
                                 responseEnvelope.Commit = "false";
                             }
-                            
-                            resp.Add(serviceName, responseVariables);
                             responseEnvelope.Response.Add(resp);
                             break;
 
                         case "MobileDeviceRegister":
                             iTraycerDeviceInfo device = new iTraycerDeviceInfo();
-                            responseVariables = new List<string>();
                             XmlNode DeviceId = payloadChild.SelectSingleNode("//DeviceID");
                             XmlNode DeviceOsVersion = payloadChild.SelectSingleNode("//DeviceOSVersion");
                             XmlNode DevicePlatform = payloadChild.SelectSingleNode("//DevicePlatform");
-                            int repId = Session.userInfo.Id;
+                            resp = new Dictionary<object, string>();
+                            String msg = null;
                             
                             if (DeviceId != null)
                                    device.DeviceId = DeviceId.InnerText;
@@ -104,40 +97,38 @@ namespace FacadeRestService
 
                             if (iTraycerSection.Device.Device.CheckIfExist(device.DeviceId))
                             {
-                                responseVariables.Add("Device already exist in database");
+                               msg = "Device already registered";
                                 responseEnvelope.Commit = "false";
                             }
                             else
                             {
                                 if (iTraycerSection.Device.Device.AddDeviceInfo(device))
                                 {
-                                    responseVariables.Add("Successfully resgistered device");
+                                    msg = "Successfully resgistered device";
                                     responseEnvelope.Commit = "true";
                                 }
                                 else
                                 {
-                                    responseVariables.Add("Failed to register device");
+                                    msg = "Failed to register device";
                                     responseEnvelope.Commit = "false";
                                 }
                             }
 
                             if (iTraycerSection.Validation.Validate.ValidateApplicationDeviceInfo(Session.userInfo.Id, Session.userInfo.CustomerId, device))
                             {
-                                responseVariables.Add("Successfully validate device and application info");
+                                resp.Add(serviceName, msg + ", Successfully validate device and application info");
                             }
-
-                            resp.Add(serviceName, responseVariables);
                             responseEnvelope.Response.Add(resp);
                             break;
 
                         case "OtherServiceName":
-                            responseVariables = new List<string>();
+                            resp = new Dictionary<object, string>();
                             string data = JsonConvert.SerializeObject(
                                 Session.userInfo.IsSuperUser ? 
                                     DataLayer.Controller.GetSchedulesByCustomerId(Session.userInfo.CustomerId) : 
                                     DataLayer.Controller.GetSchedulesByRep(Session.userInfo));
-                            responseVariables.Add(data);
-                            resp.Add(serviceName, responseVariables);
+
+                            resp.Add(serviceName, data);
                             responseEnvelope.Response.Add(resp);
                             break;
                     }
@@ -145,7 +136,6 @@ namespace FacadeRestService
             }
             responseEnvelope.SyncResponseTime = DateTime.UtcNow.ToString();
             return JsonConvert.SerializeObject(responseEnvelope);
-           
         }
     }
 }
