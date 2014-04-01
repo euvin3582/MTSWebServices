@@ -136,6 +136,7 @@ namespace FacadeRestService
                 }
             }
             responseEnvelope.SyncResponseTime = DateTime.UtcNow.ToString();
+            responseEnvelope.Role = Session.userInfo.Role;
             return JsonConvert.SerializeObject(responseEnvelope);
         }
     }
