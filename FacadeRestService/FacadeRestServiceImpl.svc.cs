@@ -122,13 +122,20 @@ namespace FacadeRestService
                             responseEnvelope.Response.Add(resp);
                             break;
 
-                        case "OtherServiceName":
+                        case "InitDataLoad":
                             resp = new Dictionary<object, string>();
                             string data = JsonConvert.SerializeObject(
                                 Session.userInfo.IsSuperUser ? 
                                     DataLayer.Controller.GetSchedulesByCustomerId(Session.userInfo.CustomerId) : 
                                     DataLayer.Controller.GetSchedulesByRep(Session.userInfo));
 
+                            resp.Add(serviceName, data);
+                            responseEnvelope.Response.Add(resp);
+                            break;
+
+                        case "InitInventory":
+                            resp = new Dictionary<object, string>();
+                            data = JsonConvert.SerializeObject(DataLayer.Controller.GetInventoryByCompanyId(Session.userInfo.CustomerId));
                             resp.Add(serviceName, data);
                             responseEnvelope.Response.Add(resp);
                             break;
