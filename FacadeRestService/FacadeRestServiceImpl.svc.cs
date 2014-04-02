@@ -139,6 +139,14 @@ namespace FacadeRestService
                             resp.Add(serviceName, data);
                             responseEnvelope.Response.Add(resp);
                             break;
+
+                        case "CreateCase":
+                            ScheduleInfo obj = (ScheduleInfo)xmlSer.Deserialize(new StringReader(payloadChild.OuterXml));
+
+                            int caseId = DataLayer.Controller.InsertSchedule(obj);
+                            resp.Add(serviceName, caseId.ToString());
+                            responseEnvelope.Response.Add(resp);
+                            break;
                     }
                 }
             }
