@@ -141,8 +141,25 @@ namespace FacadeRestService
                             break;
 
                         case "CreateCase":
-                            ScheduleInfo obj = (ScheduleInfo)xmlSer.Deserialize(new StringReader(payloadChild.OuterXml));
+                            List<XmlNode> nodeList = new List<XmlNode>(){
+                                payloadChild.SelectSingleNode("//SurgeonId"),
+                                payloadChild.SelectSingleNode("//SurgeonId"),
+                                payloadChild.SelectSingleNode("//SurgeryDate"),
+                                payloadChild.SelectSingleNode("//DeliverByDate"),
+                                payloadChild.SelectSingleNode("//SurgeryType"),
+                                payloadChild.SelectSingleNode("//MedicalRecordNumber"),
+                                payloadChild.SelectSingleNode("//PatientId"),
+                                payloadChild.SelectSingleNode("//SurgeryStatus"),
+                                payloadChild.SelectSingleNode("//LocationId"),
+                                payloadChild.SelectSingleNode("//VerdibraeLevel"),
+                                payloadChild.SelectSingleNode("//LoanerFlag"),
+                                payloadChild.SelectSingleNode("//OrderSourceId"),
+                                payloadChild.SelectSingleNode("//KitTypeNumber"),
+                                payloadChild.SelectSingleNode("//PartNumber")};
 
+                            ScheduleInfo obj = new ScheduleInfo(nodeList);
+                            obj.CreatedDate = DateTime.UtcNow;
+                            obj.RepId = Session.userInfo.Id;
                             int caseId = DataLayer.Controller.InsertSchedule(obj);
                             resp.Add(serviceName, caseId.ToString());
                             responseEnvelope.Response.Add(resp);
