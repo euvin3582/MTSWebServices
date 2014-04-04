@@ -174,7 +174,7 @@ namespace FacadeRestService
                             doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.userInfo.Id);
                             MTSUtilities.Conversions.DataTableConverterUtility docListParsed = new MTSUtilities.Conversions.DataTableConverterUtility(doctorsList);
 
-                            resp.Add(serviceName, docListParsed.MethodDataList.ToString());
+                            resp.Add(serviceName, String.Join(",", docListParsed.MethodDataList.ToArray()));
                             responseEnvelope.Response.Add(resp);
                             break;
                     }
