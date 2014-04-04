@@ -142,6 +142,7 @@ namespace FacadeRestService
                             break;
 
                         case "CreateCase":
+                            resp = new Dictionary<object, string>();
                             List<XmlNode> nodeList = new List<XmlNode>(){
                                 payloadChild.SelectSingleNode("//SurgeonId"),
                                 payloadChild.SelectSingleNode("//SurgeonId"),
@@ -168,6 +169,7 @@ namespace FacadeRestService
                             break;
 
                         case "InitDoctors":
+                            resp = new Dictionary<object, string>();
                             DataTable doctorsList = new DataTable();
                             doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.userInfo.Id);
                             MTSUtilities.Conversions.DataTableConverterUtility docListParsed = new MTSUtilities.Conversions.DataTableConverterUtility(doctorsList);
