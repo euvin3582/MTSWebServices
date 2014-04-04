@@ -8,6 +8,7 @@ using DataLayer.domains;
 using Newtonsoft.Json;
 using iTraycerSection.Session;
 using MTSUtilities.Conversions;
+using System.Data;
 
 namespace FacadeRestService
 {
@@ -160,8 +161,18 @@ namespace FacadeRestService
                             ScheduleInfo obj = new ScheduleInfo(nodeList);
                             obj.CreatedDate = DateTime.UtcNow;
                             obj.RepId = Session.userInfo.Id;
+                            obj.CompanyId = Session.userInfo.CustomerId;
                             int caseId = DataLayer.Controller.InsertSchedule(obj);
                             resp.Add(serviceName, caseId.ToString());
+                            responseEnvelope.Response.Add(resp);
+                            break;
+
+                        case "InitDoctors":
+                            DataTable doctorsList = new DataTable();
+                            doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.userInfo.Id);
+                            MTSUtilities.Conversions.DataTableConverterUtility docListParsed = new MTSUtilities.Conversions.DataTableConverterUtility(doctorsList);
+
+                            resp.Add(serviceName, docListParsed.MethodDataList.ToString());
                             responseEnvelope.Response.Add(resp);
                             break;
                     }
