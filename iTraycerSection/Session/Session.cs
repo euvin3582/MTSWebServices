@@ -48,10 +48,11 @@ namespace iTraycerSection.Session
             }
             else
             {
-                errorMessage = "Token does not exists";
+                errorMessage = "SRVERROR:Token does not exists";
             }
 
             DataLayer.Controller.DeleteiTraycerSession(guid);
+            errorMessage = "SRVERROR:Token expired";
             return false;
         }
     }

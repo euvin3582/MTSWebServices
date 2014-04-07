@@ -10,22 +10,22 @@ by editing this MSBuild file. In order to learn more about this please visit htt
   </PropertyGroup>
   <ItemGroup>
     <File Include="bin/DataLayer.dll">
-      <publishTime>04/04/2014 17:13:31</publishTime>
+      <publishTime>04/07/2014 10:45:10</publishTime>
     </File>
     <File Include="bin/DataLayer.pdb">
       <publishTime>03/28/2014 14:59:04</publishTime>
     </File>
     <File Include="bin/FacadeRestService.dll">
-      <publishTime>04/04/2014 17:27:53</publishTime>
+      <publishTime>04/07/2014 12:19:35</publishTime>
     </File>
     <File Include="bin/FacadeRestService.pdb">
-      <publishTime>04/04/2014 17:27:53</publishTime>
+      <publishTime>04/07/2014 12:19:35</publishTime>
     </File>
     <File Include="bin/iTarycerSection.dll">
-      <publishTime>04/04/2014 17:13:43</publishTime>
+      <publishTime>04/07/2014 12:19:32</publishTime>
     </File>
     <File Include="bin/iTarycerSection.pdb">
-      <publishTime>04/04/2014 17:13:43</publishTime>
+      <publishTime>04/07/2014 12:19:32</publishTime>
     </File>
     <File Include="bin/Microsoft.Practices.EnterpriseLibrary.Common.dll">
       <publishTime>03/25/2014 10:22:13</publishTime>
@@ -55,7 +55,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/18/2014 16:38:00</publishTime>
     </File>
     <File Include="FacadeRestService.csproj">
-      <publishTime>04/03/2014 14:38:38</publishTime>
+      <publishTime>04/07/2014 10:45:10</publishTime>
     </File>
     <File Include="FacadeRestService.csproj.user">
       <publishTime>04/03/2014 14:38:38</publishTime>
@@ -73,7 +73,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/24/2014 10:45:32</publishTime>
     </File>
     <File Include="PrecompiledApp.config">
-      <publishTime>04/04/2014 17:29:12</publishTime>
+      <publishTime>04/07/2014 12:19:36</publishTime>
     </File>
     <File Include="Properties/PublishProfiles/LocalDeploy.pubxml">
       <publishTime>03/25/2014 10:22:12</publishTime>
@@ -82,7 +82,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/26/2014 11:58:14</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>04/03/2014 14:41:38</publishTime>
+      <publishTime>04/07/2014 10:45:46</publishTime>
     </File>
     <File Include="Web.Debug.config">
       <publishTime>03/25/2014 10:22:12</publishTime>
