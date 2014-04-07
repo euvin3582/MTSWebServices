@@ -39,6 +39,7 @@ namespace FacadeRestService
                 Dictionary<object, string> resp = null;
                 responseEnvelope.Response = new List<object>();
 
+            ServiceProcessing:
                 for (int i = 0; i < serviceQueueNodes.Length-1; i++)
                 {
                     // creat the payload child
@@ -49,7 +50,19 @@ namespace FacadeRestService
                     string serviceName = payloadChild.DocumentElement.Name;
 
                     if (String.IsNullOrEmpty(serviceName))
-                        resp.Add("Error", "No service name was specified"); 
+                    {
+                        resp = new Dictionary<object, string>();
+                        resp.Add("Error", "No service name was specified");
+                        responseEnvelope.Response.Add(resp);;
+                    }
+
+                    if (!Session.ValidateSession(requestEnvelope.MtsToken))
+                    {
+                        resp = new Dictionary<object, string>();
+                        resp.Add(serviceName, (Session.errorMessage == null) ? "Session Expired" : Session.errorMessage);
+                        responseEnvelope.Response.Add(resp);
+                        break;
+                    }
 
                     switch (serviceName)
                     {
@@ -68,6 +81,7 @@ namespace FacadeRestService
                                 responseEnvelope.CoID = authResponse[0];
                                 responseEnvelope.RepID = authResponse[1];
                                 responseEnvelope.MtsToken = authResponse[2];
+                                requestEnvelope.MtsToken = authResponse[2];
                                 resp.Add(serviceName, "Successfully authenticated user");
                                 responseEnvelope.Commit = "true";
                             }
@@ -178,6 +192,7 @@ namespace FacadeRestService
                     }
                 }
             }
+            stopProcessing:
             responseEnvelope.SyncResponseTime = DateTime.UtcNow.ToString();
             responseEnvelope.Role = Session.userInfo.Role;
             return JsonConvert.SerializeObject(responseEnvelope);

@@ -10,6 +10,7 @@ namespace iTraycerSection.Session
     public class Session : iTraycerSection.Validation.Validate
     {
         public static UserInfo userInfo = new UserInfo();
+        public static String errorMessage = null;
 
         public static String[] CreateUserSession(String email, String pass)
         {
@@ -34,6 +35,24 @@ namespace iTraycerSection.Session
                 return null;
             }
             return new string[] { userInfo.CustomerId.ToString(), userInfo.Id.ToString(), its.Guid + ":" + ConfigurationManager.AppSettings["SessionTimeout"]};
+        }
+
+        public static Boolean ValidateSession(String guid)
+        {
+            iTraycerSession its = ValidateGUID(guid);
+
+            if (its != null)
+            {
+                userInfo = (UserInfo)MTSUtilities.Conversions.Serialization.ObjDeSerializer(its.UserInfo);
+                return true;
+            }
+            else
+            {
+                errorMessage = "Token does not exists";
+            }
+
+            DataLayer.Controller.DeleteiTraycerSession(guid);
+            return false;
         }
     }
 }

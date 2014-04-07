@@ -56,20 +56,22 @@ namespace iTraycerSection.Validation
             return false;
         }
 
-        public static bool ValidateSession(String guid)
+        public static iTraycerSession ValidateGUID(String guid)
         {
             // the time the session lives too
             iTraycerSession its = DataLayer.Controller.GetiTraycerSessionInfo(guid);
-            DateTime timeToLive = its.SessionStartDateTime.AddMinutes(Convert.ToInt32(ConfigurationManager.AppSettings["SessionTimeout"]));
 
-            // 0 = time is equal, 1 = left is greater than right, < 0 time on left is less than time on right
-            if (DateTime.Compare(timeToLive, DateTime.UtcNow) >= 0)
+            if (its == null)
+                return null;
+
+            DateTime expirationTime = its.SessionStartDateTime.AddMinutes(Convert.ToInt32(ConfigurationManager.AppSettings["SessionTimeout"]));
+
+            // 0 = time is equal, 1 = left is greater than right, (< 0 or -1) = time on left is less than time on right
+            if (DateTime.Compare(expirationTime, DateTime.UtcNow) >= 0)
             {
-                Console.ReadKey();
-                return true;
+                return its;
             }
-            Console.Write("Session expired");
-            return false;
+            return null;
         }
     }
 }
