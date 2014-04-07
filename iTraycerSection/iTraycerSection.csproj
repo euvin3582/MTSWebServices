@@ -33,7 +33,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DataLayer, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="DataLayer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\_ThirdPartyDll\iTraycer\DataLayer.dll</HintPath>
     </Reference>

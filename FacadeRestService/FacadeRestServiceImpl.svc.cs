@@ -4,11 +4,10 @@ using System.IO;
 using System.ServiceModel;
 using System.Xml;
 using System.Xml.Serialization;
-using DataLayer.domains;
 using Newtonsoft.Json;
 using iTraycerSection.Session;
-using MTSUtilities.Conversions;
 using System.Data;
+using DataLayer.domains;
 
 namespace FacadeRestService
 {
@@ -157,7 +156,8 @@ namespace FacadeRestService
                                 payloadChild.SelectSingleNode("//LoanerFlag"),
                                 payloadChild.SelectSingleNode("//OrderSourceId"),
                                 payloadChild.SelectSingleNode("//KitTypeNumber"),
-                                payloadChild.SelectSingleNode("//PartNumber")};
+                                payloadChild.SelectSingleNode("//PartNumber"),
+                                payloadChild.SelectSingleNode("//LocationId")};
 
                             ScheduleInfo obj = new ScheduleInfo(nodeList);
                             obj.CreatedDate = DateTime.UtcNow;
@@ -172,9 +172,7 @@ namespace FacadeRestService
                             resp = new Dictionary<object, string>();
                             DataTable doctorsList = new DataTable();
                             doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.userInfo.Id);
-                            MTSUtilities.Conversions.DataTableConverterUtility docListParsed = new MTSUtilities.Conversions.DataTableConverterUtility(doctorsList);
-
-                            resp.Add(serviceName, String.Join(",", docListParsed.MethodDataList.ToArray()));
+                            resp.Add(serviceName, JsonConvert.SerializeObject(doctorsList));
                             responseEnvelope.Response.Add(resp);
                             break;
                     }
