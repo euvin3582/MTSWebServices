@@ -44,7 +44,7 @@ namespace iTraycerSection.Validation
 
                     //// insert a new row to the application table
                     if (DataLayer.Controller.InsertiTraycerApplicationInfo(ita) == 0)
-                        Console.Write("Fail to insert row into Application Table");
+                        Session.Session.errorMessage = "SRVERROR:Fail to insert row into Application Table";
                 }
                 return true;
             }

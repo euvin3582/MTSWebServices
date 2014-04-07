@@ -56,13 +56,13 @@ namespace FacadeRestService
                         responseEnvelope.Response.Add(resp);;
                     }
 
-                    if (!Session.ValidateSession(requestEnvelope.MtsToken))
-                    {
-                        resp = new Dictionary<object, string>();
-                        resp.Add(serviceName, (Session.errorMessage == null) ? "Session Expired" : Session.errorMessage);
-                        responseEnvelope.Response.Add(resp);
-                        break;
-                    }
+                    //if (!Session.ValidateSession(requestEnvelope.MtsToken))
+                    //{
+                    //    resp = new Dictionary<object, string>();
+                    //    resp.Add(serviceName, (Session.errorMessage == null) ? "Session Expired" : Session.errorMessage);
+                    //    responseEnvelope.Response.Add(resp);
+                    //    break;
+                    //}
 
                     switch (serviceName)
                     {
@@ -111,7 +111,7 @@ namespace FacadeRestService
 
                             if (iTraycerSection.Device.Device.CheckIfExist(device.DeviceId))
                             {
-                               msg = "Device already registered";
+                                msg = "Device already registered";
                                 responseEnvelope.Commit = "false";
                             }
                             else
@@ -131,6 +131,7 @@ namespace FacadeRestService
                             if (iTraycerSection.Validation.Validate.ValidateApplicationDeviceInfo(Session.userInfo.Id, Session.userInfo.CustomerId, device))
                             {
                                 msg = msg + ", Successfully validate device and application info";
+                                responseEnvelope.Commit = "true";
                             }
                             resp.Add(serviceName, msg);
                             responseEnvelope.Response.Add(resp);
@@ -185,7 +186,7 @@ namespace FacadeRestService
                         case "InitDoctors":
                             resp = new Dictionary<object, string>();
                             DataTable doctorsList = new DataTable();
-                            doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.userInfo.Id);
+                            doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.userInfo.Id, "Spinewave");
                             resp.Add(serviceName, JsonConvert.SerializeObject(doctorsList));
                             responseEnvelope.Response.Add(resp);
                             break;

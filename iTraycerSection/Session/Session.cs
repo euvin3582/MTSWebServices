@@ -18,7 +18,7 @@ namespace iTraycerSection.Session
 
             if (userInfo == null)
             {
-                Console.Write("No valid user was found");
+                errorMessage = "SRVERROR:No valid user was found";
                 return null;
             }
 
@@ -31,7 +31,7 @@ namespace iTraycerSection.Session
 
             if (DataLayer.Controller.InsertiTraycerSessionInfo(its) == 0)
             {
-                Console.Write("Fail to insert create row in session table");
+                errorMessage = "SRVERROR:Fail to insert row in session table";
                 return null;
             }
             return new string[] { userInfo.CustomerId.ToString(), userInfo.Id.ToString(), its.Guid + ":" + ConfigurationManager.AppSettings["SessionTimeout"]};
