@@ -39,7 +39,6 @@ namespace FacadeRestService
                 Dictionary<object, string> resp = null;
                 responseEnvelope.Response = new List<object>();
 
-            ServiceProcessing:
                 for (int i = 0; i < serviceQueueNodes.Length-1; i++)
                 {
                     // creat the payload child
@@ -76,7 +75,7 @@ namespace FacadeRestService
                             if (email != null && password != null)
                                 authResponse = Session.CreateUserSession(email.InnerText, password.InnerText);
 
-                            if (authResponse.Length > 0)
+                            if (authResponse != null)
                             {
                                 responseEnvelope.CoID = authResponse[0];
                                 responseEnvelope.RepID = authResponse[1];
@@ -86,8 +85,10 @@ namespace FacadeRestService
                             }
                             else
                             {
-                                resp.Add(serviceName, "SRVERROR:Failed to authenticate user");
+                                resp.Add(serviceName, Session.errorMessage);
                                 responseEnvelope.Commit = "false";
+                                responseEnvelope.Response.Add(resp);
+                                goto stopProcessing;
                             }
                             responseEnvelope.Response.Add(resp);
                             break;

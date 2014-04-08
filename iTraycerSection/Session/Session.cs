@@ -16,9 +16,9 @@ namespace iTraycerSection.Session
         {
             userInfo = ValidateUser(email, pass);
 
-            if (userInfo == null)
+            if (userInfo.RepEmail == null)
             {
-                errorMessage = "SRVERROR:No valid user was found";
+                errorMessage = "SRVERROR:Fail to login";
                 return null;
             }
 
