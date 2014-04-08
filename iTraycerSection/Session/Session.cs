@@ -39,6 +39,8 @@ namespace iTraycerSection.Session
 
         public static Boolean ValidateSession(String guid)
         {
+            if(!String.IsNullOrEmpty(guid))
+                guid = guid.Split(':')[0];
             iTraycerSession its = ValidateGUID(guid);
 
             if (its != null)

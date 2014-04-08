@@ -52,17 +52,17 @@ namespace FacadeRestService
                     if (String.IsNullOrEmpty(serviceName))
                     {
                         resp = new Dictionary<object, string>();
-                        resp.Add("Error", "No service name was specified");
-                        responseEnvelope.Response.Add(resp);;
+                        resp.Add("SRVERROR", "No service name was specified");
+                        responseEnvelope.Response.Add(resp);
                     }
 
-                    //if (!Session.ValidateSession(requestEnvelope.MtsToken))
-                    //{
-                    //    resp = new Dictionary<object, string>();
-                    //    resp.Add(serviceName, (Session.errorMessage == null) ? "Session Expired" : Session.errorMessage);
-                    //    responseEnvelope.Response.Add(resp);
-                    //    break;
-                    //}
+                    if (!serviceName.Equals("MTSMobileAuth") && !Session.ValidateSession(String.IsNullOrEmpty(requestEnvelope.MtsToken) ? responseEnvelope.MtsToken : requestEnvelope.MtsToken))
+                    {
+                        resp = new Dictionary<object, string>();
+                        resp.Add(serviceName, (Session.errorMessage == null) ? "Session Expired" : Session.errorMessage);
+                        responseEnvelope.Response.Add(resp);
+                        break;
+                    }
 
                     switch (serviceName)
                     {
@@ -81,13 +81,12 @@ namespace FacadeRestService
                                 responseEnvelope.CoID = authResponse[0];
                                 responseEnvelope.RepID = authResponse[1];
                                 responseEnvelope.MtsToken = authResponse[2];
-                                requestEnvelope.MtsToken = authResponse[2];
                                 resp.Add(serviceName, "Successfully authenticated user");
                                 responseEnvelope.Commit = "true";
                             }
                             else
                             {
-                                resp.Add(serviceName, "Failed to authenticate user");
+                                resp.Add(serviceName, "SRVERROR:Failed to authenticate user");
                                 responseEnvelope.Commit = "false";
                             }
                             responseEnvelope.Response.Add(resp);
@@ -186,7 +185,7 @@ namespace FacadeRestService
                         case "InitDoctors":
                             resp = new Dictionary<object, string>();
                             DataTable doctorsList = new DataTable();
-                            doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.userInfo.Id, "Spinewave");
+                            doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.userInfo.Id);
                             resp.Add(serviceName, JsonConvert.SerializeObject(doctorsList));
                             responseEnvelope.Response.Add(resp);
                             break;
