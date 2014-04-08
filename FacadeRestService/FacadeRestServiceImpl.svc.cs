@@ -111,7 +111,7 @@ namespace FacadeRestService
 
                             if (iTraycerSection.Device.Device.CheckIfExist(device.DeviceId))
                             {
-                                msg = "Device already registered";
+                                msg = "SRVERROR:Device already registered";
                                 responseEnvelope.Commit = "false";
                             }
                             else
@@ -123,8 +123,10 @@ namespace FacadeRestService
                                 }
                                 else
                                 {
-                                    msg = "Failed to register device";
+                                    resp.Add(serviceName, "SRVERROR:Failed to register device");
+                                    responseEnvelope.Response.Add(resp);
                                     responseEnvelope.Commit = "false";
+                                    break;
                                 }
                             }
 
@@ -139,12 +141,18 @@ namespace FacadeRestService
 
                         case "InitDataLoad":
                             resp = new Dictionary<object, string>();
-                            string data = JsonConvert.SerializeObject(
-                                Session.userInfo.IsSuperUser ? 
+                            // get case list depending on user
+                            List<ScheduleInfo> cases = Session.userInfo.IsSuperUser ? 
                                     DataLayer.Controller.GetSchedulesByCustomerId(Session.userInfo.CustomerId) : 
-                                    DataLayer.Controller.GetSchedulesByRep(Session.userInfo));
+                                    DataLayer.Controller.GetSchedulesByRep(Session.userInfo);
 
-                            resp.Add(serviceName, data);
+                            // convert list to json
+                            String data = JsonConvert.SerializeObject(cases, Newtonsoft.Json.Formatting.Indented);
+
+                            if (data == null)
+                                resp.Add(serviceName, "SRVERROR:Failed to create case");
+                            else 
+                                resp.Add(serviceName, data);
                             responseEnvelope.Response.Add(resp);
                             break;
 
@@ -179,7 +187,10 @@ namespace FacadeRestService
                             obj.RepId = Session.userInfo.Id;
                             obj.CompanyId = Session.userInfo.CustomerId;
                             int caseId = DataLayer.Controller.InsertSchedule(obj);
-                            resp.Add(serviceName, caseId.ToString());
+                            if(caseId == 0)
+                                resp.Add(serviceName, "SRVERROR:Failed to create case");
+                            else
+                                resp.Add(serviceName, caseId.ToString());
                             responseEnvelope.Response.Add(resp);
                             break;
 
