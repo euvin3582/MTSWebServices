@@ -11,8 +11,9 @@ namespace iTraycerSection.Session
     {
         public static UserInfo userInfo = new UserInfo();
         public static String errorMessage = null;
+        public static DateTime? lastSync = null;
 
-        public static String[] CreateUserSession(String email, String pass)
+        public static String[] CreateUserSession(String email, String pass, String deviceId)
         {
             userInfo = ValidateUser(email, pass);
 
@@ -28,6 +29,7 @@ namespace iTraycerSection.Session
             its.Guid = Guid.NewGuid().ToString();
             its.SessionStartDateTime = DateTime.UtcNow;
             its.UserInfo = Serialization.ObjSerializer(userInfo);
+            its.DeviceId = deviceId;
 
             if (DataLayer.Controller.InsertiTraycerSessionInfo(its) == 0)
             {
@@ -41,11 +43,13 @@ namespace iTraycerSection.Session
         {
             if(!String.IsNullOrEmpty(guid))
                 guid = guid.Split(':')[0];
+
             iTraycerSession its = ValidateGUID(guid);
 
             if (its != null)
             {
                 userInfo = (UserInfo)MTSUtilities.Conversions.Serialization.ObjDeSerializer(its.UserInfo);
+                lastSync = GetLastSyncTime(Session.userInfo, its.DeviceId);
                 return true;
             }
             else
@@ -56,6 +60,17 @@ namespace iTraycerSection.Session
             DataLayer.Controller.DeleteiTraycerSession(guid);
             errorMessage = "SRVERROR:Token expired";
             return false;
+        }
+
+        public static DateTime? GetLastSyncTime(UserInfo userInfo, String deviceId)
+        {
+            return DataLayer.Controller.GetiTraycerLastSyncDateTime(userInfo, deviceId);
+        }
+
+        public static DateTime? UpdateLastSyncTime(UserInfo userInfo, String deviceId)
+        {
+            //DataLayer.Controller.GetiTraycerLastSyncDateTime(userInfo, deviceId);
+            return null;
         }
     }
 }

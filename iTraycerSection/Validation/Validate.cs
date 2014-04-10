@@ -22,36 +22,16 @@ namespace iTraycerSection.Validation
 
         public static bool ValidateApplicationDeviceInfo(int repId, int coId, iTraycerDeviceInfo itd)
         {
-            DataTable DevAppTable = DataLayer.Controller.GetItraycerApplicationDeviceInfoDevId(itd.DeviceId);
+            DataTable DevAppTable = DataLayer.Controller.GetiTraycerApplicationDeviceInfoDevId(itd.DeviceId);
 
-            if (DevAppTable.Rows.Count == 0)
-            {
-                if (DataLayer.Controller.GetiTraycerDeviceInfoByDeviceId(itd.DeviceId) == null)
-                {
-                    Device.Device.AddDeviceInfo(itd);    
-                }
-
-                if (DataLayer.Controller.GetiTraycerApplicationInfoByRepIdCoIdDeviceId(repId, coId, itd.DeviceId) == null)
-                {
-                    iTraycerApplication ita = new iTraycerApplication();
-                    // create iTraycerApplication object
-                    ita.RepId = repId;
-                    ita.CoId = coId;
-                    ita.CreatedDate = DateTime.UtcNow;
-                    ita.LastSync = DateTime.UtcNow;
-                    ita.DeviceId = itd.DeviceId;
-                    ita.LaunchCount = 1;
-
-                    //// insert a new row to the application table
-                    if (DataLayer.Controller.InsertiTraycerApplicationInfo(ita) == 0)
-                        Session.Session.errorMessage = "SRVERROR:Fail to insert row into Application Table";
-                }
-                return true;
-            }
-            else
+            if (DevAppTable.Rows.Count == 1)
             {
                 if (DataLayer.Controller.UpdateiTraycerApplicationLaunchCount(repId, coId, itd.DeviceId) > 0)
                     return true;
+            }
+            else
+            {
+                Session.Session.errorMessage = "SRVERROR:Fail to update launch count";
             }
             return false;
         }

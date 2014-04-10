@@ -14,10 +14,17 @@ namespace iTraycerSection.Device
             return DataLayer.Controller.InsertiTraycerDeviceInfo(itd) == 1;
         }
 
+        public static bool AddApplicationInfo(iTraycerApplication ita)
+        {
+            return DataLayer.Controller.InsertiTraycerApplicationInfo(ita) == 1;
+        }
+
         public static bool CheckIfExist(String deviceId)
         {
-            return DataLayer.Controller.GetItraycerApplicationDeviceInfoDevId(deviceId).Rows.Count == 1;
+            return DataLayer.Controller.GetiTraycerApplicationDeviceInfoDevId(deviceId).Rows.Count == 1;
         }
+
+        
         //we can do other things here like remove device, update device, etc
     }
 }

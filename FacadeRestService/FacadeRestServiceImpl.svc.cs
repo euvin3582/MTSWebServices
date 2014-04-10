@@ -29,12 +29,23 @@ namespace FacadeRestService
 
             // build response envelope
             JsonEnvelope responseEnvelope = new JsonEnvelope();
+            XmlNode[] serviceQueueNodes = null;
 
-            // get service name to access
+            // check to see if the appLaunchCount is present, if it is convert it to an int and see if its greater than 1
+            if (((!String.IsNullOrEmpty(requestEnvelope.AppLaunchCount)) ? Convert.ToInt32(requestEnvelope.AppLaunchCount) : -1) > 1)
+            {
+                // changes the current ServiceQueues array and adds the new one to it with the missing Sync Elements
+                requestEnvelope.ServiceQueues[0] = (XmlNode[]) FacadeRestService.InitData.AddSyncObjects(payload, requestEnvelope);
+            }
+
+            // create service name list to access in switch (needs to be done after the new objects are added to it)
             if (requestEnvelope.ServiceQueues.Length > 0)
             {
-                XmlNode[] serviceQueueNodes = (XmlNode[])requestEnvelope.ServiceQueues[0];
+                serviceQueueNodes = (XmlNode[])requestEnvelope.ServiceQueues[0];
+            }
 
+            if(serviceQueueNodes.Length > 1)
+            {
                 // create response dictionary and create response envelope
                 Dictionary<object, string> resp = null;
                 responseEnvelope.Response = new List<object>();
@@ -47,7 +58,7 @@ namespace FacadeRestService
 
                     // gets the service name from the object
                     string serviceName = payloadChild.DocumentElement.Name;
-
+                    string childInnerText = payloadChild.DocumentElement.InnerText;
                     if (String.IsNullOrEmpty(serviceName))
                     {
                         resp = new Dictionary<object, string>();
@@ -61,8 +72,9 @@ namespace FacadeRestService
                         resp.Add(serviceName, (Session.errorMessage == null) ? "Session Expired" : Session.errorMessage);
                         responseEnvelope.Response.Add(resp);
                         break;
-                    }
+                    };
 
+                    //DateTime? lastSync = ;
                     switch (serviceName)
                     {
                         case "MTSMobileAuth":
@@ -73,7 +85,7 @@ namespace FacadeRestService
 
                             // validate the user
                             if (email != null && password != null)
-                                authResponse = Session.CreateUserSession(email.InnerText, password.InnerText);
+                                authResponse = Session.CreateUserSession(email.InnerText, password.InnerText, requestEnvelope.DevID);
 
                             if (authResponse != null)
                             {
@@ -99,27 +111,39 @@ namespace FacadeRestService
                             XmlNode DeviceOsVersion = payloadChild.SelectSingleNode("//DeviceOSVersion");
                             XmlNode DevicePlatform = payloadChild.SelectSingleNode("//DevicePlatform");
                             resp = new Dictionary<object, string>();
-                            String msg = "";
                             
-                            if (DeviceId != null)
-                                   device.DeviceId = DeviceId.InnerText;
-
-                            if (DeviceOsVersion != null)
-                                   device.DeviceOsVersion = DeviceOsVersion.InnerText;
-                            if (DevicePlatform != null)
-                                   device.Platform = DevicePlatform.InnerText;
-
-                            if (iTraycerSection.Device.Device.CheckIfExist(device.DeviceId))
-                            {
-                                msg = "SRVERROR:Device already registered";
+                            // validate all data first
+                            if (DeviceId != null || DeviceOsVersion != null || DevicePlatform != null){
+                                device.DeviceId = DeviceId.InnerText;
+                                device.DeviceOsVersion = DeviceOsVersion.InnerText;
+                                device.Platform = DevicePlatform.InnerText;
+                            } else{
+                                resp.Add(serviceName, "SRVERROR:Fail to provide device info: DeviceId, DeviceOsVersion or DevicePlatform");
+                                responseEnvelope.Response.Add(resp);
                                 responseEnvelope.Commit = "false";
+                                break;
                             }
-                            else
+
+                            if (!iTraycerSection.Device.Device.CheckIfExist(device.DeviceId))
                             {
                                 if (iTraycerSection.Device.Device.AddDeviceInfo(device))
                                 {
-                                    msg = "Successfully resgistered device";
-                                    responseEnvelope.Commit = "true";
+                                    // create the application object info
+                                    iTraycerApplication ita = new iTraycerApplication();
+                                    // create iTraycerApplication object
+                                    ita.RepId = Session.userInfo.Id;
+                                    ita.CoId = Session.userInfo.CustomerId;
+                                    ita.CreatedDate = DateTime.UtcNow;
+                                    ita.LastSync = DateTime.UtcNow;
+                                    ita.DeviceId = device.DeviceId;
+                                    ita.LaunchCount = Convert.ToInt32(requestEnvelope.AppLaunchCount);
+
+                                    if(iTraycerSection.Device.Device.AddApplicationInfo(ita)){
+                                        resp.Add(serviceName, "Successfully resgistered device");
+                                        responseEnvelope.Response.Add(resp);
+                                        responseEnvelope.Commit = "true";
+                                        break;
+                                    }
                                 }
                                 else
                                 {
@@ -127,28 +151,33 @@ namespace FacadeRestService
                                     responseEnvelope.Response.Add(resp);
                                     responseEnvelope.Commit = "false";
                                     break;
-                                }
+                                }   
+                            }
+                            else
+                            {
+                                resp.Add(serviceName, "SRVERROR:Device already registered");
+                                responseEnvelope.Response.Add(resp);
+                                responseEnvelope.Commit = "false";
+                                break;
                             }
 
                             if (iTraycerSection.Validation.Validate.ValidateApplicationDeviceInfo(Session.userInfo.Id, Session.userInfo.CustomerId, device))
                             {
-                                msg = msg + ", Successfully validate device and application info";
-                                responseEnvelope.Commit = "true";
+                                resp.Add(serviceName, "Successfully validate device and application info");
                             }
-                            resp.Add(serviceName, msg);
+                            else
+                            {
+                                resp.Add(serviceName, Session.errorMessage);
+                            }
                             responseEnvelope.Response.Add(resp);
                             break;
 
+                        #region Init Data Downloads
                         case "InitDataLoad":
+                            //payloadChild.InnerText;
                             resp = new Dictionary<object, string>();
-                            // get case list depending on user
-                            List<ScheduleInfo> cases = Session.userInfo.IsSuperUser ? 
-                                    DataLayer.Controller.GetSchedulesByCustomerId(Session.userInfo.CustomerId) : 
-                                    DataLayer.Controller.GetSchedulesByRep(Session.userInfo);
 
-                            // convert list to json
-                            String data = JsonConvert.SerializeObject(cases, Newtonsoft.Json.Formatting.Indented);
-
+                            string data = FacadeRestService.InitData.GetInitialCaseData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
                             if (data == null)
                                 resp.Add(serviceName, "SRVERROR:Failed to create case");
                             else 
@@ -162,6 +191,18 @@ namespace FacadeRestService
                             resp.Add(serviceName, data);
                             responseEnvelope.Response.Add(resp);
                             break;
+
+                        case "InitDoctors":
+                            resp = new Dictionary<object, string>();
+                            DataTable doctorsList = new DataTable();
+                            doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.userInfo.Id);
+                            resp.Add(serviceName, JsonConvert.SerializeObject(doctorsList));
+                            responseEnvelope.Response.Add(resp);
+                            break;
+
+                        case "InitAddresses":
+                            break;
+                        #endregion
 
                         case "CreateCase":
                             resp = new Dictionary<object, string>();
@@ -187,18 +228,10 @@ namespace FacadeRestService
                             obj.RepId = Session.userInfo.Id;
                             obj.CompanyId = Session.userInfo.CustomerId;
                             int caseId = DataLayer.Controller.InsertSchedule(obj);
-                            if(caseId == 0)
+                            if (caseId == 0)
                                 resp.Add(serviceName, "SRVERROR:Failed to create case");
                             else
                                 resp.Add(serviceName, caseId.ToString());
-                            responseEnvelope.Response.Add(resp);
-                            break;
-
-                        case "InitDoctors":
-                            resp = new Dictionary<object, string>();
-                            DataTable doctorsList = new DataTable();
-                            doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.userInfo.Id);
-                            resp.Add(serviceName, JsonConvert.SerializeObject(doctorsList));
                             responseEnvelope.Response.Add(resp);
                             break;
                     }

@@ -28,6 +28,10 @@ namespace FacadeRestService
         [DataMember(Name = "Role")]
         public string Role { get; set; }
 
+        [XmlElement(ElementName = "DevID")]
+        [DataMember(Name = "DevID")]
+        public string DevID { get; set; }
+
         [XmlElement(ElementName = "AppID")] 
         [DataMember(Name = "AppID")]
         public string AppID { get; set; }

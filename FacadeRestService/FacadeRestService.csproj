@@ -47,6 +47,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DataLayer">
+      <HintPath>..\_ThirdPartyDll\iTraycer\DataLayer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -107,6 +110,7 @@
       <DependentUpon>FacadeRestServiceImpl.svc</DependentUpon>
     </Compile>
     <Compile Include="IFacadeRestServiceImpl.cs" />
+    <Compile Include="InitData.cs" />
     <Compile Include="JsonEnvelope.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserAgentInfo.cs" />
@@ -128,10 +132,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\WebSuite\DataLayer\DataLayer.csproj">
-      <Project>{fe665455-9d20-4657-84d6-5883ed15ead0}</Project>
-      <Name>DataLayer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\iTraycerSection\iTraycerSection.csproj">
       <Project>{59a49911-b7c0-481d-b3b0-bf45500ee250}</Project>
       <Name>iTraycerSection</Name>
@@ -150,7 +150,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>9915</DevelopmentServerPort>
+          <DevelopmentServerPort>61821</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
