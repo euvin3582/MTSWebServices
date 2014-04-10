@@ -30,6 +30,26 @@ namespace FacadeRestService
             return JsonConvert.SerializeObject(cases);
         }
 
+        public static String GetInitialInventoryData(DateTime? lastSync)
+        {
+            List<TrayInfo> trays = null;
+
+            // get case list depending on user
+            if (lastSync == null)
+            {
+                trays = Session.userInfo.IsSuperUser ?
+                        DataLayer.Controller.GetInventoryByCompanyId(Session.userInfo.CustomerId) :
+                        DataLayer.Controller.GetInventoryByRepId(Session.userInfo.Id);
+            }
+            else
+            {
+                //trays = DataLayer.Controller.GetSchedulesByCustomerIdDateTime(Session.userInfo.CustomerId, lastSync);
+            }
+
+            // convert list to json
+            return JsonConvert.SerializeObject(trays);
+        }
+
         public static XmlNode[] AddSyncObjects(XmlDocument payload, JsonEnvelope requestEnvelope)
         {
             XmlNode[] serviceQueueNodes = null;
