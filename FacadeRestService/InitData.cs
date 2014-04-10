@@ -3,6 +3,7 @@ using iTraycerSection.Session;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Xml;
@@ -25,8 +26,6 @@ namespace FacadeRestService
             {
                 cases = DataLayer.Controller.GetSchedulesByCustomerIdDateTime(Session.userInfo.CustomerId, lastSync);
             }
-
-            // convert list to json
             return JsonConvert.SerializeObject(cases);
         }
 
@@ -34,7 +33,7 @@ namespace FacadeRestService
         {
             List<TrayInfo> trays = null;
 
-            // get case list depending on user
+            // get Inventory list depending on user
             if (lastSync == null)
             {
                 trays = Session.userInfo.IsSuperUser ?
@@ -43,11 +42,42 @@ namespace FacadeRestService
             }
             else
             {
-                //trays = DataLayer.Controller.GetSchedulesByCustomerIdDateTime(Session.userInfo.CustomerId, lastSync);
+                trays = DataLayer.Controller.GetInventoryByRepIdDateTime(Session.userInfo.Id, lastSync);
             }
-
-            // convert list to json
             return JsonConvert.SerializeObject(trays);
+        }
+
+        public static String GetInitialDoctorsData(DateTime? lastSync)
+        {
+            DataTable doctorsList = new DataTable();
+
+            // get case list depending on user
+            if (lastSync == null)
+            {
+                doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.userInfo.Id);
+            }
+            else
+            {
+                doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.userInfo.Id, Session.lastSync);
+            }
+            
+            return JsonConvert.SerializeObject(doctorsList);
+        }
+
+        public static String GetInitialAddressData(DateTime? lastSync)
+        {
+            List<AddressInfo> addresses = null;
+
+            // get Inventory list depending on user
+            if (lastSync == null)
+            {
+                // get intial addresses
+            }
+            else
+            {
+                // get sync addresses
+            }
+            return JsonConvert.SerializeObject(addresses);
         }
 
         public static XmlNode[] AddSyncObjects(XmlDocument payload, JsonEnvelope requestEnvelope)

@@ -32,10 +32,10 @@ namespace FacadeRestService
             XmlNode[] serviceQueueNodes = null;
 
             // check to see if the appLaunchCount is present, if it is convert it to an int and see if its greater than 1
-            if (((!String.IsNullOrEmpty(requestEnvelope.AppLaunchCount)) ? Convert.ToInt32(requestEnvelope.AppLaunchCount) : -1) > 1)
+            if (((!String.IsNullOrEmpty(requestEnvelope.AppLaunchCount)) ? Convert.ToInt32(requestEnvelope.AppLaunchCount) : 1) > 1)
             {
                 // changes the current ServiceQueues array and adds the new one to it with the missing Sync Elements
-                requestEnvelope.ServiceQueues[0] = (XmlNode[]) FacadeRestService.InitData.AddSyncObjects(payload, requestEnvelope);
+                requestEnvelope.ServiceQueues[0] = FacadeRestService.InitData.AddSyncObjects(payload, requestEnvelope);
             }
 
             // create service name list to access in switch (needs to be done after the new objects are added to it)
@@ -187,20 +187,21 @@ namespace FacadeRestService
 
                         case "InitInventory":
                             resp = new Dictionary<object, string>();
-                            data = JsonConvert.SerializeObject(DataLayer.Controller.GetInventoryByCompanyId(Session.userInfo.CustomerId));
+                            data = FacadeRestService.InitData.GetInitialInventoryData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
                             resp.Add(serviceName, data);
                             responseEnvelope.Response.Add(resp);
                             break;
 
                         case "InitDoctors":
                             resp = new Dictionary<object, string>();
-                            DataTable doctorsList = new DataTable();
-                            doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.userInfo.Id);
-                            resp.Add(serviceName, JsonConvert.SerializeObject(doctorsList));
+                            data = FacadeRestService.InitData.GetInitialDoctorsData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
+                            resp.Add(serviceName, data);
                             responseEnvelope.Response.Add(resp);
                             break;
 
                         case "InitAddresses":
+                            data = FacadeRestService.InitData.GetInitialAddressData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
+                            
                             break;
                         #endregion
 
