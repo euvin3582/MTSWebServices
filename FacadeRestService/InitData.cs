@@ -71,7 +71,14 @@ namespace FacadeRestService
             // get Inventory list depending on user
             if (lastSync == null)
             {
-                // get intial addresses
+                String repList = JsonConvert.SerializeObject(DataLayer.Controller.GetAllRepsList(Session.userInfo));
+                String hosList = JsonConvert.SerializeObject(DataLayer.Controller.GetHospitalsList(Session.userInfo));
+                String disList = JsonConvert.SerializeObject(DataLayer.Controller.GetDistributorsList(Session.userInfo));
+                String data = (String.IsNullOrEmpty(repList) ?  "" : repList) +
+                              (String.IsNullOrEmpty(repList) ? "" : hosList) +
+                              (String.IsNullOrEmpty(repList) ? "" : disList);
+                return data;
+
             }
             else
             {
