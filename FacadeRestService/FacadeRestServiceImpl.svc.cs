@@ -200,6 +200,7 @@ namespace FacadeRestService
                             break;
 
                         case "InitAddresses":
+                            resp = new Dictionary<object, string>();
                             data = FacadeRestService.InitData.GetInitialAddressData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
                             resp.Add(serviceName, data);
                             responseEnvelope.Response.Add(resp);

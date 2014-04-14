@@ -66,20 +66,19 @@ namespace FacadeRestService
 
         public static String GetInitialAddressData(DateTime? lastSync)
         {
-            List<AddressInfo> addresses = new List<AddressInfo>();
+            String repAddressInfoList = null;
 
-            // get Inventory list depending on user
+            // get Address list depending on user role
             if (lastSync == null)
             {
-                String repAddressInfoList = JsonConvert.SerializeObject(DataLayer.Controller.GetAddressesWithSourceTypeByRepRepRole(Session.userInfo));
-                return repAddressInfoList;
+                repAddressInfoList = JsonConvert.SerializeObject(DataLayer.Controller.GetAddressesWithSourceTypeByRepRepRole(Session.userInfo));
 
             }
             else
             {
-                // get sync addresses
+                repAddressInfoList = JsonConvert.SerializeObject(DataLayer.Controller.GetAddressesWithSourceTypeByRepRepRole(Session.userInfo, lastSync));
             }
-            return JsonConvert.SerializeObject(addresses);
+            return JsonConvert.SerializeObject(repAddressInfoList);
         }
 
         public static XmlNode[] AddSyncObjects(XmlDocument payload, JsonEnvelope requestEnvelope)
