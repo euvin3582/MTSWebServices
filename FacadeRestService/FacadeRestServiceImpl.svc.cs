@@ -201,7 +201,8 @@ namespace FacadeRestService
 
                         case "InitAddresses":
                             data = FacadeRestService.InitData.GetInitialAddressData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
-                            
+                            resp.Add(serviceName, data);
+                            responseEnvelope.Response.Add(resp);
                             break;
                         #endregion
 
