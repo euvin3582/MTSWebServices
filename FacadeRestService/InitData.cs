@@ -31,7 +31,7 @@ namespace FacadeRestService
 
         public static String GetInitialInventoryData(DateTime? lastSync)
         {
-            List<TrayInfo> trays = null;
+            List<TrayInfo> trays = new List<TrayInfo>();
 
             // get Inventory list depending on user
             if (lastSync == null)
@@ -66,18 +66,13 @@ namespace FacadeRestService
 
         public static String GetInitialAddressData(DateTime? lastSync)
         {
-            List<AddressInfo> addresses = null;
+            List<AddressInfo> addresses = new List<AddressInfo>();
 
             // get Inventory list depending on user
             if (lastSync == null)
             {
-                String repList = JsonConvert.SerializeObject(DataLayer.Controller.GetAllRepsList(Session.userInfo));
-                String hosList = JsonConvert.SerializeObject(DataLayer.Controller.GetHospitalsList(Session.userInfo));
-                String disList = JsonConvert.SerializeObject(DataLayer.Controller.GetDistributorsList(Session.userInfo));
-                String data = (String.IsNullOrEmpty(repList) ?  "" : repList) +
-                              (String.IsNullOrEmpty(repList) ? "" : hosList) +
-                              (String.IsNullOrEmpty(repList) ? "" : disList);
-                return data;
+                String repAddressInfoList = JsonConvert.SerializeObject(DataLayer.Controller.GetAddressesWithSourceTypeByRepRepRole(Session.userInfo));
+                return repAddressInfoList;
 
             }
             else
