@@ -54,7 +54,18 @@ namespace FacadeRestService
                 {
                     // creat the payload child
                     XmlDocument payloadChild = new XmlDocument();
-                    payloadChild.LoadXml(serviceQueueNodes[i+1].ChildNodes[0].OuterXml);
+
+                    string outerXML = serviceQueueNodes[i + 1].ChildNodes[0].OuterXml;
+
+                    if (String.IsNullOrEmpty(outerXML))
+                    {
+                        resp = new Dictionary<object, string>();
+                        resp.Add("SRVERROR", "Service request objects envelope does not match");
+                        responseEnvelope.Response.Add(resp);
+                        continue;
+                    }
+
+                    payloadChild.LoadXml(outerXML);
 
                     // gets the service name from the object
                     string serviceName = payloadChild.DocumentElement.Name;
@@ -74,7 +85,6 @@ namespace FacadeRestService
                         break;
                     };
 
-                    //DateTime? lastSync = ;
                     switch (serviceName)
                     {
                         case "MTSMobileAuth":
