@@ -69,6 +69,7 @@ namespace FacadeRestService
                     }
 
                     // gets the service name from the object
+                    string data = null;
                     string serviceName = payloadChild.DocumentElement.Name;
                     string childInnerText = payloadChild.DocumentElement.InnerText;
 
@@ -85,7 +86,7 @@ namespace FacadeRestService
                         resp.Add(serviceName, (Session.errorMessage == null) ? "Session Expired" : Session.errorMessage);
                         responseEnvelope.Response.Add(resp);
                         break;
-                    };
+                    }
 
                     switch (serviceName)
                     {
@@ -189,33 +190,46 @@ namespace FacadeRestService
                             //payloadChild.InnerText;
                             resp = new Dictionary<object, string>();
 
-                            string data = FacadeRestService.InitData.GetInitialCaseData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
-                            if (data == null)
-                                resp.Add(serviceName, "SRVERROR:Failed to create case");
-                            else 
+                            data = FacadeRestService.InitData.GetInitialCaseData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
+                            
+                            if (!String.IsNullOrEmpty(data))
+                            {
                                 resp.Add(serviceName, data);
-                            responseEnvelope.Response.Add(resp);
+                                responseEnvelope.Response.Add(resp);
+                            }
                             break;
 
                         case "InitInventory":
                             resp = new Dictionary<object, string>();
                             data = FacadeRestService.InitData.GetInitialInventoryData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
-                            resp.Add(serviceName, data);
-                            responseEnvelope.Response.Add(resp);
+                            
+                            if (!String.IsNullOrEmpty(data))
+                            {
+                                resp.Add(serviceName, data);
+                                responseEnvelope.Response.Add(resp);
+                            }
                             break;
 
                         case "InitDoctors":
                             resp = new Dictionary<object, string>();
                             data = FacadeRestService.InitData.GetInitialDoctorsData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
-                            resp.Add(serviceName, data);
-                            responseEnvelope.Response.Add(resp);
+                            
+                            if (!String.IsNullOrEmpty(data))
+                            {
+                                resp.Add(serviceName, data);
+                                responseEnvelope.Response.Add(resp);
+                            }
                             break;
 
                         case "InitAddresses":
                             resp = new Dictionary<object, string>();
                             data = FacadeRestService.InitData.GetInitialAddressData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
-                            resp.Add(serviceName, data);
-                            responseEnvelope.Response.Add(resp);
+
+                            if (!String.IsNullOrEmpty(data))
+                            {
+                                resp.Add(serviceName, data);
+                                responseEnvelope.Response.Add(resp);
+                            }
                             break;
                         #endregion
 
