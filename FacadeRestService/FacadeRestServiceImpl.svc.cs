@@ -55,21 +55,23 @@ namespace FacadeRestService
                     // creat the payload child
                     XmlDocument payloadChild = new XmlDocument();
 
-                    string outerXML = serviceQueueNodes[i + 1].ChildNodes[0].OuterXml;
-
-                    if (String.IsNullOrEmpty(outerXML))
+                    // The try catch will catch bad json envelope request and create an error log for end user
+                    try
+                    {
+                        payloadChild.LoadXml(serviceQueueNodes[i + 1].ChildNodes[0].OuterXml);
+                    }
+                    catch (Exception e)
                     {
                         resp = new Dictionary<object, string>();
-                        resp.Add("SRVERROR", "Service request objects envelope does not match");
+                        resp.Add("SRVERROR", "Service request objects envelope does not match. StackTrace: " + e.StackTrace);
                         responseEnvelope.Response.Add(resp);
                         continue;
                     }
 
-                    payloadChild.LoadXml(outerXML);
-
                     // gets the service name from the object
                     string serviceName = payloadChild.DocumentElement.Name;
                     string childInnerText = payloadChild.DocumentElement.InnerText;
+
                     if (String.IsNullOrEmpty(serviceName))
                     {
                         resp = new Dictionary<object, string>();
