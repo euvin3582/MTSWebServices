@@ -234,6 +234,7 @@ namespace FacadeRestService
                         #endregion
 
                         case "CreateCase":
+                            // if create case has a case id then update else create
                             resp = new Dictionary<object, string>();
                             List<XmlNode> nodeList = new List<XmlNode>(){
                                 payloadChild.SelectSingleNode("//SurgeonId"),
