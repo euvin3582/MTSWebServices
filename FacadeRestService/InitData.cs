@@ -31,20 +31,20 @@ namespace FacadeRestService
 
         public static String GetInitialInventoryData(DateTime? lastSync)
         {
-            List<TrayInfo> trays = new List<TrayInfo>();
+            DataTable inventory = new DataTable();
 
             // get Inventory list depending on user
             if (lastSync == null)
             {
-                trays = Session.userInfo.IsSuperUser ?
-                        DataLayer.Controller.GetInventoryByCompanyId(Session.userInfo.CustomerId) :
-                        DataLayer.Controller.GetInventoryByRepId(Session.userInfo.Id);
+                inventory = Session.userInfo.IsSuperUser ?
+                        DataLayer.Controller.GetAllInventoryInfoByCompanyId(Session.userInfo.CustomerId) :
+                        DataLayer.Controller.GetAllInventoryInfoByRepId(Session.userInfo.Id);
             }
             else
             {
-                trays = DataLayer.Controller.GetInventoryByRepIdDateTime(Session.userInfo.Id, lastSync);
+                //inventory = DataLayer.Controller.GetInventoryByRepIdDateTime(Session.userInfo.Id, lastSync);
             }
-            return JsonConvert.SerializeObject(trays);
+            return JsonConvert.SerializeObject(inventory);
         }
 
         public static String GetInitialDoctorsData(DateTime? lastSync)
