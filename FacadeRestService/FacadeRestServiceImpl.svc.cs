@@ -245,6 +245,17 @@ namespace FacadeRestService
                                 responseEnvelope.Response.Add(resp);
                             }
                             break;
+
+                        case "InitKitAllocation":
+                            resp = new Dictionary<object, string>();
+                            data = FacadeRestService.InitData.GetAllKitTrayUsageDates(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
+
+                            if (!String.IsNullOrEmpty(data))
+                            {
+                                resp.Add(serviceName, data);
+                                responseEnvelope.Response.Add(resp);
+                            }
+                            break;
                         #endregion
 
                         case "CreateCase":

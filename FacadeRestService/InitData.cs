@@ -77,7 +77,6 @@ namespace FacadeRestService
         {
             String statusTableCodes = null;
 
-            // get Address list depending on user role
             if (lastSync == null)
                 statusTableCodes = JsonConvert.SerializeObject(DataLayer.Controller.GetMTSStatusTable());
             else
@@ -86,6 +85,17 @@ namespace FacadeRestService
             return JsonConvert.SerializeObject(statusTableCodes);
         }
 
+        public static String GetAllKitTrayUsageDates(DateTime? lastSync)
+        {
+            String usageDate = null;
+
+            if (lastSync == null)
+                usageDate = JsonConvert.SerializeObject(DataLayer.Controller.GetAllKitTrayUsageDatesByRepId(Session.userInfo.Id));
+            else
+                usageDate = JsonConvert.SerializeObject(DataLayer.Controller.GetAllKitTrayUsageDatesByRepId(Session.userInfo.Id, lastSync));
+
+            return JsonConvert.SerializeObject(usageDate);
+        }
         #region SyncData Object Aggregation
         public static XmlNode[] AddSyncObjects(XmlDocument payload, JsonEnvelope requestEnvelope)
         {
@@ -98,7 +108,7 @@ namespace FacadeRestService
             }
            
             // expand the array to include the init data load objects;
-            List<string> objectName = new List<String>() { "InitDataLoad", "InitInventory", "InitDoctors", "InitAddresses", "InitStatus" };
+            List<string> objectName = new List<String>() { "InitDataLoad", "InitInventory", "InitDoctors", "InitAddresses", "InitStatus", "InitKitAllocation" };
             List<XmlNode> queues = new List<XmlNode>();
             queues.AddRange(serviceQueueNodes);
 
@@ -159,6 +169,13 @@ namespace FacadeRestService
                     XmlElement InitStatus = payload.CreateElement("item");
                     InitStatus.InnerXml = "<InitStatus type=\"object\">Aggregate</InitStatus>";
                     queues.Add(InitStatus);
+                    continue;
+                }
+                if (objectName[i].Equals("InitKitAllocation"))
+                {
+                    XmlElement InitKitAllocation = payload.CreateElement("item");
+                    InitKitAllocation.InnerXml = "<InitKitAllocation type=\"object\">Aggregate</InitKitAllocation>";
+                    queues.Add(InitKitAllocation);
                     continue;
                 }
             }
