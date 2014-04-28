@@ -189,7 +189,7 @@ namespace FacadeRestService
                         // the Facade creates the object to check for syncs and adds data to to the object body to let the system know that
                         // its a sync object
                         #region Init Data Downloads
-                        case "InitDataLoad":
+                        case "InitCases":
                             //payloadChild.InnerText;
                             resp = new Dictionary<object, string>();
 

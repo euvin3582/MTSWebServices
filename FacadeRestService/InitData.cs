@@ -108,7 +108,7 @@ namespace FacadeRestService
             }
            
             // expand the array to include the init data load objects;
-            List<string> objectName = new List<String>() { "InitDataLoad", "InitInventory", "InitDoctors", "InitAddresses", "InitStatus", "InitKitAllocation" };
+            List<string> objectName = new List<String>() { "InitCases", "InitInventory", "InitDoctors", "InitAddresses", "InitStatus", "InitKitAllocation" };
             List<XmlNode> queues = new List<XmlNode>();
             queues.AddRange(serviceQueueNodes);
 
@@ -136,10 +136,10 @@ namespace FacadeRestService
             for (int i = 0; i < objectName.Count; i++)
             {
                 XmlElement payloadElement = payload.DocumentElement;
-                if (objectName[i].Equals("InitDataLoad"))
+                if (objectName[i].Equals("InitCases"))
                 {
                     XmlElement InitDataLoad = payload.CreateElement("item");
-                    InitDataLoad.InnerXml = "<InitDataLoad type=\"object\">Aggregate</InitDataLoad>";
+                    InitDataLoad.InnerXml = "<InitCases type=\"object\">Aggregate</InitCases>";
                     queues.Add(InitDataLoad);
                     continue;
                 }

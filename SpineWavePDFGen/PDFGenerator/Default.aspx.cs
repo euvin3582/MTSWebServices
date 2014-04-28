@@ -49,7 +49,7 @@ namespace PDFGenChargesForm
             Image sig = MTSUtilities.ImageUtilities.Serialization.ImageDecoding(img);
             Image resizeSig = null;
             ImageFormat format = MTSUtilities.ImageUtilities.ImageAttributes.GetImageFormat(sig);
-            bool imgOversize = (sig.Height >= 75) || (sig.Width >= 450);
+            bool imgOversize = ((sig.Width > 300) || sig.Height > 60);
 
             if (imgOversize){
                 resizeSig = MTSUtilities.ImageUtilities.ImageScaling.ScaleImage(sig, 300, 60);

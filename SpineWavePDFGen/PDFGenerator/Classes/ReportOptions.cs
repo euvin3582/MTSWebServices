@@ -6,8 +6,6 @@ namespace PDFGenChargesForm.Classes
 {
     public class ReportOptions
     {
-        #region Accessors
-
         public String PhoneNo { get; set; }
 
         public String Fax { get; set; }
@@ -63,7 +61,6 @@ namespace PDFGenChargesForm.Classes
         public Image RepresentativeSignatureImage { get; set; }
         
         public List<PartDetail> PartLOTList { get; set; }
-
-        #endregion
+        
     }
 }
