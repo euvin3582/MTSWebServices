@@ -185,6 +185,9 @@ namespace FacadeRestService
                             responseEnvelope.Response.Add(resp);
                             break;
 
+                        //Always checking for childInnerText because the Mobile device sends an empty object, if they do not send an object
+                        // the Facade creates the object to check for syncs and adds data to to the object body to let the system know that
+                        // its a sync object
                         #region Init Data Downloads
                         case "InitDataLoad":
                             //payloadChild.InnerText;
@@ -224,6 +227,17 @@ namespace FacadeRestService
                         case "InitAddresses":
                             resp = new Dictionary<object, string>();
                             data = FacadeRestService.InitData.GetInitialAddressData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
+
+                            if (!String.IsNullOrEmpty(data))
+                            {
+                                resp.Add(serviceName, data);
+                                responseEnvelope.Response.Add(resp);
+                            }
+                            break;
+
+                        case "InitStatus":
+                            resp = new Dictionary<object, string>();
+                            data = FacadeRestService.InitData.GetInitialStatusTableData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
 
                             if (!String.IsNullOrEmpty(data))
                             {

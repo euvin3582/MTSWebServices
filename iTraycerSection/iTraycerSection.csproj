@@ -46,7 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AttributeLocalization\LocalizedDisplayNameAttribute .cs" />
     <Compile Include="Device\Device.cs" />
     <Compile Include="Invoice\Invoice.cs" />
     <Compile Include="Session\Session.cs" />

@@ -53,13 +53,9 @@ namespace FacadeRestService
 
             // get case list depending on user
             if (lastSync == null)
-            {
                 doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.userInfo.Id);
-            }
             else
-            {
                 doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.userInfo.Id, Session.lastSync);
-            }
             
             return JsonConvert.SerializeObject(doctorsList);
         }
@@ -70,17 +66,27 @@ namespace FacadeRestService
 
             // get Address list depending on user role
             if (lastSync == null)
-            {
                 repAddressInfoList = JsonConvert.SerializeObject(DataLayer.Controller.GetAddressesWithSourceTypeByRepRepRole(Session.userInfo));
-
-            }
             else
-            {
                 repAddressInfoList = JsonConvert.SerializeObject(DataLayer.Controller.GetAddressesWithSourceTypeByRepRepRole(Session.userInfo, lastSync));
-            }
+
             return JsonConvert.SerializeObject(repAddressInfoList);
         }
 
+        public static String GetInitialStatusTableData(DateTime? lastSync)
+        {
+            String statusTableCodes = null;
+
+            // get Address list depending on user role
+            if (lastSync == null)
+                statusTableCodes = JsonConvert.SerializeObject(DataLayer.Controller.GetMTSStatusTable());
+            else
+                statusTableCodes = JsonConvert.SerializeObject(DataLayer.Controller.GetMTSStatusTable(lastSync));
+
+            return JsonConvert.SerializeObject(statusTableCodes);
+        }
+
+        #region SyncData Object Aggregation
         public static XmlNode[] AddSyncObjects(XmlDocument payload, JsonEnvelope requestEnvelope)
         {
             XmlNode[] serviceQueueNodes = null;
@@ -92,7 +98,7 @@ namespace FacadeRestService
             }
            
             // expand the array to include the init data load objects;
-            List<string> objectName = new List<String>() { "InitDataLoad", "InitInventory", "InitDoctors", "InitAddresses" };
+            List<string> objectName = new List<String>() { "InitDataLoad", "InitInventory", "InitDoctors", "InitAddresses", "InitStatus" };
             List<XmlNode> queues = new List<XmlNode>();
             queues.AddRange(serviceQueueNodes);
 
@@ -148,9 +154,17 @@ namespace FacadeRestService
                     queues.Add(InitAddresses);
                     continue;
                 }
+                if (objectName[i].Equals("InitStatus"))
+                {
+                    XmlElement InitStatus = payload.CreateElement("item");
+                    InitStatus.InnerXml = "<InitStatus type=\"object\">Aggregate</InitStatus>";
+                    queues.Add(InitStatus);
+                    continue;
+                }
             }
             // reasign the new set of queue objects to the original list
             return queues.ToArray();
         }
+        #endregion
     }
 }

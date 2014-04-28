@@ -1,14 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using iTraycerSection.AttributeLocalization;
-using Newtonsoft.Json;
-using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Security.AccessControl;
 using System.Xml.Serialization;
-using Microsoft.Practices.EnterpriseLibrary.Common.Properties;
 
 namespace FacadeRestService
 {
