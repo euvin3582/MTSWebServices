@@ -9,10 +9,8 @@ namespace iTraycerSection.Invoice
 {
     public class Invoice
     {
-        public void CreateInvoice()
+        public void CreateInvoice(ReportOptions reportOption)
         {
-            ReportOptions reportOption = new ReportOptions();
-
             reportOption.PhoneNo = "1-877-844-4225";
             reportOption.Fax = "1-877-241-7480";
             reportOption.Email = "customerservice@spinewave.com";

@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using iTraycerSection.Session;
 using System.Data;
 using DataLayer.domains;
+using PDFGenChargesForm.Classes;
 
 namespace FacadeRestService
 {
@@ -288,6 +289,11 @@ namespace FacadeRestService
                             else
                                 resp.Add(serviceName, caseId.ToString());
                             responseEnvelope.Response.Add(resp);
+                            break;
+
+                        case "GenerateInvoice":
+                            ReportOptions reportOption = new ReportOptions();
+                            reportOption.PhoneNo = Session.userInfo.RepPhoneNumber;
                             break;
                     }
                 }
