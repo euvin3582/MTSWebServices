@@ -31,7 +31,7 @@ namespace FacadeRestService
 
         public static String GetInitialInventoryData(DateTime? lastSync)
         {
-            DataTable inventory = new DataTable();
+            DataTable inventory = null;
 
             // get Inventory list depending on user
             if (lastSync == null)
@@ -42,14 +42,16 @@ namespace FacadeRestService
             }
             else
             {
-                //inventory = DataLayer.Controller.GetInventoryByRepIdDateTime(Session.userInfo.Id, lastSync);
+                inventory = Session.userInfo.IsSuperUser ?
+                        DataLayer.Controller.GetAllInventoryInfoByCompanyId(Session.userInfo.CustomerId, Session.lastSync) :
+                        DataLayer.Controller.GetAllInventoryInfoByRepId(Session.userInfo.Id, Session.lastSync);
             }
             return JsonConvert.SerializeObject(inventory);
         }
 
         public static String GetInitialDoctorsData(DateTime? lastSync)
         {
-            DataTable doctorsList = new DataTable();
+            DataTable doctorsList = null;
 
             // get case list depending on user
             if (lastSync == null)
@@ -62,39 +64,39 @@ namespace FacadeRestService
 
         public static String GetInitialAddressData(DateTime? lastSync)
         {
-            String repAddressInfoList = null;
+            DataTable repAddressInfoList = null;
 
             // get Address list depending on user role
             if (lastSync == null)
-                repAddressInfoList = JsonConvert.SerializeObject(DataLayer.Controller.GetAddressesWithSourceTypeByRepRepRole(Session.userInfo));
+                repAddressInfoList = DataLayer.Controller.GetAddressesWithSourceTypeByRepRepRole(Session.userInfo);
             else
-                repAddressInfoList = JsonConvert.SerializeObject(DataLayer.Controller.GetAddressesWithSourceTypeByRepRepRole(Session.userInfo, lastSync));
+                repAddressInfoList = DataLayer.Controller.GetAddressesWithSourceTypeByRepRepRole(Session.userInfo, lastSync);
 
             return JsonConvert.SerializeObject(repAddressInfoList);
         }
 
         public static String GetInitialStatusTableData(DateTime? lastSync)
         {
-            String statusTableCodes = null;
+            DataTable statusTableCodes = null;
 
             if (lastSync == null)
-                statusTableCodes = JsonConvert.SerializeObject(DataLayer.Controller.GetMTSStatusTable());
+                statusTableCodes = DataLayer.Controller.GetMTSStatusTable();
             else
-                statusTableCodes = JsonConvert.SerializeObject(DataLayer.Controller.GetMTSStatusTable(lastSync));
+                statusTableCodes = DataLayer.Controller.GetMTSStatusTable(lastSync);
 
             return JsonConvert.SerializeObject(statusTableCodes);
         }
 
         public static String GetAllKitTrayUsageDates(DateTime? lastSync)
         {
-            String usageDate = null;
+            DataTable usageDateTable = null;
 
             if (lastSync == null)
-                usageDate = JsonConvert.SerializeObject(DataLayer.Controller.GetAllKitTrayUsageDatesByRepId(Session.userInfo.Id));
+                usageDateTable = DataLayer.Controller.GetAllKitTrayUsageDatesByRepId(Session.userInfo.Id);
             else
-                usageDate = JsonConvert.SerializeObject(DataLayer.Controller.GetAllKitTrayUsageDatesByRepId(Session.userInfo.Id, lastSync));
+                usageDateTable = DataLayer.Controller.GetAllKitTrayUsageDatesByRepId(Session.userInfo.Id, lastSync);
 
-            return JsonConvert.SerializeObject(usageDate);
+            return JsonConvert.SerializeObject(usageDateTable);
         }
         #region SyncData Object Aggregation
         public static XmlNode[] AddSyncObjects(XmlDocument payload, JsonEnvelope requestEnvelope)
