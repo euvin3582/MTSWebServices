@@ -69,7 +69,7 @@ namespace FacadeRestService
             else
                 repAddressInfoList = DataLayer.Controller.GetAddressesWithSourceTypeByRepRepRole(Session.userInfo, lastSync);
 
-            return JsonConvert.SerializeObject(repAddressInfoList);
+            return SerializeTable(repAddressInfoList);
         }
 
         public static String GetInitialStatusTableData(DateTime? lastSync)
