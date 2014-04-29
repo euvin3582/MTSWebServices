@@ -15,7 +15,6 @@ namespace FacadeRestService
         public static String GetInitialCaseData(DateTime? lastSync){
             List<ScheduleInfo> cases = null;
 
-            // get case list depending on user
             if (lastSync == null)
             {
                 cases = Session.userInfo.IsSuperUser ?
@@ -33,7 +32,6 @@ namespace FacadeRestService
         {
             DataTable inventory = null;
 
-            // get Inventory list depending on user
             if (lastSync == null)
             {
                 inventory = Session.userInfo.IsSuperUser ?
@@ -46,20 +44,19 @@ namespace FacadeRestService
                         DataLayer.Controller.GetAllInventoryInfoByCompanyId(Session.userInfo.CustomerId, Session.lastSync) :
                         DataLayer.Controller.GetAllInventoryInfoByRepId(Session.userInfo.Id, Session.lastSync);
             }
-            return JsonConvert.SerializeObject(inventory);
+            return SerializeTable(inventory);
         }
 
         public static String GetInitialDoctorsData(DateTime? lastSync)
         {
             DataTable doctorsList = null;
 
-            // get case list depending on user
             if (lastSync == null)
                 doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.userInfo.Id);
             else
                 doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.userInfo.Id, Session.lastSync);
-            
-            return JsonConvert.SerializeObject(doctorsList);
+
+            return SerializeTable(doctorsList);
         }
 
         public static String GetInitialAddressData(DateTime? lastSync)
@@ -84,7 +81,7 @@ namespace FacadeRestService
             else
                 statusTableCodes = DataLayer.Controller.GetMTSStatusTable(lastSync);
 
-            return JsonConvert.SerializeObject(statusTableCodes);
+            return SerializeTable(statusTableCodes);
         }
 
         public static String GetAllKitTrayUsageDates(DateTime? lastSync)
@@ -96,7 +93,7 @@ namespace FacadeRestService
             else
                 usageDateTable = DataLayer.Controller.GetAllKitTrayUsageDatesByRepId(Session.userInfo.Id, lastSync);
 
-            return JsonConvert.SerializeObject(usageDateTable);
+            return SerializeTable(usageDateTable);
         }
         #region SyncData Object Aggregation
         public static XmlNode[] AddSyncObjects(XmlDocument payload, JsonEnvelope requestEnvelope)
@@ -186,5 +183,10 @@ namespace FacadeRestService
             return queues.ToArray();
         }
         #endregion
+
+        public static String SerializeTable(DataTable table)
+        {
+            return (table.Rows.Count > 0) ? JsonConvert.SerializeObject(table) : null;
+        }
     }
 }
