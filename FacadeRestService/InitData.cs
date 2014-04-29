@@ -25,7 +25,7 @@ namespace FacadeRestService
             {
                 cases = DataLayer.Controller.GetSchedulesByCustomerIdDateTime(Session.userInfo.CustomerId, lastSync);
             }
-            return JsonConvert.SerializeObject(cases);
+            return cases.Count > 0 ? JsonConvert.SerializeObject(cases) : null;
         }
 
         public static String GetInitialInventoryData(DateTime? lastSync)
