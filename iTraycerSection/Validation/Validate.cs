@@ -20,13 +20,13 @@ namespace iTraycerSection.Validation
             return obj;
         }
 
-        public static bool ValidateApplicationDeviceInfo(int repId, int coId, iTraycerDeviceInfo itd)
+        public static bool ValidateApplicationDeviceInfo(int repId, int coId, iTraycerDeviceInfo itd, int launchCount)
         {
             DataTable DevAppTable = DataLayer.Controller.GetiTraycerApplicationDeviceInfoDevId(itd.DeviceId);
 
             if (DevAppTable.Rows.Count == 1)
             {
-                if (DataLayer.Controller.UpdateiTraycerApplicationLaunchCount(repId, coId, itd.DeviceId) > 0)
+                if (DataLayer.Controller.UpdateiTraycerApplicationLaunchCount(repId, coId, itd.DeviceId, launchCount) > 0)
                     return true;
             }
             else

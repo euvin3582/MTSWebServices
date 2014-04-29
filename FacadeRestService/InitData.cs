@@ -108,7 +108,7 @@ namespace FacadeRestService
             }
            
             // expand the array to include the init data load objects;
-            List<string> objectName = new List<String>() { "InitCases", "InitInventory", "InitDoctors", "InitAddresses", "InitStatus", "InitKitAllocation" };
+            List<string> objectName = new List<String>() { "InitCases", "InitInventory", "InitDoctors", "InitAddresses", "InitStatus", "InitKitAllocation", "UpdateSyncTime" };
             List<XmlNode> queues = new List<XmlNode>();
             queues.AddRange(serviceQueueNodes);
 
@@ -164,18 +164,19 @@ namespace FacadeRestService
                     queues.Add(InitAddresses);
                     continue;
                 }
-                if (objectName[i].Equals("InitStatus"))
-                {
-                    XmlElement InitStatus = payload.CreateElement("item");
-                    InitStatus.InnerXml = "<InitStatus type=\"object\">Aggregate</InitStatus>";
-                    queues.Add(InitStatus);
-                    continue;
-                }
+
                 if (objectName[i].Equals("InitKitAllocation"))
                 {
                     XmlElement InitKitAllocation = payload.CreateElement("item");
                     InitKitAllocation.InnerXml = "<InitKitAllocation type=\"object\">Aggregate</InitKitAllocation>";
                     queues.Add(InitKitAllocation);
+                    continue;
+                }
+                if (objectName[i].Equals("UpdateSyncTime"))
+                {
+                    XmlElement UpdateSyncTime = payload.CreateElement("item");
+                    UpdateSyncTime.InnerXml = "<UpdateSyncTime type=\"object\">Aggregate</UpdateSyncTime>";
+                    queues.Add(UpdateSyncTime);
                     continue;
                 }
             }

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Configuration;
-using System.Data;
-using System.Linq;
 using DataLayer.domains;
 using MTSUtilities.Conversions;
 
@@ -67,10 +65,9 @@ namespace iTraycerSection.Session
             return DataLayer.Controller.GetiTraycerLastSyncDateTime(userInfo, deviceId);
         }
 
-        public static DateTime? UpdateLastSyncTime(UserInfo userInfo, String deviceId)
+        public static bool UpdateLastSyncTime(UserInfo userInfo, String deviceId, DateTime sync)
         {
-            //DataLayer.Controller.GetiTraycerLastSyncDateTime(userInfo, deviceId);
-            return null;
+            return DataLayer.Controller.UpdateiTraycerSyncTime(userInfo, deviceId, sync) >= 1;
         }
     }
 }

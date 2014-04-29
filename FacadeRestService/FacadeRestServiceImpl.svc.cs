@@ -175,7 +175,7 @@ namespace FacadeRestService
                                 break;
                             }
 
-                            if (iTraycerSection.Validation.Validate.ValidateApplicationDeviceInfo(Session.userInfo.Id, Session.userInfo.CustomerId, device))
+                            if (iTraycerSection.Validation.Validate.ValidateApplicationDeviceInfo(Session.userInfo.Id, Session.userInfo.CustomerId, device, Convert.ToInt32(requestEnvelope.AppLaunchCount)))
                             {
                                 resp.Add(serviceName, "Successfully validate device and application info");
                             }
@@ -292,14 +292,29 @@ namespace FacadeRestService
                             break;
 
                         case "GenerateInvoice":
+                            ScheduleInfo surgery = new ScheduleInfo();
                             ReportOptions reportOption = new ReportOptions();
                             reportOption.PhoneNo = Session.userInfo.RepPhoneNumber;
+                            reportOption.Email = Session.userInfo.RepEmail;
+                            //reportOption.BillTo = surgery.
+                            break;
+
+                        case "UpdateSyncTime":
+                            DateTime sync = DateTime.UtcNow;
+                            
+                            if (!Session.UpdateLastSyncTime(Session.userInfo, requestEnvelope.DevID, sync))
+                            {
+                                resp = new Dictionary<object, string>();
+                                resp.Add("SRVERROR", "Fail to update sync time for request");
+                                responseEnvelope.Response.Add(resp);
+                            }
+                            responseEnvelope.SyncResponseTime = sync.ToString();
                             break;
                     }
                 }
             }
             stopProcessing:
-            responseEnvelope.SyncResponseTime = DateTime.UtcNow.ToString();
+            
             responseEnvelope.Role = Session.userInfo.Role;
             return JsonConvert.SerializeObject(responseEnvelope);
         }
