@@ -4,8 +4,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
 using System.Xml;
 
 namespace FacadeRestService
@@ -107,7 +105,8 @@ namespace FacadeRestService
             }
            
             // expand the array to include the init data load objects;
-            List<string> objectName = new List<String>() { "InitCases", "InitInventory", "InitDoctors", "InitAddresses", "InitStatus", "InitKitAllocation", "UpdateSyncTime" };
+            List<string> objectName = new List<String>() { "InitCases", "InitInventory", "InitDoctors", "InitAddresses", "InitStatus", "InitKitAllocation", 
+                                                            "UpdateSyncTime" };
             List<XmlNode> queues = new List<XmlNode>();
             queues.AddRange(serviceQueueNodes);
 

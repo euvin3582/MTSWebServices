@@ -6,9 +6,8 @@ using System.Xml;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
 using iTraycerSection.Session;
-using System.Data;
 using DataLayer.domains;
-using PDFGenChargesForm.Classes;
+using iTraycerSection.Invoice;
 
 namespace FacadeRestService
 {
@@ -169,7 +168,10 @@ namespace FacadeRestService
                             }
                             else
                             {
-                                resp.Add(serviceName, "SRVERROR:Device already registered");
+                                if (!Session.UpdateApplicationInfo(Session.userInfo, DeviceId.InnerText))
+                                    resp.Add(serviceName, "SRVERROR:Device already registered, information updated");
+                                else
+                                    resp.Add(serviceName, "SRVERROR:Fail to update Device Info");
                                 responseEnvelope.Response.Add(resp);
                                 responseEnvelope.Commit = "false";
                                 break;
@@ -194,7 +196,7 @@ namespace FacadeRestService
                             //payloadChild.InnerText;
                             resp = new Dictionary<object, string>();
 
-                            data = FacadeRestService.InitData.GetInitialCaseData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
+                            data = InitData.GetInitialCaseData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
                             
                             if (!String.IsNullOrEmpty(data))
                             {
@@ -260,7 +262,6 @@ namespace FacadeRestService
                         #endregion
 
                         case "CreateCase":
-                            // if create case has a case id then update else create
                             resp = new Dictionary<object, string>();
                             List<XmlNode> nodeList = new List<XmlNode>(){
                                 payloadChild.SelectSingleNode("//SurgeonId"),
@@ -292,11 +293,23 @@ namespace FacadeRestService
                             break;
 
                         case "GenerateInvoice":
-                            ScheduleInfo surgery = new ScheduleInfo();
-                            ReportOptions reportOption = new ReportOptions();
-                            reportOption.PhoneNo = Session.userInfo.RepPhoneNumber;
-                            reportOption.Email = Session.userInfo.RepEmail;
-                            //reportOption.BillTo = surgery.
+                            resp = new Dictionary<object, string>();
+                            XmlNode CaseId = payloadChild.SelectSingleNode("//CaseId");
+                            XmlNode RepSig = payloadChild.SelectSingleNode("//RepSig");
+                            XmlNode HosSig = payloadChild.SelectSingleNode("//HosSig");
+
+                            if (CaseId == null)
+                            {
+                                resp.Add(serviceName, "SRVERROR:Case information missing");
+                                responseEnvelope.Response.Add(resp);
+                                break;
+                            }
+                            RequisitionOrder reqOrder =
+                                    DataLayer.Controller.GetRequesitionOrderByRepCusCaseId(794, 227, 9);
+                                    //DataLayer.Controller.GetRequesitionOrderByRepCusCaseId(Session.userInfo.Id, Session.userInfo.CustomerId, Convert.ToInt32(CaseId.InnerText));
+                            Invoice invoice = new Invoice();
+                            invoice.CreateInvoice(reqOrder, RepSig.InnerText, HosSig.InnerText);
+                            responseEnvelope.Response.Add(resp);
                             break;
 
                         case "UpdateSyncTime":

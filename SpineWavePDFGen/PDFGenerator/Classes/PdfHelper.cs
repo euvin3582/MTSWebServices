@@ -28,6 +28,10 @@ namespace PDFGenChargesForm.Classes
 
         #region Methods
 
+        public static void CreatePdfDoc(ReportOptions pView)
+        {
+        }
+
         /// <summary>
         /// To create a PDF using iTextSharp
         /// </summary>

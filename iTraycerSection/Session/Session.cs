@@ -69,5 +69,10 @@ namespace iTraycerSection.Session
         {
             return DataLayer.Controller.UpdateiTraycerSyncTime(userInfo, deviceId, sync) >= 1;
         }
+
+        public static bool UpdateApplicationInfo(UserInfo userInfo, String deviceId)
+        {
+            return DataLayer.Controller.UpdateiTraycerApplicationInfo(userInfo, deviceId) >= 1;
+        }
     }
 }
