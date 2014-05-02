@@ -28,19 +28,21 @@ namespace PDFGenChargesForm.Classes
 
         #region Methods
 
-        public static void CreatePdfDoc(ReportOptions pView)
+        public static Byte[] CreatePdfDoc(ReportOptions pView, Image customerLogo)
         {
+            String imageDirectory = System.AppDomain.CurrentDomain.BaseDirectory + "Images\\";
+            return CreatePdfDoc(pView, imageDirectory, customerLogo);
         }
 
         /// <summary>
         /// To create a PDF using iTextSharp
         /// </summary>
         /// <param name="pView"></param>
-        public static void CreatePdfDoc(ReportOptions pView, String imageDirectory)
+        public static Byte[] CreatePdfDoc(ReportOptions pView, String imageDirectory, Image customerLogo)
         {
             Document pdfDoc = null;
             PdfWriter writer = null;
-            FileStream fs = null;
+            MemoryStream ms = new MemoryStream();
             Double sumTotal = 0;
             try
             {
@@ -49,19 +51,16 @@ namespace PDFGenChargesForm.Classes
                 Image imageUncheck = Image.GetInstance(ImageDirectory + "checkbox_uncheck.png");
                 imageCheck.ScaleToFit(7.25f, 7.25f);
                 imageUncheck.ScaleToFit(7.25f, 7.25f);
-
-                String defaultFilePath = ConfigurationManager.AppSettings["PDFFilePath"];
+               
                 Guid guid = Guid.NewGuid();
                 String fileName = guid.ToString() + ".pdf";
 
-                defaultFilePath = defaultFilePath + fileName;
-                fs = new FileStream(defaultFilePath, FileMode.Create);
                 pdfDoc = new Document();
                 pdfDoc.SetMargins(33f, 33f, 33f, 33f);
-                writer = PdfWriter.GetInstance(pdfDoc, fs);
+                writer = PdfWriter.GetInstance(pdfDoc, ms);
                 pdfDoc.Open();
 
-                pdfDoc.Add(AddHeader());//Add header table
+                pdfDoc.Add(AddHeader(customerLogo));//Add header table
                 pdfDoc.Add(AddCustomerInfo(pView));//Add customer info table
 
                 PdfPTable LineSeparator = GetPdfTable(1, false, 0, 100);
@@ -98,8 +97,8 @@ namespace PDFGenChargesForm.Classes
                 pdfDoc.Add(new Paragraph(Constants.FOOTER_THIRD_LINE, FontNormal) { Alignment = Element.ALIGN_LEFT });
 
                 pdfDoc.Close();
-                fs.Close();
-                fs.Dispose();
+
+                return ms.GetBuffer();
             }
             catch
             {
@@ -111,9 +110,8 @@ namespace PDFGenChargesForm.Classes
         /// To Create header image and header title
         /// </summary>
         /// <returns>HeaderTable</returns>
-        private static PdfPTable AddHeader()
+        private static PdfPTable AddHeader(Image headerLogo)
         {
-            Image headerLogo = Image.GetInstance(ImageDirectory + "spinewave.png");
             headerLogo.ScaleToFit(125f, 100f);
             PdfPTable HeaderTable = GetPdfTable(2, false, 0, 100);
             HeaderTable.SetWidths(new float[] { 40f, 60f });

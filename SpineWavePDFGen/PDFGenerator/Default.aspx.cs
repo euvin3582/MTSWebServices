@@ -57,7 +57,7 @@ namespace PDFGenChargesForm
 
             reportOption.HospitalSignatureImage = iTextSharp.text.Image.GetInstance((resizeSig == null) ? sig : resizeSig, format);
             reportOption.RepresentativeSignatureImage = iTextSharp.text.Image.GetInstance((resizeSig == null) ? sig : resizeSig, format);
-            PDfHelper.CreatePdfDoc(reportOption, imageDirectory);
+            //PDfHelper.CreatePdfDoc(reportOption, imageDirectory);
 
             #endregion
         }

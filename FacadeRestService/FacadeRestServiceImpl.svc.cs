@@ -8,6 +8,8 @@ using Newtonsoft.Json;
 using iTraycerSection.Session;
 using DataLayer.domains;
 using iTraycerSection.Invoice;
+using System.Drawing;
+using System.Configuration;
 
 namespace FacadeRestService
 {
@@ -294,9 +296,13 @@ namespace FacadeRestService
 
                         case "GenerateInvoice":
                             resp = new Dictionary<object, string>();
+                            Invoice invoice = new Invoice();
                             XmlNode CaseId = payloadChild.SelectSingleNode("//CaseId");
                             XmlNode RepSig = payloadChild.SelectSingleNode("//RepSig");
                             XmlNode HosSig = payloadChild.SelectSingleNode("//HosSig");
+                            Image repSig = null;
+                            Image hosSig = null;
+                            byte[] pdfMs =  new byte[];
 
                             if (CaseId == null)
                             {
@@ -304,11 +310,35 @@ namespace FacadeRestService
                                 responseEnvelope.Response.Add(resp);
                                 break;
                             }
-                            RequisitionOrder reqOrder =
-                                    DataLayer.Controller.GetRequesitionOrderByRepCusCaseId(794, 227, 9);
-                                    //DataLayer.Controller.GetRequesitionOrderByRepCusCaseId(Session.userInfo.Id, Session.userInfo.CustomerId, Convert.ToInt32(CaseId.InnerText));
-                            Invoice invoice = new Invoice();
-                            invoice.CreateInvoice(reqOrder, RepSig.InnerText, HosSig.InnerText);
+
+                            if (!String.IsNullOrEmpty(RepSig.InnerText))
+                            {
+                                repSig = MTSUtilities.ImageUtilities.Serialization.ImageDecoding(RepSig.InnerText);
+                            }
+
+                            if (!String.IsNullOrEmpty(HosSig.InnerText))
+                            {
+                                hosSig = MTSUtilities.ImageUtilities.Serialization.ImageDecoding(HosSig.InnerText);
+                            }
+
+                            RequisitionOrder reqOrder = DataLayer.Controller.GetRequesitionOrderByCaseId(8);
+                            
+                            // create the pdf memory stream
+                            if(reqOrder != null)
+                                pdfMs = invoice.CreateInvoice(reqOrder, repSig, hosSig);
+
+                            String defaultFilePath = ConfigurationManager.AppSettings["PDFFilePath"];
+                            Guid guid = Guid.NewGuid();
+                            String fileName = defaultFilePath + guid.ToString() + ".pdf";
+
+                            using (FileStream file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+                            {
+                                MemoryStream memoryStream = new MemoryStream(pdfMs);
+                                memoryStream.WriteTo(file);
+                                file.Close();
+                                memoryStream.Close();
+                            }
+
                             responseEnvelope.Response.Add(resp);
                             break;
 
