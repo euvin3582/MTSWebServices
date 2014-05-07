@@ -126,7 +126,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\DataLayer\DataLayer.csproj">
+    <ProjectReference Include="..\..\..\WebSuite\DataLayer\DataLayer.csproj">
       <Project>{fe665455-9d20-4657-84d6-5883ed15ead0}</Project>
       <Name>DataLayer</Name>
     </ProjectReference>
