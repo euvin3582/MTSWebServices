@@ -14,5 +14,12 @@ namespace FacadeRestService
             RequestFormat = WebMessageFormat.Json,
             UriTemplate = "MTSMobileService/")]
         string CreateSession();
+
+        [OperationContract]
+        [WebInvoke(Method = "POST",
+            ResponseFormat = WebMessageFormat.Json,
+            RequestFormat = WebMessageFormat.Json,
+            UriTemplate = "ReceiverManager/")]
+        string ReceiverUpdate();
     }
 }

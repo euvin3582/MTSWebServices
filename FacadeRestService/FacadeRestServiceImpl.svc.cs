@@ -9,7 +9,6 @@ using iTraycerSection.Session;
 using DataLayer.domains;
 using iTraycerSection.Invoice;
 using System.Drawing;
-using System.Configuration;
 
 namespace FacadeRestService
 {
@@ -353,6 +352,27 @@ namespace FacadeRestService
             stopProcessing:
             
             responseEnvelope.Role = Session.userInfo.Role;
+            return JsonConvert.SerializeObject(responseEnvelope);
+        }
+
+        public String ReceiverUpdate()
+        {
+            string bodyRequest = OperationContext.Current.RequestContext.RequestMessage.ToString();
+
+            XmlDocument payload = new XmlDocument();
+            payload.LoadXml(bodyRequest);
+
+            // deserialize payload
+            ReceiverEnvelope requestEnvelope = new ReceiverEnvelope();
+
+            XmlSerializer xmlSer = new XmlSerializer(typeof(ReceiverEnvelope));
+            requestEnvelope = (ReceiverEnvelope)xmlSer.Deserialize(new StringReader(payload.OuterXml));
+
+            // build response envelope
+            ReceiverEnvelope responseEnvelope = new ReceiverEnvelope();
+            DataTable dt = DataLayer.Controller.ReceiverReturnKitTrays(1);
+
+            responseEnvelope.ReturnKitTrays = JsonConvert.SerializeObject(dt);
             return JsonConvert.SerializeObject(responseEnvelope);
         }
     }

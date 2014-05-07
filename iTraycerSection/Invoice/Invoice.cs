@@ -1,5 +1,4 @@
 ﻿using System;
-using PDFGenChargesForm.Classes;
 using DataLayer.domains;
 using System.Drawing;
 using System.Configuration;

@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Device\Device.cs" />
     <Compile Include="Domain\JsonEnvelope.cs" />
+    <Compile Include="Domain\ReceiverEnvelope.cs" />
     <Compile Include="InitData\InitData.cs" />
     <Compile Include="Invoice\Invoice.cs" />
     <Compile Include="Session\Session.cs" />
@@ -65,13 +66,9 @@
     <Compile Include="Validation\Validate.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\WebSuite\DataLayer\DataLayer.csproj">
+    <ProjectReference Include="..\..\..\DataLayer\DataLayer.csproj">
       <Project>{fe665455-9d20-4657-84d6-5883ed15ead0}</Project>
       <Name>DataLayer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SpineWavePDFGen\PDFGenerator\PDFGenChargesForm.csproj">
-      <Project>{d2564c71-8142-4b10-8107-40b250f02a3c}</Project>
-      <Name>PDFGenChargesForm</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

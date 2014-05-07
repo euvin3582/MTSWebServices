@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacadeRestService", "Facade
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iTraycerSection", "iTraycerSection\iTraycerSection.csproj", "{59A49911-B7C0-481D-B3B0-BF45500EE250}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLayer", "..\..\WebSuite\DataLayer\DataLayer.csproj", "{FE665455-9D20-4657-84D6-5883ED15EAD0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLayer", "..\..\DataLayer\DataLayer.csproj", "{FE665455-9D20-4657-84D6-5883ED15EAD0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PDFGenChargesForm", "SpineWavePDFGen\PDFGenerator\PDFGenChargesForm.csproj", "{D2564C71-8142-4B10-8107-40B250F02A3C}"
 EndProject
