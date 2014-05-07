@@ -266,6 +266,7 @@ namespace FacadeRestService
                         case "CreateCase":
                             resp = new Dictionary<object, string>();
                             List<XmlNode> nodeList = new List<XmlNode>(){
+                                payloadChild.SelectSingleNode("//CaseId"),
                                 payloadChild.SelectSingleNode("//SurgeonId"),
                                 payloadChild.SelectSingleNode("//SurgeonId"),
                                 payloadChild.SelectSingleNode("//SurgeryDate"),
@@ -302,11 +303,11 @@ namespace FacadeRestService
                             XmlNode HosSig = payloadChild.SelectSingleNode("//HosSig");
                             Image repSig = null;
                             Image hosSig = null;
-                            byte[] pdfMs =  new byte[];
+                            byte[] pdfBA = new byte[byte.MaxValue];
 
                             if (CaseId == null)
                             {
-                                resp.Add(serviceName, "SRVERROR:Case information missing");
+                                resp.Add(serviceName, "SRVERROR:Case number is missing");
                                 responseEnvelope.Response.Add(resp);
                                 break;
                             }
@@ -325,20 +326,13 @@ namespace FacadeRestService
                             
                             // create the pdf memory stream
                             if(reqOrder != null)
-                                pdfMs = invoice.CreateInvoice(reqOrder, repSig, hosSig);
+                                pdfBA = invoice.CreateInvoice(reqOrder, repSig, hosSig);
 
-                            String defaultFilePath = ConfigurationManager.AppSettings["PDFFilePath"];
-                            Guid guid = Guid.NewGuid();
-                            String fileName = defaultFilePath + guid.ToString() + ".pdf";
+                            MemoryStream pdfDoc = invoice.CreatePdfMemStreamFromByteArray(pdfBA);
 
-                            using (FileStream file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
-                            {
-                                MemoryStream memoryStream = new MemoryStream(pdfMs);
-                                memoryStream.WriteTo(file);
-                                file.Close();
-                                memoryStream.Close();
-                            }
+                            String pdfString = MTSUtilities.Conversions.Serialization.ObjSerializer < MemoryStream>(pdfDoc);
 
+                            resp.Add(serviceName, pdfString);
                             responseEnvelope.Response.Add(resp);
                             break;
 

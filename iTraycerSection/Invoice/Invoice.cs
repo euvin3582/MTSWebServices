@@ -2,6 +2,8 @@
 using PDFGenChargesForm.Classes;
 using DataLayer.domains;
 using System.Drawing;
+using System.Configuration;
+using System.IO;
 
 
 namespace iTraycerSection.Invoice
@@ -76,6 +78,36 @@ namespace iTraycerSection.Invoice
         public System.Drawing.Image GetCaseSigImage(int caseNumber)
         {
             return null;        
+        }
+
+        public void CreatePdfDocumentFromByteArray(Byte[] pdfMs)
+        {
+            String defaultFilePath = ConfigurationManager.AppSettings["PDFFilePath"];
+            Guid guid = Guid.NewGuid();
+            String fileName = defaultFilePath + guid.ToString() + ".pdf";
+
+            using (FileStream file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+            {
+                MemoryStream memoryStream = new MemoryStream(pdfMs);
+                memoryStream.WriteTo(file);
+                file.Close();
+                memoryStream.Close();
+            }
+        }
+
+        public MemoryStream CreatePdfMemStreamFromByteArray(Byte[] pdfMs)
+        {
+            String defaultFilePath = ConfigurationManager.AppSettings["PDFFilePath"];
+            Guid guid = Guid.NewGuid();
+            String fileName = defaultFilePath + guid.ToString() + ".pdf";
+
+            using (FileStream file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+            {
+                MemoryStream memoryStream = new MemoryStream(pdfMs);
+                memoryStream.WriteTo(file);
+                file.Close();
+                return memoryStream;
+            }
         }
     }
 }
