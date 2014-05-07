@@ -3,6 +3,7 @@ using DataLayer.domains;
 using System.Drawing;
 using System.Configuration;
 using System.IO;
+using PDFGenChargesForm.Classes;
 
 
 namespace iTraycerSection.Invoice

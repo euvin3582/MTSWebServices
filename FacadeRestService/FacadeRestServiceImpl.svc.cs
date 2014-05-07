@@ -9,6 +9,8 @@ using iTraycerSection.Session;
 using DataLayer.domains;
 using iTraycerSection.Invoice;
 using System.Drawing;
+using iTraycerSection.Domain;
+using System.Data;
 
 namespace FacadeRestService
 {
