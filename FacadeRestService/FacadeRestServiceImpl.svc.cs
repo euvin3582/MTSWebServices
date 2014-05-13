@@ -270,8 +270,12 @@ namespace FacadeRestService
                             if (!String.IsNullOrEmpty(data))
                             {
                                 resp.Add(serviceName, data);
-                                responseEnvelope.Response.Add(resp);
                             }
+                            else
+                            {
+                                resp.Add(serviceName, "SRVERROR:No surgery kit types found for Customer Id: " + Session.userInfo.CustomerId);
+                            }
+                            responseEnvelope.Response.Add(resp);
                             break;
                         #endregion
 
@@ -283,27 +287,41 @@ namespace FacadeRestService
                                 payloadChild.SelectSingleNode("//SurgeonId"),
                                 payloadChild.SelectSingleNode("//SurgeryDate"),
                                 payloadChild.SelectSingleNode("//DeliverByDate"),
+                                payloadChild.SelectSingleNode("//VerdibraeLevel"),
+                                payloadChild.SelectSingleNode("//ModifiedDate"),
                                 payloadChild.SelectSingleNode("//SurgeryType"),
                                 payloadChild.SelectSingleNode("//MedicalRecordNumber"),
                                 payloadChild.SelectSingleNode("//PatientId"),
                                 payloadChild.SelectSingleNode("//SurgeryStatus"),
                                 payloadChild.SelectSingleNode("//LocationId"),
-                                payloadChild.SelectSingleNode("//VerdibraeLevel"),
                                 payloadChild.SelectSingleNode("//LoanerFlag"),
                                 payloadChild.SelectSingleNode("//OrderSourceId"),
                                 payloadChild.SelectSingleNode("//KitTypeNumber"),
                                 payloadChild.SelectSingleNode("//PartNumber"),
                                 payloadChild.SelectSingleNode("//LocationId")};
 
+
                             ScheduleInfo obj = new ScheduleInfo(nodeList);
-                            obj.CreatedDate = DateTime.UtcNow;
                             obj.RepId = Session.userInfo.Id;
                             obj.CompanyId = Session.userInfo.CustomerId;
-                            int caseId = DataLayer.Controller.InsertSchedule(obj);
-                            if (caseId == 0)
-                                resp.Add(serviceName, "SRVERROR:Failed to create case");
+                            if (obj.Id < 0)
+                            {
+                                obj.CreatedDate = DateTime.UtcNow;
+                                int caseId = DataLayer.Controller.InsertSchedule(obj);
+                                if (caseId == 0)
+                                    resp.Add(serviceName, "SRVERROR:Failed to create case");
+                                else
+                                    resp.Add(serviceName, JsonConvert.SerializeObject(obj));
+                            }
                             else
-                                resp.Add(serviceName, caseId.ToString());
+                            {
+                                int update = DataLayer.Controller.UpdateScheduleByScheduleId(obj);
+
+                                if (update > 0)
+                                    resp.Add(serviceName, JsonConvert.SerializeObject(obj));
+                                else
+                                    resp.Add(serviceName, "SRVERROR:Failed update case");
+                            }
                             responseEnvelope.Response.Add(resp);
                             break;
 
