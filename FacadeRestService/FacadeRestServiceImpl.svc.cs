@@ -263,6 +263,16 @@ namespace FacadeRestService
                                 responseEnvelope.Response.Add(resp);
                             }
                             break;
+                        case "InitSurgeryTypeKitTypes":
+                            resp = new Dictionary<object, string>();
+                            data = FacadeRestService.InitData.GetInitialSurgeryTypeKitTypes(Session.userInfo.CustomerId);
+
+                            if (!String.IsNullOrEmpty(data))
+                            {
+                                resp.Add(serviceName, data);
+                                responseEnvelope.Response.Add(resp);
+                            }
+                            break;
                         #endregion
 
                         case "CreateCase":
@@ -330,8 +340,11 @@ namespace FacadeRestService
                             {
                                 byte[] pdfBA = invoice.CreateInvoice(reqOrder, repSig, hosSig);
                                 string pdfString = Convert.ToBase64String(pdfBA, 0, pdfBA.Length);
- 
                                 resp.Add(serviceName, pdfString);
+                            }
+                            else
+                            {
+                                resp.Add(serviceName, "SRVERROR:Unable to create requistion order");
                             }
                             responseEnvelope.Response.Add(resp);
                             break;
