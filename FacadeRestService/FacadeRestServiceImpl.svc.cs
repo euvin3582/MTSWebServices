@@ -284,7 +284,6 @@ namespace FacadeRestService
                             List<XmlNode> nodeList = new List<XmlNode>(){
                                 payloadChild.SelectSingleNode("//CaseId"),
                                 payloadChild.SelectSingleNode("//SurgeonId"),
-                                payloadChild.SelectSingleNode("//SurgeonId"),
                                 payloadChild.SelectSingleNode("//SurgeryDate"),
                                 payloadChild.SelectSingleNode("//DeliverByDate"),
                                 payloadChild.SelectSingleNode("//VerdibraeLevel"),
