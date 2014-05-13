@@ -27,7 +27,7 @@ namespace iTraycerSection.Invoice
             reportOption.PhoneNo = reqOrder.HosBillingPhone;
             reportOption.Fax = "1-877-241-7480";
             reportOption.Email = "Need to get More Info On This";
-            reportOption.BillTo = reqOrder.BillingAddressId.ToString();
+            reportOption.BillTo = reqOrder.HosiptalName;
             reportOption.SurgeryDate = (DateTime)reqOrder.SurgeryDate;
             reportOption.CityState = reqOrder.HosBillingCity + ", " + reqOrder.HosBillingState;
             reportOption.PhysicianName = reqOrder.PhysicianName;
@@ -104,8 +104,6 @@ namespace iTraycerSection.Invoice
             using (FileStream file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
             {
                 MemoryStream memoryStream = new MemoryStream(pdfMs);
-                memoryStream.WriteTo(file);
-                file.Close();
                 return memoryStream;
             }
         }

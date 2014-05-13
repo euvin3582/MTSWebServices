@@ -11,6 +11,7 @@ using iTraycerSection.Invoice;
 using System.Drawing;
 using iTraycerSection.Domain;
 using System.Data;
+using System.Text;
 
 namespace FacadeRestService
 {
@@ -304,8 +305,7 @@ namespace FacadeRestService
                             XmlNode HosSig = payloadChild.SelectSingleNode("//HosSig");
                             Image repSig = null;
                             Image hosSig = null;
-                            byte[] pdfBA = new byte[byte.MaxValue];
-
+             
                             if (CaseId == null)
                             {
                                 resp.Add(serviceName, "SRVERROR:Case number is missing");
@@ -323,17 +323,16 @@ namespace FacadeRestService
                                 hosSig = MTSUtilities.ImageUtilities.Serialization.ImageDecoding(HosSig.InnerText);
                             }
 
-                            RequisitionOrder reqOrder = DataLayer.Controller.GetRequesitionOrderByCaseId(8);
+                            RequisitionOrder reqOrder = DataLayer.Controller.GetRequesitionOrderByCaseId(Convert.ToInt32(CaseId.InnerText));
                             
                             // create the pdf memory stream
-                            if(reqOrder != null)
-                                pdfBA = invoice.CreateInvoice(reqOrder, repSig, hosSig);
-
-                            MemoryStream pdfDoc = invoice.CreatePdfMemStreamFromByteArray(pdfBA);
-
-                            String pdfString = MTSUtilities.Conversions.Serialization.ObjSerializer < MemoryStream>(pdfDoc);
-
-                            resp.Add(serviceName, pdfString);
+                            if (reqOrder != null)
+                            {
+                                byte[] pdfBA = invoice.CreateInvoice(reqOrder, repSig, hosSig);
+                                string pdfString = Convert.ToBase64String(pdfBA, 0, pdfBA.Length);
+ 
+                                resp.Add(serviceName, pdfString);
+                            }
                             responseEnvelope.Response.Add(resp);
                             break;
 
