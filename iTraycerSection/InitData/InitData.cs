@@ -82,9 +82,9 @@ namespace FacadeRestService
             return SerializeTable(statusTableCodes);
         }
 
-        public static String GetInitialSurgeryTypeKitTypes(int customerId)
+        public static String GetInitialTrayTypesBySurgeryType(int customerId)
         {
-            List<SurgeryTypeKitType> surgeryTypeKits = DataLayer.Controller.GetSurgeryTypeKitTypes(customerId);
+            List<SurgeryTypeKitType> surgeryTypeKits = DataLayer.Controller.GetInitialTrayTypesBySurgeryType(customerId);
 
             return surgeryTypeKits.Count > 0 ? JsonConvert.SerializeObject(surgeryTypeKits) : null;
         }

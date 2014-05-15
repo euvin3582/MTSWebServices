@@ -263,9 +263,9 @@ namespace FacadeRestService
                                 responseEnvelope.Response.Add(resp);
                             }
                             break;
-                        case "InitSurgeryTypeKitTypes":
+                        case "InitTrayTypesBySurgeryType":
                             resp = new Dictionary<object, string>();
-                            data = FacadeRestService.InitData.GetInitialSurgeryTypeKitTypes(Session.userInfo.CustomerId);
+                            data = FacadeRestService.InitData.GetInitialTrayTypesBySurgeryType(Session.userInfo.CustomerId);
 
                             if (!String.IsNullOrEmpty(data))
                             {
