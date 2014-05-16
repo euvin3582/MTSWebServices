@@ -382,7 +382,9 @@ namespace FacadeRestService
             }
             stopProcessing:
             
+            // Always send role and sync time
             responseEnvelope.Role = Session.userInfo.Role;
+            responseEnvelope.SyncRequestTime = requestEnvelope.SyncRequestTime;
             return JsonConvert.SerializeObject(responseEnvelope);
         }
 
