@@ -71,10 +71,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Default.aspx" />
-    <Content Include="Images\checkbox_check.png" />
-    <Content Include="Images\checkbox_uncheck.png" />
-    <Content Include="Images\spinewave.jpg" />
-    <Content Include="Images\spinewave.png" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
