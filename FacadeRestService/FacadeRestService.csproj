@@ -114,6 +114,14 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="Properties\PublishProfiles\LocalDeploy.pubxml" />
+    <Content Include="Images\checkbox_check.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\checkbox_uncheck.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\spinewave.jpg" />
+    <Content Include="Images\spinewave.png" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
