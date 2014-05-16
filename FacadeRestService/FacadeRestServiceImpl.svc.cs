@@ -77,6 +77,7 @@ namespace FacadeRestService
                     string data = null;
                     string serviceName = payloadChild.DocumentElement.Name;
                     string childInnerText = payloadChild.DocumentElement.InnerText;
+                    XmlNodeList authObject = payload.SelectNodes("/root/ServiceQueue/item/MTSMobileAuth"); 
 
                     if (String.IsNullOrEmpty(serviceName))
                     {
@@ -85,16 +86,27 @@ namespace FacadeRestService
                         responseEnvelope.Response.Add(resp);
                     }
 
-                    // need to check for MTSMobileAuth after checking the session toen
-                    if (!Session.ValidateSession(String.IsNullOrEmpty(requestEnvelope.MtsToken) ? responseEnvelope.MtsToken : requestEnvelope.MtsToken))
+                    bool validToken  = !String.IsNullOrEmpty(requestEnvelope.MtsToken) || !String.IsNullOrEmpty(responseEnvelope.MtsToken);
+
+                    // First check if valid token exist
+                    if (validToken)
                     {
-                        if (!serviceQueueNodes.Equals("MTSMobileAuth"))
+                        bool sessionValid = Session.ValidateSession(String.IsNullOrEmpty(requestEnvelope.MtsToken) ? responseEnvelope.MtsToken : requestEnvelope.MtsToken);
+
+                        if (!sessionValid)
                         {
                             resp = new Dictionary<object, string>();
                             resp.Add(serviceName, (Session.errorMessage == null) ? "Session Expired" : Session.errorMessage);
                             responseEnvelope.Response.Add(resp);
                             break;
                         }
+                    }
+                    else if (authObject.Count == 0)
+                    {
+                        resp = new Dictionary<object, string>();
+                        resp.Add("SRVERROR", "MTSMobileAuth was not sent or a valid authorization token found");
+                        responseEnvelope.Response.Add(resp);
+                        break;
                     }
 
                     switch (serviceName)
