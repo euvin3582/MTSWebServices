@@ -34,6 +34,7 @@ namespace FacadeRestService
             // build response envelope
             JsonEnvelope responseEnvelope = new JsonEnvelope();
             XmlNode[] serviceQueueNodes = null;
+            
 
             // check to see if the appLaunchCount is present, if it is convert it to an int and see if its greater than 1
             if (((!String.IsNullOrEmpty(requestEnvelope.AppLaunchCount)) ? Convert.ToInt32(requestEnvelope.AppLaunchCount) : 1) > 1)
@@ -84,12 +85,16 @@ namespace FacadeRestService
                         responseEnvelope.Response.Add(resp);
                     }
 
-                    if (!serviceName.Equals("MTSMobileAuth") && !Session.ValidateSession(String.IsNullOrEmpty(requestEnvelope.MtsToken) ? responseEnvelope.MtsToken : requestEnvelope.MtsToken))
+                    // need to check for MTSMobileAuth after checking the session toen
+                    if (!Session.ValidateSession(String.IsNullOrEmpty(requestEnvelope.MtsToken) ? responseEnvelope.MtsToken : requestEnvelope.MtsToken))
                     {
-                        resp = new Dictionary<object, string>();
-                        resp.Add(serviceName, (Session.errorMessage == null) ? "Session Expired" : Session.errorMessage);
-                        responseEnvelope.Response.Add(resp);
-                        break;
+                        if (!serviceQueueNodes.Equals("MTSMobileAuth"))
+                        {
+                            resp = new Dictionary<object, string>();
+                            resp.Add(serviceName, (Session.errorMessage == null) ? "Session Expired" : Session.errorMessage);
+                            responseEnvelope.Response.Add(resp);
+                            break;
+                        }
                     }
 
                     switch (serviceName)
@@ -350,12 +355,12 @@ namespace FacadeRestService
                                 hosSig = MTSUtilities.ImageUtilities.Serialization.ImageDecoding(HosSig.InnerText);
                             }
 
-                            RequisitionOrder reqOrder = DataLayer.Controller.GetRequesitionOrderByCaseId(Convert.ToInt32(CaseId.InnerText));
+                            List<RequisitionOrder> reqOrders = DataLayer.Controller.GetRequesitionOrderByCaseId(Convert.ToInt32(CaseId.InnerText));
                             
                             // create the pdf memory stream
-                            if (reqOrder != null)
+                            if (reqOrders.Count > 0)
                             {
-                                byte[] pdfBA = invoice.CreateInvoice(reqOrder, repSig, hosSig);
+                                byte[] pdfBA = invoice.CreateInvoice(reqOrders, repSig, hosSig);
                                 string pdfString = Convert.ToBase64String(pdfBA, 0, pdfBA.Length);
                                 resp.Add(serviceName, pdfString);
                             }

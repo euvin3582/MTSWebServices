@@ -4,18 +4,19 @@ using System.Drawing;
 using System.Configuration;
 using System.IO;
 using PDFGenChargesForm.Classes;
+using System.Collections.Generic;
 
 
 namespace iTraycerSection.Invoice
 {
     public class Invoice
     {
-        public byte[] CreateInvoice(RequisitionOrder reqOrder, Image repSigImg = null, Image hosSigImg = null)
+        public byte[] CreateInvoice(List<RequisitionOrder> reqOrders, Image repSigImg = null, Image hosSigImg = null)
         {
-            return CreateInvoice(reqOrder, null, null, repSigImg, hosSigImg);
+            return CreateInvoice(reqOrders, null, null, repSigImg, hosSigImg);
         }
 
-        public byte[] CreateInvoice(RequisitionOrder reqOrder, String repSig = null, String hosSig = null, Image repSigImg = null, Image hosSigImg = null)
+        public byte[] CreateInvoice(List<RequisitionOrder> reqOrders, String repSig = null, String hosSig = null, Image repSigImg = null, Image hosSigImg = null)
         {
             // get company logo
             CustomerImages cutomerImage = DataLayer.Controller.GetCustomerImage("SpineWaveLogo", 227);
@@ -23,16 +24,19 @@ namespace iTraycerSection.Invoice
             iTextSharp.text.Image HospitalSignatureImg = ResizeAndConvert(hosSig, hosSigImg);
             iTextSharp.text.Image customerLogo = iTextSharp.text.Image.GetInstance(cutomerImage.CustomerImage, cutomerImage.ImageFormat);
 
+            if (reqOrders.Count == 0)
+                return null;
+
             ReportOptions reportOption = new ReportOptions();
-            reportOption.PhoneNo = reqOrder.HosBillingPhone;
-            reportOption.Fax = "1-877-241-7480";
+            reportOption.PhoneNo = reqOrders[0].HosBillingPhone;
+            reportOption.Fax = "NA";
             reportOption.Email = "Need to get More Info On This";
-            reportOption.BillTo = reqOrder.HosiptalName;
-            reportOption.SurgeryDate = (DateTime)reqOrder.SurgeryDate;
-            reportOption.CityState = reqOrder.HosBillingCity + ", " + reqOrder.HosBillingState;
-            reportOption.PhysicianName = reqOrder.PhysicianName;
+            reportOption.BillTo = reqOrders[0].HosiptalName;
+            reportOption.SurgeryDate = (DateTime)reqOrders[0].SurgeryDate;
+            reportOption.CityState = reqOrders[0].HosBillingCity + ", " + reqOrders[0].HosBillingState;
+            reportOption.PhysicianName = reqOrders[0].PhysicianName;
             reportOption.PONum = "P O Num";
-            reportOption.PurchasePhone = "1234567890";
+            reportOption.PurchasePhone = reqOrders[0].HosBillingPhone;
             reportOption.XD = String.Empty;
             reportOption.Sniper = String.Empty;
             reportOption.PS = String.Empty;
@@ -42,14 +46,14 @@ namespace iTraycerSection.Invoice
             reportOption.Facility = String.Empty;
             reportOption.CaseDateTime = DateTime.Now;
             reportOption.Physician = String.Empty;
-            reportOption.ShipTo = reqOrder.ShippingName;
-            reportOption.CaseType = reqOrder.SurgeryType;
-            reportOption.Levels = reqOrder.VerdibraeLevel.ToString();
+            reportOption.ShipTo = reqOrders[0].ShippingName;
+            reportOption.CaseType = reqOrders[0].SurgeryType;
+            reportOption.Levels = reqOrders[0].VerdibraeLevel.ToString();
             reportOption.EffectiveDate = DateTime.Now;
             reportOption.DeliveryCheck = false;
             reportOption.ConsumedLabels = String.Empty;
-            reportOption.HospitalSignature = reqOrder.PhysicianName;
-            reportOption.RepresentativeSignature = reqOrder.RepName;
+            reportOption.HospitalSignature = reqOrders[0].PhysicianName;
+            reportOption.RepresentativeSignature = reqOrders[0].RepName;
             reportOption.RepresentativeSignatureImage = (RepSigatureImg != null) ? RepSigatureImg : null;
             reportOption.HospitalSignatureImage = (HospitalSignatureImg != null) ? HospitalSignatureImg  : null;
             reportOption.PartLOTList = PartDetail.GetPartDetails();
