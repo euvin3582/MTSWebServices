@@ -378,9 +378,39 @@ namespace FacadeRestService
                             }
                             else
                             {
-                                resp.Add(serviceName, "SRVERROR:Unable to create requistion order");
+                                resp.Add(serviceName, "SRVERROR:Unable to create requistion order. Case number did not return a valid requisition invoice.");
                             }
                             responseEnvelope.Response.Add(resp);
+                            break;
+
+                        case "UpdateTrayItemsUsage":
+                            resp = new Dictionary<object, string>();
+                            XmlNode TrayId = payloadChild.SelectSingleNode("//TrayId");
+                            XmlNode LotNumber = payloadChild.SelectSingleNode("//LotNumber");
+                            XmlNode PartNumber = payloadChild.SelectSingleNode("//PartNumber");
+                            XmlNode QntyUsed = payloadChild.SelectSingleNode("//QntyUsed");
+                            XmlNode Type = payloadChild.SelectSingleNode("//Type");
+
+                            if (String.IsNullOrEmpty(TrayId.InnerText) || String.IsNullOrEmpty(PartNumber.InnerText)
+                                || String.IsNullOrEmpty(QntyUsed.InnerText) || String.IsNullOrEmpty(Type.InnerText))
+                            {
+                                resp.Add(serviceName, "SRVERROR:One or more items are empty, all fields are required to purge order usage.");
+                                continue;
+                            }
+                            else
+                            {
+                                bool purge = iTraycerSection.Update.PurgeInventory.PurgeInventroy(TrayId.InnerText, LotNumber.InnerText, PartNumber.InnerText, QntyUsed.InnerText, Type.InnerText);
+
+                                if (purge)
+                                {
+                                    resp.Add(serviceName, "Successfully updated tray usage.");
+                                }
+                                else
+                                {
+                                    resp.Add(serviceName, "Fail to update tray purge usage.");
+                                }
+                                responseEnvelope.Response.Add(resp);
+                            }
                             break;
 
                         case "UpdateSyncTime":
