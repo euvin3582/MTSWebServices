@@ -84,9 +84,9 @@ namespace FacadeRestService
 
         public static String GetInitialTrayTypesBySurgeryType(int customerId)
         {
-            List<SurgeryTypeKitType> surgeryTypeKits = DataLayer.Controller.GetInitialTrayTypesBySurgeryType(customerId);
+            DataTable surgeryTypeKits = DataLayer.Controller.GetInitialTrayTypesBySurgeryType(customerId);
 
-            return surgeryTypeKits.Count > 0 ? JsonConvert.SerializeObject(surgeryTypeKits) : null;
+            return surgeryTypeKits.Rows.Count > 0 ? JsonConvert.SerializeObject(surgeryTypeKits) : null;
         }
 
         public static String GetAllKitTrayUsageDates(DateTime? lastSync)
