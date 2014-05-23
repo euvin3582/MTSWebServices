@@ -10,22 +10,37 @@ by editing this MSBuild file. In order to learn more about this please visit htt
   </PropertyGroup>
   <ItemGroup>
     <File Include="bin/DataLayer.dll">
-      <publishTime>04/07/2014 10:45:10</publishTime>
+      <publishTime>05/22/2014 22:37:26</publishTime>
     </File>
     <File Include="bin/DataLayer.pdb">
-      <publishTime>03/28/2014 14:59:04</publishTime>
+      <publishTime>05/21/2014 16:31:10</publishTime>
     </File>
     <File Include="bin/FacadeRestService.dll">
-      <publishTime>04/07/2014 12:19:35</publishTime>
+      <publishTime>05/22/2014 23:09:08</publishTime>
     </File>
     <File Include="bin/FacadeRestService.pdb">
-      <publishTime>04/07/2014 12:19:35</publishTime>
+      <publishTime>05/22/2014 23:09:08</publishTime>
+    </File>
+    <File Include="bin/Images/checkbox_check.png">
+      <publishTime>05/16/2014 15:32:12</publishTime>
+    </File>
+    <File Include="bin/Images/checkbox_uncheck.png">
+      <publishTime>05/16/2014 15:32:12</publishTime>
+    </File>
+    <File Include="bin/Images/spinewave.jpg">
+      <publishTime>04/25/2014 15:23:01</publishTime>
+    </File>
+    <File Include="bin/Images/spinewave.png">
+      <publishTime>04/25/2014 15:23:01</publishTime>
     </File>
     <File Include="bin/iTarycerSection.dll">
-      <publishTime>04/07/2014 12:19:32</publishTime>
+      <publishTime>05/22/2014 22:37:38</publishTime>
     </File>
     <File Include="bin/iTarycerSection.pdb">
-      <publishTime>04/07/2014 12:19:32</publishTime>
+      <publishTime>05/22/2014 22:37:38</publishTime>
+    </File>
+    <File Include="bin/itextsharp.dll">
+      <publishTime>04/28/2014 12:12:15</publishTime>
     </File>
     <File Include="bin/Microsoft.Practices.EnterpriseLibrary.Common.dll">
       <publishTime>03/25/2014 10:22:13</publishTime>
@@ -46,19 +61,25 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/25/2014 10:22:13</publishTime>
     </File>
     <File Include="bin/MTSUtilities.dll">
-      <publishTime>04/04/2014 17:13:31</publishTime>
+      <publishTime>05/07/2014 16:15:07</publishTime>
     </File>
     <File Include="bin/Newtonsoft.Json.dll">
       <publishTime>03/25/2014 10:22:13</publishTime>
     </File>
     <File Include="bin/NHibernate.dll">
-      <publishTime>03/18/2014 16:38:00</publishTime>
+      <publishTime>04/18/2014 23:43:03</publishTime>
+    </File>
+    <File Include="bin/PDFGenChargesForm.dll">
+      <publishTime>05/21/2014 16:29:07</publishTime>
+    </File>
+    <File Include="bin/PDFGenChargesForm.pdb">
+      <publishTime>05/21/2014 16:29:07</publishTime>
     </File>
     <File Include="FacadeRestService.csproj">
-      <publishTime>04/07/2014 10:45:10</publishTime>
+      <publishTime>05/21/2014 16:32:54</publishTime>
     </File>
     <File Include="FacadeRestService.csproj.user">
-      <publishTime>04/03/2014 14:38:38</publishTime>
+      <publishTime>05/21/2014 16:32:54</publishTime>
     </File>
     <File Include="FacadeRestServiceImpl.svc">
       <publishTime>03/25/2014 10:22:12</publishTime>
@@ -72,17 +93,29 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="FacadeRestServiceImpl.xsd1">
       <publishTime>03/24/2014 10:45:32</publishTime>
     </File>
+    <File Include="Images/checkbox_check.png">
+      <publishTime>05/16/2014 15:32:12</publishTime>
+    </File>
+    <File Include="Images/checkbox_uncheck.png">
+      <publishTime>05/16/2014 15:32:12</publishTime>
+    </File>
+    <File Include="Images/spinewave.jpg">
+      <publishTime>05/16/2014 15:32:12</publishTime>
+    </File>
+    <File Include="Images/spinewave.png">
+      <publishTime>05/16/2014 15:32:12</publishTime>
+    </File>
     <File Include="PrecompiledApp.config">
-      <publishTime>04/07/2014 12:19:36</publishTime>
+      <publishTime>05/22/2014 23:09:09</publishTime>
     </File>
     <File Include="Properties/PublishProfiles/LocalDeploy.pubxml">
       <publishTime>03/25/2014 10:22:12</publishTime>
     </File>
     <File Include="Properties/PublishProfiles/WebService.pubxml">
-      <publishTime>03/26/2014 11:58:14</publishTime>
+      <publishTime>05/16/2014 15:31:22</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>04/07/2014 10:45:46</publishTime>
+      <publishTime>05/21/2014 16:29:24</publishTime>
     </File>
     <File Include="Web.Debug.config">
       <publishTime>03/25/2014 10:22:12</publishTime>

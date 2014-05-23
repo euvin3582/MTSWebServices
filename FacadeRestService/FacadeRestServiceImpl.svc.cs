@@ -34,7 +34,7 @@ namespace FacadeRestService
             // build response envelope
             JsonEnvelope responseEnvelope = new JsonEnvelope();
             XmlNode[] serviceQueueNodes = null;
-            
+            responseEnvelope.SyncResponseTime = DateTime.UtcNow.ToString("o");
 
             // check to see if the appLaunchCount is present, if it is convert it to an int and see if its greater than 1
             if (((!String.IsNullOrEmpty(requestEnvelope.AppLaunchCount)) ? Convert.ToInt32(requestEnvelope.AppLaunchCount) : 1) > 1)
@@ -414,7 +414,7 @@ namespace FacadeRestService
                             break;
 
                         case "UpdateSyncTime":
-                            DateTime sync = DateTime.UtcNow;
+                            DateTime sync = Convert.ToDateTime(responseEnvelope.SyncResponseTime);
                             
                             if (!Session.UpdateLastSyncTime(Session.userInfo, requestEnvelope.DevID, sync))
                             {
@@ -422,7 +422,6 @@ namespace FacadeRestService
                                 resp.Add("SRVERROR", "Fail to update sync time for request");
                                 responseEnvelope.Response.Add(resp);
                             }
-                            responseEnvelope.SyncResponseTime = sync.ToString();
                             break;
                     }
                 }
