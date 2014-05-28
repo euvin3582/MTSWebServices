@@ -282,7 +282,7 @@ namespace FacadeRestService
                             break;
                         case "InitTrayTypesBySurgeryType":
                             resp = new Dictionary<object, string>();
-                            data = FacadeRestService.InitData.GetInitialTrayTypesBySurgeryType(Session.userInfo.CustomerId);
+                            data = FacadeRestService.InitData.GetInitialTrayTypesBySurgeryType(Session.userInfo.MfgId);
 
                             if (!String.IsNullOrEmpty(data))
                             {
