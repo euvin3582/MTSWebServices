@@ -89,14 +89,14 @@ namespace FacadeRestService
             return surgeryTypeKits.Rows.Count > 0 ? JsonConvert.SerializeObject(surgeryTypeKits) : null;
         }
 
-        public static String GetAllKitTrayUsageDates(DateTime? lastSync)
+        public static String GetAllKitTrayUsageDates(DateTime? lastSync = null)
         {
             DataTable usageDateTable = null;
 
             if (lastSync == null)
-                usageDateTable = DataLayer.Controller.GetAllKitTrayUsageDatesByRepId(Session.userInfo.Id);
+                usageDateTable = DataLayer.Controller.GetAllKitTrayUsageDatesByCompanyId(Session.userInfo.CustomerId);
             else
-                usageDateTable = DataLayer.Controller.GetAllKitTrayUsageDatesByRepId(Session.userInfo.Id, lastSync);
+                usageDateTable = DataLayer.Controller.GetAllKitTrayUsageDatesByCompanyId(Session.userInfo.CustomerId, lastSync);
 
             return SerializeTable(usageDateTable);
         }
