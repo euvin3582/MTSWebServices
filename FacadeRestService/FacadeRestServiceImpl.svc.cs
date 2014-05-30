@@ -5,13 +5,15 @@ using System.ServiceModel;
 using System.Xml;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
-using iTraycerSection.Session;
 using DataLayer.domains;
 using iTraycerSection.Invoice;
 using System.Drawing;
 using iTraycerSection.Domain;
 using System.Data;
 using System.Text;
+using iTraycerSection.Case;
+using iTraycerSection.Conflict;
+using iTraycerSection.Session;
 
 namespace FacadeRestService
 {
@@ -40,7 +42,7 @@ namespace FacadeRestService
             if (((!String.IsNullOrEmpty(requestEnvelope.AppLaunchCount)) ? Convert.ToInt32(requestEnvelope.AppLaunchCount) : 1) > 1)
             {
                 // changes the current ServiceQueues array and adds the new one to it with the missing Sync Elements
-                requestEnvelope.ServiceQueues[0] = FacadeRestService.InitData.AddSyncObjects(payload, requestEnvelope);
+                requestEnvelope.ServiceQueues[0] = iTraycerSection.InitData.InitData.AddSyncObjects(payload, requestEnvelope);
             }
 
             // create service name list to access in switch (needs to be done after the new objects are added to it)
@@ -214,10 +216,9 @@ namespace FacadeRestService
                         // its a sync object
                         #region Init Data Downloads
                         case "InitCases":
-                            //payloadChild.InnerText;
                             resp = new Dictionary<object, string>();
 
-                            data = InitData.GetInitialCaseData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
+                            data = iTraycerSection.InitData.InitData.GetInitialCaseData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
                             
                             if (!String.IsNullOrEmpty(data))
                             {
@@ -228,7 +229,7 @@ namespace FacadeRestService
 
                         case "InitInventory":
                             resp = new Dictionary<object, string>();
-                            data = FacadeRestService.InitData.GetInitialInventoryData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
+                            data = iTraycerSection.InitData.InitData.GetInitialInventoryData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
                             
                             if (!String.IsNullOrEmpty(data))
                             {
@@ -239,7 +240,7 @@ namespace FacadeRestService
 
                         case "InitDoctors":
                             resp = new Dictionary<object, string>();
-                            data = FacadeRestService.InitData.GetInitialDoctorsData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
+                            data = iTraycerSection.InitData.InitData.GetInitialDoctorsData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
                             
                             if (!String.IsNullOrEmpty(data))
                             {
@@ -250,7 +251,7 @@ namespace FacadeRestService
 
                         case "InitAddresses":
                             resp = new Dictionary<object, string>();
-                            data = FacadeRestService.InitData.GetInitialAddressData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
+                            data = iTraycerSection.InitData.InitData.GetInitialAddressData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
 
                             if (!String.IsNullOrEmpty(data))
                             {
@@ -261,7 +262,7 @@ namespace FacadeRestService
 
                         case "InitStatus":
                             resp = new Dictionary<object, string>();
-                            data = FacadeRestService.InitData.GetInitialStatusTableData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
+                            data = iTraycerSection.InitData.InitData.GetInitialStatusTableData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
 
                             if (!String.IsNullOrEmpty(data))
                             {
@@ -272,7 +273,7 @@ namespace FacadeRestService
 
                         case "InitKitAllocation":
                             resp = new Dictionary<object, string>();
-                            data = FacadeRestService.InitData.GetAllKitTrayUsageDates(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
+                            data = iTraycerSection.InitData.InitData.GetAllKitTrayUsageDates(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
 
                             if (!String.IsNullOrEmpty(data))
                             {
@@ -282,7 +283,7 @@ namespace FacadeRestService
                             break;
                         case "InitTrayTypesBySurgeryType":
                             resp = new Dictionary<object, string>();
-                            data = FacadeRestService.InitData.GetInitialTrayTypesBySurgeryType(Session.userInfo.MfgId);
+                            data = iTraycerSection.InitData.InitData.GetInitialTrayTypesBySurgeryType(Session.userInfo.MfgId);
 
                             if (!String.IsNullOrEmpty(data))
                             {
@@ -296,48 +297,52 @@ namespace FacadeRestService
                             break;
                         #endregion
 
-                        case "CreateCase":
+                        case "GetAddressesByLatLong":
                             resp = new Dictionary<object, string>();
-                            List<XmlNode> nodeList = new List<XmlNode>(){
-                                payloadChild.SelectSingleNode("//CaseId"),
-                                payloadChild.SelectSingleNode("//SurgeonId"),
-                                payloadChild.SelectSingleNode("//SurgeryDate"),
-                                payloadChild.SelectSingleNode("//DeliverByDate"),
-                                payloadChild.SelectSingleNode("//VerdibraeLevel"),
-                                payloadChild.SelectSingleNode("//ModifiedDate"),
-                                payloadChild.SelectSingleNode("//SurgeryType"),
-                                payloadChild.SelectSingleNode("//MedicalRecordNumber"),
-                                payloadChild.SelectSingleNode("//PatientId"),
-                                payloadChild.SelectSingleNode("//SurgeryStatus"),
-                                payloadChild.SelectSingleNode("//LocationId"),
-                                payloadChild.SelectSingleNode("//LoanerFlag"),
-                                payloadChild.SelectSingleNode("//OrderSourceId"),
-                                payloadChild.SelectSingleNode("//KitTypeNumber"),
-                                payloadChild.SelectSingleNode("//PartNumber"),
-                                payloadChild.SelectSingleNode("//LocationId")};
+                            DataTable address = iTraycerSection.Address.AddressesInfo.GetAddressByLatLong(payloadChild);
 
-
-                            ScheduleInfo obj = new ScheduleInfo(nodeList);
-                            obj.RepId = Session.userInfo.Id;
-                            obj.CompanyId = Session.userInfo.CustomerId;
-                            if (obj.Id < 0)
+                            if (address != null)
                             {
-                                obj.CreatedDate = DateTime.UtcNow;
-                                int caseId = DataLayer.Controller.InsertSchedule(obj);
-                                if (caseId == 0)
-                                    resp.Add(serviceName, "SRVERROR:Failed to create case");
-                                else
-                                    resp.Add(serviceName, JsonConvert.SerializeObject(obj));
+                                resp.Add(serviceName, JsonConvert.SerializeObject(address));
                             }
                             else
                             {
-                                int update = DataLayer.Controller.UpdateScheduleByScheduleId(obj);
-
-                                if (update > 0)
-                                    resp.Add(serviceName, JsonConvert.SerializeObject(obj));
-                                else
-                                    resp.Add(serviceName, "SRVERROR:Failed update case");
+                                resp.Add(serviceName, Session.errorMessage);
                             }
+                            responseEnvelope.Response.Add(resp);
+                            break;
+
+                        case "CreateCase":
+                            resp = new Dictionary<object, string>();
+                            ScheduleInfo obj = CaseScheduler.CreateScheduleInfoObj(payloadChild);
+
+                            if (obj != null)
+                            {
+                                obj.RepId = Session.userInfo.Id;
+                                obj.CompanyId = Session.userInfo.CustomerId;
+
+                                if (ConflictResolution.CheckForSchedulingConflict(obj))
+                                {
+                                    if (obj.Id < 0)
+                                    {
+                                        if (DataLayer.Controller.InsertSchedule(obj) == 0)
+                                            resp.Add(serviceName, "SRVERROR:Failed to create case");
+                                        else
+                                            resp.Add(serviceName, JsonConvert.SerializeObject(obj));
+                                    }
+                                    else
+                                    {
+                                        int update = DataLayer.Controller.UpdateScheduleByScheduleId(obj);
+
+                                        if (update > 0)
+                                            resp.Add(serviceName, JsonConvert.SerializeObject(obj));
+                                        else
+                                            resp.Add(serviceName, "SRVERROR:Failed update case");
+                                    }
+                                }
+                            } else
+                                resp.Add(serviceName, "SRVERROR:Failed to create case schedule object");
+                            
                             responseEnvelope.Response.Add(resp);
                             break;
 

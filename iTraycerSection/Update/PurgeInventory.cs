@@ -11,7 +11,7 @@ namespace iTraycerSection.Update
     {
         public static bool PurgeInventroy(string trayId, string lotNumber, string partNumber, string qntyUsed, string type)
         {
-            UserInfo userInfo = Session.Session.userInfo;
+            UserInfo userInfo = iTraycerSection.Session.Session.userInfo;
 
             return DataLayer.Controller.PurgeInventory(trayId, lotNumber, partNumber, userInfo.CustomerId.ToString(), userInfo.Id.ToString(), 
                 userInfo.Id.ToString(), "", qntyUsed.ToString(), type);

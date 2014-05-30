@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
-namespace FacadeRestService
+namespace iTraycerSection.Domain
 {
     [DataContract]
     [XmlRoot("root")]

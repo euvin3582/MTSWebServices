@@ -31,7 +31,7 @@ namespace iTraycerSection.Validation
             }
             else
             {
-                Session.Session.errorMessage = "SRVERROR:Fail to update launch count";
+                iTraycerSection.Session.Session.errorMessage = "SRVERROR:Fail to update launch count";
             }
             return false;
         }

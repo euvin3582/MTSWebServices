@@ -56,6 +56,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Address\AddressesInfo.cs" />
+    <Compile Include="Case\CaseScheduler.cs" />
     <Compile Include="Conflict\ConflictResolution.cs" />
     <Compile Include="Device\Device.cs" />
     <Compile Include="Domain\JsonEnvelope.cs" />

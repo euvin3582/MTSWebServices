@@ -1,12 +1,12 @@
 ﻿using DataLayer.domains;
-using iTraycerSection.Session;
+using iTraycerSection.Domain;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Xml;
 
-namespace FacadeRestService
+namespace iTraycerSection.InitData
 {
     public class InitData
     {
@@ -15,13 +15,13 @@ namespace FacadeRestService
 
             if (lastSync == null)
             {
-                cases = Session.userInfo.IsSuperUser ?
-                        DataLayer.Controller.GetSchedulesByCustomerId(Session.userInfo.CustomerId) :
-                        DataLayer.Controller.GetSchedulesByRep(Session.userInfo);
+                cases = Session.Session.userInfo.IsSuperUser ?
+                        DataLayer.Controller.GetSchedulesByCustomerId(Session.Session.userInfo.CustomerId) :
+                        DataLayer.Controller.GetSchedulesByRep(Session.Session.userInfo);
             }
             else
             {
-                cases = DataLayer.Controller.GetSchedulesByCustomerIdDateTime(Session.userInfo.CustomerId, lastSync);
+                cases = DataLayer.Controller.GetSchedulesByCustomerIdDateTime(Session.Session.userInfo.CustomerId, lastSync);
             }
             return cases.Count > 0 ? JsonConvert.SerializeObject(cases) : null;
         }
@@ -32,15 +32,15 @@ namespace FacadeRestService
 
             if (lastSync == null)
             {
-                inventory = Session.userInfo.IsSuperUser ?
-                        DataLayer.Controller.GetAllInventoryInfoByCompanyId(Session.userInfo.CustomerId) :
-                        DataLayer.Controller.GetAllInventoryInfoByRepId(Session.userInfo.Id);
+                inventory = Session.Session.userInfo.IsSuperUser ?
+                        DataLayer.Controller.GetAllInventoryInfoByCompanyId(Session.Session.userInfo.CustomerId) :
+                        DataLayer.Controller.GetAllInventoryInfoByRepId(Session.Session.userInfo.Id);
             }
             else
             {
-                inventory = Session.userInfo.IsSuperUser ?
-                        DataLayer.Controller.GetAllInventoryInfoByCompanyId(Session.userInfo.CustomerId, Session.lastSync) :
-                        DataLayer.Controller.GetAllInventoryInfoByRepId(Session.userInfo.Id, Session.lastSync);
+                inventory = Session.Session.userInfo.IsSuperUser ?
+                        DataLayer.Controller.GetAllInventoryInfoByCompanyId(Session.Session.userInfo.CustomerId, Session.Session.lastSync) :
+                        DataLayer.Controller.GetAllInventoryInfoByRepId(Session.Session.userInfo.Id, Session.Session.lastSync);
             }
             return SerializeTable(inventory);
         }
@@ -50,9 +50,9 @@ namespace FacadeRestService
             DataTable doctorsList = null;
 
             if (lastSync == null)
-                doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.userInfo.Id);
+                doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.Session.userInfo.Id);
             else
-                doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.userInfo.Id, Session.lastSync);
+                doctorsList = DataLayer.Controller.GetDocotorHospitalFilterByRepId(Session.Session.userInfo.Id, Session.Session.lastSync);
 
             return SerializeTable(doctorsList);
         }
@@ -63,9 +63,9 @@ namespace FacadeRestService
 
             // get Address list depending on user role
             if (lastSync == null)
-                repAddressInfoList = DataLayer.Controller.GetAddressesWithSourceTypeByRepRepRole(Session.userInfo);
+                repAddressInfoList = DataLayer.Controller.GetAddressesWithSourceTypeByRepRepRole(Session.Session.userInfo);
             else
-                repAddressInfoList = DataLayer.Controller.GetAddressesWithSourceTypeByRepRepRole(Session.userInfo, lastSync);
+                repAddressInfoList = DataLayer.Controller.GetAddressesWithSourceTypeByRepRepRole(Session.Session.userInfo, lastSync);
 
             return SerializeTable(repAddressInfoList);
         }
@@ -94,9 +94,9 @@ namespace FacadeRestService
             DataTable usageDateTable = null;
 
             if (lastSync == null)
-                usageDateTable = DataLayer.Controller.GetAllKitTrayUsageDatesByCompanyId(Session.userInfo.CustomerId);
+                usageDateTable = DataLayer.Controller.GetAllKitTrayUsageDatesByCompanyId(Session.Session.userInfo.CustomerId);
             else
-                usageDateTable = DataLayer.Controller.GetAllKitTrayUsageDatesByCompanyId(Session.userInfo.CustomerId, lastSync);
+                usageDateTable = DataLayer.Controller.GetAllKitTrayUsageDatesByCompanyId(Session.Session.userInfo.CustomerId, lastSync);
 
             return SerializeTable(usageDateTable);
         }
