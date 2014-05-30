@@ -302,13 +302,10 @@ namespace FacadeRestService
                             DataTable address = iTraycerSection.Address.AddressesInfo.GetAddressByLatLong(payloadChild);
 
                             if (address != null)
-                            {
                                 resp.Add(serviceName, JsonConvert.SerializeObject(address));
-                            }
                             else
-                            {
-                                resp.Add(serviceName, Session.errorMessage);
-                            }
+                                resp.Add(serviceName, "A Latitude or Longitude was not provided");
+
                             responseEnvelope.Response.Add(resp);
                             break;
 

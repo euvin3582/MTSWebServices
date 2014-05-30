@@ -61,7 +61,6 @@ namespace iTraycerSection.InitData
         {
             DataTable repAddressInfoList = null;
 
-            // get Address list depending on user role
             if (lastSync == null)
                 repAddressInfoList = DataLayer.Controller.GetAddressesWithSourceTypeByRepRepRole(Session.Session.userInfo);
             else

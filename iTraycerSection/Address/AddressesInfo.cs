@@ -18,9 +18,12 @@ namespace iTraycerSection.Address
 
             if (Latitude == null && Longitude == null)
             {
-                Session.Session.errorMessage = "A Latitude or Longitude was not provided";
+                return null;
             } else
-                return DataLayer.Controller.GetClosesAddressByLatLong(Convert.ToDecimal(Latitude.InnerText), Convert.ToDecimal(Longitude.InnerText));
+                return DataLayer.Controller.GetClosesAddressByLatLong(String.IsNullOrEmpty(Latitude.InnerText) ?
+                                                                        null : (Decimal?)Convert.ToDecimal(Latitude.InnerText), 
+                                                                      String.IsNullOrEmpty(Longitude.InnerText) ?
+                                                                        null : (Decimal?)Convert.ToDecimal(Longitude.InnerText));
 
             return null;
         }
