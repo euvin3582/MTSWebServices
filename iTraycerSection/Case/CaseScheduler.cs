@@ -28,8 +28,8 @@ namespace iTraycerSection.Case
                                 node.SelectSingleNode("//OrderSourceId"),
                                 node.SelectSingleNode("//KitTypeNumber"),
                                 node.SelectSingleNode("//PartNumber"),
-                                node.SelectSingleNode("//LocationId"),
-                                node.SelectSingleNode("//HospitalId")};
+                                node.SelectSingleNode("//CreatedDate")};
+
 
             return new ScheduleInfo(nodeList);
         }

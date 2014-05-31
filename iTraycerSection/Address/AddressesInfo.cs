@@ -24,8 +24,6 @@ namespace iTraycerSection.Address
                                                                         null : (Decimal?)Convert.ToDecimal(Latitude.InnerText), 
                                                                       String.IsNullOrEmpty(Longitude.InnerText) ?
                                                                         null : (Decimal?)Convert.ToDecimal(Longitude.InnerText));
-
-            return null;
         }
     }
 }

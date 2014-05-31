@@ -318,7 +318,7 @@ namespace FacadeRestService
                                 obj.RepId = Session.userInfo.Id;
                                 obj.CompanyId = Session.userInfo.CustomerId;
 
-                                if (ConflictResolution.CheckForSchedulingConflict(obj))
+                                if (!ConflictResolution.CheckForConflict("SCheduledConflict", obj))
                                 {
                                     if (obj.Id < 0)
                                     {
@@ -337,6 +337,8 @@ namespace FacadeRestService
                                             resp.Add(serviceName, "SRVERROR:Failed update case");
                                     }
                                 }
+                                else
+                                    resp.Add(serviceName, "SRVERROR:A Schedule conflict was detected");
                             } else
                                 resp.Add(serviceName, "SRVERROR:Failed to create case schedule object");
                             
