@@ -29,8 +29,6 @@ namespace iTraycerSection.Case
                                 node.SelectSingleNode("//KitTypeNumber"),
                                 node.SelectSingleNode("//PartNumber"),
                                 node.SelectSingleNode("//CreatedDate")};
-
-
             return new ScheduleInfo(nodeList);
         }
     }
