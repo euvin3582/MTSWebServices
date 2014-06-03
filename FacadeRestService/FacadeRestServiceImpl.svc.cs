@@ -317,6 +317,7 @@ namespace FacadeRestService
                             {
                                 obj.RepId = Session.userInfo.Id;
                                 obj.CompanyId = Session.userInfo.CustomerId;
+                                obj.CreatedByRepId = Session.userInfo.Id;
 
                                 if (!ConflictResolution.CheckForConflict("SCheduledConflict", obj))
                                 {
