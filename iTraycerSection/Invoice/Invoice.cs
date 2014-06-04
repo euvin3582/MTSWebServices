@@ -61,7 +61,7 @@ namespace iTraycerSection.Invoice
             return PDfHelper.CreatePdfDoc(reportOption, (customerLogo != null) ? customerLogo : null);
         }
 
-        public iTextSharp.text.Image ResizeAndConvert(String imgString = null, System.Drawing.Image imgObj = null)
+        private iTextSharp.text.Image ResizeAndConvert(String imgString = null, System.Drawing.Image imgObj = null)
         {
             bool imageOversize = false;
             System.Drawing.Image resizeImage = null;
@@ -77,11 +77,6 @@ namespace iTraycerSection.Invoice
                     resizeImage = MTSUtilities.ImageUtilities.ImageScaling.ScaleImage(imgObj, 300, 60);
             }
             return iTextSharp.text.Image.GetInstance(imageOversize ? resizeImage : imgObj, MTSUtilities.ImageUtilities.ImageAttributes.GetImageFormat(imgObj));
-        }
-
-        public System.Drawing.Image GetCaseSigImage(int caseNumber)
-        {
-            return null;        
         }
 
         public void CreatePdfDocumentFromByteArray(Byte[] pdfMs)
@@ -103,13 +98,30 @@ namespace iTraycerSection.Invoice
         {
             String defaultFilePath = ConfigurationManager.AppSettings["PDFFilePath"];
             Guid guid = Guid.NewGuid();
-            String fileName = defaultFilePath + guid.ToString() + ".pdf";
 
-            using (FileStream file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+            MemoryStream memoryStream = new MemoryStream(pdfMs);
+            return memoryStream;
+        }
+
+        public static int SaveRequistionToDB(int caseId, Byte[] pdfMs)
+        {
+            iTraycerSection.Session.Session.errorMessage = null;
+            int row = -1;
+
+            try
             {
-                MemoryStream memoryStream = new MemoryStream(pdfMs);
-                return memoryStream;
+                row = DataLayer.Controller.UpdateSurgeryDetailsRequistionColumn(caseId, pdfMs);
+
+                if(row == 0)
+                {
+                    iTraycerSection.Session.Session.errorMessage = String.Format("Fail to insert requistion invoice for case {0}", caseId);
+                }
             }
+            catch (Exception ex)
+            {
+                iTraycerSection.Session.Session.errorMessage = "Requistion Insert Fail. StackTrace: " + ex.Message;
+            }
+            return row;
         }
     }
 }

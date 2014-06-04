@@ -69,6 +69,7 @@ namespace FacadeRestService
                     }
                     catch (Exception e)
                     {
+                        // store envelope and do forensics
                         resp = new Dictionary<object, string>();
                         resp.Add("SRVERROR", "Service request objects envelope does not match. StackTrace: " + e.StackTrace);
                         responseEnvelope.Response.Add(resp);
@@ -191,7 +192,7 @@ namespace FacadeRestService
                             }
                             else
                             {
-                                if (!Session.UpdateApplicationInfo(Session.userInfo, DeviceId.InnerText))
+                                if (Session.UpdateApplicationInfo(Session.userInfo, DeviceId.InnerText))
                                     resp.Add(serviceName, "SRVERROR:Device already registered, information updated");
                                 else
                                     resp.Add(serviceName, "SRVERROR:Fail to update Device Info");
@@ -312,9 +313,14 @@ namespace FacadeRestService
                         case "CreateCase":
                             resp = new Dictionary<object, string>();
                             ScheduleInfo obj = CaseScheduler.CreateScheduleInfoObj(payloadChild);
-
+                        
                             if (obj != null)
                             {
+                                if (obj.SurgeonId == -1)
+                                {
+                                    obj.SurgeonId = CaseScheduler.CreateDoctor(obj.Surgeon, obj.LocationId);
+                                }
+
                                 obj.RepId = Session.userInfo.Id;
                                 obj.CompanyId = Session.userInfo.CustomerId;
                                 obj.CreatedByRepId = Session.userInfo.Id;
@@ -379,7 +385,17 @@ namespace FacadeRestService
                             {
                                 byte[] pdfBA = invoice.CreateInvoice(reqOrders, repSig, hosSig);
                                 string pdfString = Convert.ToBase64String(pdfBA, 0, pdfBA.Length);
-                                resp.Add(serviceName, pdfString);
+
+                                if (Invoice.SaveRequistionToDB(Convert.ToInt32(CaseId.InnerText), pdfBA) > 0)
+                                {
+                                    if (iTraycerSection.Session.Session.errorMessage != null)
+                                    {
+                                        resp.Add(serviceName, iTraycerSection.Session.Session.errorMessage);
+                                    }
+                                    resp.Add(serviceName, "Successfully store Requistion Invoice into MTSSurgeryDetails Table");
+                                }
+                                else
+                                    resp.Add(serviceName, "Fail to store Requisition Invoice into MTSSurgeryDetails Table");
                             }
                             else
                             {

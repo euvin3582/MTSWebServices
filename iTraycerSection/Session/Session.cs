@@ -72,7 +72,7 @@ namespace iTraycerSection.Session
 
         public static bool UpdateApplicationInfo(UserInfo userInfo, String deviceId)
         {
-            return DataLayer.Controller.UpdateiTraycerApplicationInfo(userInfo, deviceId) >= 1;
+            return DataLayer.Controller.UpdateiTraycerApplicationInfo(userInfo, deviceId) > 0;
         }
     }
 }
