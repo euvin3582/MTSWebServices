@@ -41,25 +41,25 @@ namespace iTraycerSection.Case
             }
         }
 
-        public static int CreateDoctor(string docName, int hospitalId)
+        public static int CreateDoctor(ScheduleInfo obj)
         {
             DoctorInfo newDoctor = new DoctorInfo();
 
-            if (docName == null || !Regex.IsMatch(docName, @"^[\p{L}\p{M}' \.\-]+$"))
+            if (obj.Surgeon == null || !Regex.IsMatch(obj.Surgeon, @"^[\p{L}\p{M}' \.\-]+$"))
             {
                 Session.Session.errorMessage = "Invalid Doctor name";
                 return -1;
             }
 
-            string[] separators = { ",", ".", "!", "?", ";", ":", @"\s+" };
-            string[] name = docName.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+            string[] name = Regex.Split(obj.Surgeon, @"^[.,!?;:]\s*|\s+");
 
             if (name.Length > 1)
             {
                 newDoctor.FirstName = name[0];
                 newDoctor.LastName = name[1];
-                newDoctor.DoctorName = docName;
-                newDoctor.HospitalId = hospitalId;
+                newDoctor.DoctorName = obj.Surgeon;
+                newDoctor.HospitalId = obj.LocationId;
+                newDoctor.DoctorType = obj.SurgeryType;
                 newDoctor.Distributor = iTraycerSection.Session.Session.userInfo.CustomerId;
             }
             return DataLayer.Controller.InsertDoctor(newDoctor);

@@ -193,7 +193,7 @@ namespace FacadeRestService
                             else
                             {
                                 if (Session.UpdateApplicationInfo(Session.userInfo, DeviceId.InnerText))
-                                    resp.Add(serviceName, "SRVERROR:Device already registered, information updated");
+                                    resp.Add(serviceName, "SRVWARNING:Device already registered, information updated");
                                 else
                                     resp.Add(serviceName, "SRVERROR:Fail to update Device Info");
                                 responseEnvelope.Response.Add(resp);
@@ -316,23 +316,26 @@ namespace FacadeRestService
                         
                             if (obj != null)
                             {
-                                if (obj.SurgeonId == -1)
+                                if (obj.SurgeonId < 0)
                                 {
-                                    obj.SurgeonId = CaseScheduler.CreateDoctor(obj.Surgeon, obj.LocationId);
+                                    obj.RepId = Session.userInfo.Id;
+                                    obj.CompanyId = Session.userInfo.CustomerId;
+                                    obj.CreatedByRepId = Session.userInfo.Id;
+                                    obj.SurgeonId = CaseScheduler.CreateDoctor(obj);
+                                    obj.SurgeonInfo.Id = obj.SurgeonId;
                                 }
-
-                                obj.RepId = Session.userInfo.Id;
-                                obj.CompanyId = Session.userInfo.CustomerId;
-                                obj.CreatedByRepId = Session.userInfo.Id;
 
                                 if (!ConflictResolution.CheckForConflict("SCheduledConflict", obj))
                                 {
                                     if (obj.Id < 0)
                                     {
-                                        if (DataLayer.Controller.InsertSchedule(obj) == 0)
-                                            resp.Add(serviceName, "SRVERROR:Failed to create case");
-                                        else
+                                        // Inserts the new Case Id back into the schedule object
+                                        obj.Id = DataLayer.Controller.InsertSchedule(obj);
+
+                                        if (obj.Id > 0)
                                             resp.Add(serviceName, JsonConvert.SerializeObject(obj));
+                                        else
+                                            resp.Add(serviceName, "SRVERROR:Failed to create case");
                                     }
                                     else
                                     {
