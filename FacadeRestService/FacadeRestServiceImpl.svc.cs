@@ -14,6 +14,7 @@ using System.Text;
 using iTraycerSection.Case;
 using iTraycerSection.Conflict;
 using iTraycerSection.Session;
+using MTSUtilities.Enums;
 
 namespace FacadeRestService
 {
@@ -22,6 +23,7 @@ namespace FacadeRestService
     {
         public string CreateSession()
         {
+            MTSLoggerLib.Entities.Logger.MobileLog item = new MTSLoggerLib.Entities.Logger.MobileLog();
             string bodyRequest = OperationContext.Current.RequestContext.RequestMessage.ToString();
            
             XmlDocument payload = new XmlDocument();
@@ -51,6 +53,11 @@ namespace FacadeRestService
                 serviceQueueNodes = (XmlNode[])requestEnvelope.ServiceQueues[0];
             }
 
+            //fill SrvError Loging object
+            item.DeviceId = requestEnvelope.DevID;
+            item.JsonRequestEnvelope = bodyRequest;
+            item.RequestTime = Convert.ToDateTime(requestEnvelope.SyncRequestTime);
+
             if(serviceQueueNodes.Length > 1)
             {
                 // create response dictionary and create response envelope
@@ -67,12 +74,19 @@ namespace FacadeRestService
                     {
                         payloadChild.LoadXml(serviceQueueNodes[i + 1].ChildNodes[0].OuterXml);
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
+                        // Add info to Db Log Error object
+                        item.SrvErrorMsg = "Service request objects envelope does not match";
+                        item.ErrorObjectName = SrvErrorEnum.SrvErrorLevel.SRVERROR.ToString();
+                        item.SrvErrorException = ex.Message.ToString();
+
                         // store envelope and do forensics
                         resp = new Dictionary<object, string>();
-                        resp.Add("SRVERROR", "Service request objects envelope does not match. StackTrace: " + e.StackTrace);
+                        resp.Add(item.ErrorObjectName, item.SrvErrorMsg + ". StackTrace: " + ex.StackTrace);
+                        
                         responseEnvelope.Response.Add(resp);
+                        MTSUtilities.Logger.Log.MOBILEToDB(item);
                         continue;
                     }
 
@@ -84,9 +98,14 @@ namespace FacadeRestService
 
                     if (String.IsNullOrEmpty(serviceName))
                     {
+                        // Add info to Db Log Error object
+                        item.SrvErrorMsg = "No service name was specified";
+                        item.ErrorObjectName = SrvErrorEnum.SrvErrorLevel.SRVERROR.ToString();
+
                         resp = new Dictionary<object, string>();
-                        resp.Add("SRVERROR", "No service name was specified");
+                        resp.Add(item.ErrorObjectName, item.SrvErrorMsg);
                         responseEnvelope.Response.Add(resp);
+                        MTSUtilities.Logger.Log.MOBILEToDB(item);
                     }
 
                     bool validToken  = !String.IsNullOrEmpty(requestEnvelope.MtsToken) || !String.IsNullOrEmpty(responseEnvelope.MtsToken);
@@ -98,26 +117,38 @@ namespace FacadeRestService
 
                         if (!sessionValid)
                         {
+                            item.SrvErrorMsg = (Session.errorMessage == null) ? "Session Expired" : Session.errorMessage;
+
                             resp = new Dictionary<object, string>();
-                            resp.Add(serviceName, (Session.errorMessage == null) ? "Session Expired" : Session.errorMessage);
+                            item.ErrorObjectName = serviceName;
+
+                            resp.Add(serviceName, item.SrvErrorMsg);
                             responseEnvelope.Response.Add(resp);
+                            MTSUtilities.Logger.Log.MOBILEToDB(item);
                             break;
                         }
                     }
                     else if (authObject.Count == 0)
                     {
+                        item.SrvErrorMsg = "MTSMobileAuth was not sent or a valid authorization token found";
+                        item.ErrorObjectName = SrvErrorEnum.SrvErrorLevel.SRVERROR.ToString();
+
                         resp = new Dictionary<object, string>();
-                        resp.Add("SRVERROR", "MTSMobileAuth was not sent or a valid authorization token found");
+                        resp.Add(item.ErrorObjectName, item.SrvErrorMsg);
                         responseEnvelope.Response.Add(resp);
+                        MTSUtilities.Logger.Log.MOBILEToDB(item);
                         break;
                     }
+
+                    // assign server error name and create new response object on the top level
+                    item.ErrorObjectName = serviceName;
+                    resp = new Dictionary<object, string>();
 
                     switch (serviceName)
                     {
                         case "MTSMobileAuth":
                             XmlNode email = payloadChild.SelectSingleNode("//Email");
                             XmlNode password = payloadChild.SelectSingleNode("//Password");
-                            resp = new Dictionary<object, string>();
                             string[] authResponse = new string[3];
 
                             // validate the user
@@ -147,7 +178,6 @@ namespace FacadeRestService
                             XmlNode DeviceId = payloadChild.SelectSingleNode("//DeviceID");
                             XmlNode DeviceOsVersion = payloadChild.SelectSingleNode("//DeviceOSVersion");
                             XmlNode DevicePlatform = payloadChild.SelectSingleNode("//DevicePlatform");
-                            resp = new Dictionary<object, string>();
                             
                             // validate all data first
                             if (DeviceId != null || DeviceOsVersion != null || DevicePlatform != null){
@@ -155,9 +185,11 @@ namespace FacadeRestService
                                 device.DeviceOsVersion = DeviceOsVersion.InnerText;
                                 device.Platform = DevicePlatform.InnerText;
                             } else{
-                                resp.Add(serviceName, "SRVERROR:Fail to provide device info: DeviceId, DeviceOsVersion or DevicePlatform");
+                                item.SrvErrorMsg = "SRVERROR:Fail to provide device info: DeviceId, DeviceOsVersion or DevicePlatform";
+
+                                resp.Add(serviceName, item.SrvErrorMsg);
                                 responseEnvelope.Response.Add(resp);
-                                responseEnvelope.Commit = "false";
+                                MTSUtilities.Logger.Log.MOBILEToDB(item);
                                 break;
                             }
 
@@ -184,20 +216,33 @@ namespace FacadeRestService
                                 }
                                 else
                                 {
-                                    resp.Add(serviceName, "SRVERROR:Failed to register device");
+                                    item.SrvErrorMsg = "SRVERROR:Failed to register device";
+
+                                    resp.Add(serviceName, item.SrvErrorMsg);
                                     responseEnvelope.Response.Add(resp);
-                                    responseEnvelope.Commit = "false";
+                                    MTSUtilities.Logger.Log.MOBILEToDB(item);
                                     break;
                                 }   
                             }
                             else
                             {
+                                item.ErrorObjectName = serviceName;
+
                                 if (Session.UpdateApplicationInfo(Session.userInfo, DeviceId.InnerText))
-                                    resp.Add(serviceName, "SRVWARNING:Device already registered, information updated");
+                                {
+                                    item.SrvErrorMsg = "SRVWARNING:Device already registered, information updated";
+
+                                    resp.Add(serviceName, item.SrvErrorMsg);
+                                    MTSUtilities.Logger.Log.MOBILEToDB(item, MTSLoggerLib.Enums.Level.Warning);
+                                }
                                 else
-                                    resp.Add(serviceName, "SRVERROR:Fail to update Device Info");
+                                {
+                                    item.SrvErrorMsg = "SRVERROR:Fail to update Device Info";
+                                    
+                                    resp.Add(serviceName, item.SrvErrorMsg);
+                                    MTSUtilities.Logger.Log.MOBILEToDB(item);
+                                }
                                 responseEnvelope.Response.Add(resp);
-                                responseEnvelope.Commit = "false";
                                 break;
                             }
 
@@ -207,7 +252,9 @@ namespace FacadeRestService
                             }
                             else
                             {
+                                item.SrvErrorMsg = Session.errorMessage;
                                 resp.Add(serviceName, Session.errorMessage);
+                                MTSUtilities.Logger.Log.MOBILEToDB(item);
                             }
                             responseEnvelope.Response.Add(resp);
                             break;
@@ -217,8 +264,6 @@ namespace FacadeRestService
                         // its a sync object
                         #region Init Data Downloads
                         case "InitCases":
-                            resp = new Dictionary<object, string>();
-
                             data = iTraycerSection.InitData.InitData.GetInitialCaseData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
                             
                             if (!String.IsNullOrEmpty(data))
@@ -229,7 +274,6 @@ namespace FacadeRestService
                             break;
 
                         case "InitInventory":
-                            resp = new Dictionary<object, string>();
                             data = iTraycerSection.InitData.InitData.GetInitialInventoryData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
                             
                             if (!String.IsNullOrEmpty(data))
@@ -240,7 +284,6 @@ namespace FacadeRestService
                             break;
 
                         case "InitDoctors":
-                            resp = new Dictionary<object, string>();
                             data = iTraycerSection.InitData.InitData.GetInitialDoctorsData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
                             
                             if (!String.IsNullOrEmpty(data))
@@ -251,7 +294,6 @@ namespace FacadeRestService
                             break;
 
                         case "InitAddresses":
-                            resp = new Dictionary<object, string>();
                             data = iTraycerSection.InitData.InitData.GetInitialAddressData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
 
                             if (!String.IsNullOrEmpty(data))
@@ -262,7 +304,6 @@ namespace FacadeRestService
                             break;
 
                         case "InitStatus":
-                            resp = new Dictionary<object, string>();
                             data = iTraycerSection.InitData.InitData.GetInitialStatusTableData(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
 
                             if (!String.IsNullOrEmpty(data))
@@ -273,7 +314,6 @@ namespace FacadeRestService
                             break;
 
                         case "InitKitAllocation":
-                            resp = new Dictionary<object, string>();
                             data = iTraycerSection.InitData.InitData.GetAllKitTrayUsageDates(String.IsNullOrEmpty(childInnerText) ? null : Session.lastSync);
 
                             if (!String.IsNullOrEmpty(data))
@@ -282,8 +322,8 @@ namespace FacadeRestService
                                 responseEnvelope.Response.Add(resp);
                             }
                             break;
+
                         case "InitTrayTypesBySurgeryType":
-                            resp = new Dictionary<object, string>();
                             data = iTraycerSection.InitData.InitData.GetInitialTrayTypesBySurgeryType(Session.userInfo.MfgId);
 
                             if (!String.IsNullOrEmpty(data))
@@ -292,28 +332,34 @@ namespace FacadeRestService
                             }
                             else
                             {
-                                resp.Add(serviceName, "SRVERROR:No surgery kit types found for Customer Id: " + Session.userInfo.CustomerId);
+                                item.SrvErrorMsg = "SRVERROR:No surgery kit types found for Customer Id: " + Session.userInfo.CustomerId;
+
+                                resp.Add(serviceName, item.SrvErrorMsg);
+                                MTSUtilities.Logger.Log.MOBILEToDB(item);
                             }
                             responseEnvelope.Response.Add(resp);
                             break;
                         #endregion
 
                         case "GetAddressesByLatLong":
-                            resp = new Dictionary<object, string>();
                             DataTable address = iTraycerSection.Address.AddressesInfo.GetAddressByLatLong(payloadChild);
 
                             if (address != null)
                                 resp.Add(serviceName, JsonConvert.SerializeObject(address));
                             else
-                                resp.Add(serviceName, "A Latitude or Longitude was not provided");
+                            {
+                                item.SrvErrorMsg = "SRVERROR:A Latitude or Longitude was not provided";
+                                resp.Add(serviceName, item.SrvErrorMsg);
+                                MTSUtilities.Logger.Log.MOBILEToDB(item);
+                            }
 
                             responseEnvelope.Response.Add(resp);
                             break;
 
                         case "CreateCase":
-                            resp = new Dictionary<object, string>();
                             ScheduleInfo obj = CaseScheduler.CreateScheduleInfoObj(payloadChild);
-                        
+                            item.ErrorObjectName = serviceName;
+
                             if (obj != null)
                             {
                                 if (obj.SurgeonId < 0)
@@ -335,7 +381,11 @@ namespace FacadeRestService
                                         if (obj.Id > 0)
                                             resp.Add(serviceName, JsonConvert.SerializeObject(obj));
                                         else
-                                            resp.Add(serviceName, "SRVERROR:Failed to create case");
+                                        {
+                                            item.SrvErrorMsg = "SRVERROR:Failed to create case";
+                                            resp.Add(serviceName, item.SrvErrorMsg);
+                                            MTSUtilities.Logger.Log.MOBILEToDB(item);
+                                        }
                                     }
                                     else
                                     {
@@ -344,19 +394,33 @@ namespace FacadeRestService
                                         if (update > 0)
                                             resp.Add(serviceName, JsonConvert.SerializeObject(obj));
                                         else
-                                            resp.Add(serviceName, "SRVERROR:Failed update case");
+                                        {
+                                            item.SrvErrorMsg = "SRVERROR:Failed update case";
+                                            resp.Add(serviceName, item.SrvErrorMsg);
+                                            MTSUtilities.Logger.Log.MOBILEToDB(item);
+                                        }
                                     }
                                 }
                                 else
-                                    resp.Add(serviceName, "SRVERROR:A Schedule conflict was detected");
-                            } else
-                                resp.Add(serviceName, "SRVERROR:Failed to create case schedule object");
+                                {
+                                    item.SrvErrorMsg = "SRVERROR:A Schedule conflict was detected";
+                                    resp.Add(serviceName, item.SrvErrorMsg);
+                                    MTSUtilities.Logger.Log.MOBILEToDB(item);
+                                }
+                            }
+                            else
+                            {
+                                item.ErrorObjectName = serviceName;
+                                item.SrvErrorMsg = "SRVERROR:Failed to create case schedule object";
+
+                                resp.Add(serviceName,  item.SrvErrorMsg);
+                                MTSUtilities.Logger.Log.MOBILEToDB(item);
+                            }
                             
                             responseEnvelope.Response.Add(resp);
                             break;
 
                         case "GenerateInvoice":
-                            resp = new Dictionary<object, string>();
                             Invoice invoice = new Invoice();
                             XmlNode CaseId = payloadChild.SelectSingleNode("//CaseId");
                             XmlNode RepSig = payloadChild.SelectSingleNode("//RepSig");
@@ -366,8 +430,12 @@ namespace FacadeRestService
              
                             if (CaseId == null)
                             {
-                                resp.Add(serviceName, "SRVERROR:Case number is missing");
+                                item.ErrorObjectName = serviceName;
+                                item.SrvErrorMsg = "SRVERROR:Case number is missing";
+
+                                resp.Add(serviceName, item.SrvErrorMsg);
                                 responseEnvelope.Response.Add(resp);
+                                MTSUtilities.Logger.Log.MOBILEToDB(item);
                                 break;
                             }
 
@@ -398,11 +466,17 @@ namespace FacadeRestService
                                     resp.Add(serviceName, "Successfully store Requistion Invoice into MTSSurgeryDetails Table");
                                 }
                                 else
-                                    resp.Add(serviceName, "Fail to store Requisition Invoice into MTSSurgeryDetails Table");
+                                {
+                                    item.SrvErrorMsg = "Fail to store Requisition Invoice into MTSSurgeryDetails Table";
+                                    resp.Add(serviceName, item.SrvErrorMsg);
+                                    MTSUtilities.Logger.Log.MOBILEToDB(item);
+                                }
                             }
                             else
                             {
-                                resp.Add(serviceName, "SRVERROR:Unable to create requistion order. Case number did not return a valid requisition invoice.");
+                                item.SrvErrorMsg = "SRVERROR:Unable to create requistion order. Case number did not return a valid requisition invoice.";
+                                resp.Add(serviceName, item.SrvErrorMsg);
+                                MTSUtilities.Logger.Log.MOBILEToDB(item);
                             }
                             responseEnvelope.Response.Add(resp);
                             break;
@@ -418,7 +492,9 @@ namespace FacadeRestService
                             if (String.IsNullOrEmpty(TrayId.InnerText) || String.IsNullOrEmpty(PartNumber.InnerText)
                                 || String.IsNullOrEmpty(QntyUsed.InnerText) || String.IsNullOrEmpty(Type.InnerText))
                             {
-                                resp.Add(serviceName, "SRVERROR:One or more items are empty, all fields are required to purge order usage.");
+                                item.SrvErrorMsg = "SRVERROR:One or more items are empty, all fields are required to purge order usage.";
+                                resp.Add(serviceName, item.SrvErrorMsg);
+                                MTSUtilities.Logger.Log.MOBILEToDB(item);
                                 continue;
                             }
                             else
@@ -431,7 +507,9 @@ namespace FacadeRestService
                                 }
                                 else
                                 {
-                                    resp.Add(serviceName, "Fail to update tray purge usage.");
+                                    item.SrvErrorMsg = "SRVERROR:Fail to update tray purge usage.";
+                                    resp.Add(serviceName, item.SrvErrorMsg);
+                                    MTSUtilities.Logger.Log.MOBILEToDB(item);
                                 }
                                 responseEnvelope.Response.Add(resp);
                             }
@@ -442,9 +520,12 @@ namespace FacadeRestService
                             
                             if (!Session.UpdateLastSyncTime(Session.userInfo, requestEnvelope.DevID, sync))
                             {
-                                resp = new Dictionary<object, string>();
-                                resp.Add("SRVERROR", "Fail to update sync time for request");
+                                item.ErrorObjectName = SrvErrorEnum.SrvErrorLevel.SRVERROR.ToString();
+                                item.SrvErrorMsg = "Fail to update sync time for request";
+
+                                resp.Add(item.ErrorObjectName, item.SrvErrorMsg);
                                 responseEnvelope.Response.Add(resp);
+                                MTSUtilities.Logger.Log.MOBILEToDB(item);
                             }
                             break;
                     }
@@ -477,6 +558,18 @@ namespace FacadeRestService
 
             responseEnvelope.ReturnKitTrays = JsonConvert.SerializeObject(dt);
             return JsonConvert.SerializeObject(responseEnvelope);
+           
+        }
+    }
+
+    public class SrvErrorEnum
+    {
+        public enum SrvErrorLevel : byte
+        {
+            [StringValue("SRVERROR")]
+            SRVERROR,
+            [StringValue("SRVWARNING")]
+            SRVWARNING
         }
     }
 }
