@@ -144,6 +144,13 @@ namespace FacadeRestService
                     item.ErrorObjectName = serviceName;
                     resp = new Dictionary<object, string>();
 
+                    // if session is valid get customer and rep id
+                    if (Session.sessionValid)
+                    {
+                        item.RepId = Session.userInfo.Id;
+                        item.CompanyId = Session.userInfo.CustomerId;
+                    }
+
                     switch (serviceName)
                     {
                         case "MTSMobileAuth":
@@ -161,7 +168,6 @@ namespace FacadeRestService
                                 responseEnvelope.RepID = authResponse[1];
                                 responseEnvelope.MtsToken = authResponse[2];
                                 resp.Add(serviceName, "Successfully authenticated user");
-                                responseEnvelope.Commit = "true";
                             }
                             else
                             {
@@ -376,16 +382,20 @@ namespace FacadeRestService
                                     if (obj.Id < 0)
                                     {
                                         // Inserts the new Case Id back into the schedule object
-                                        obj.Id = DataLayer.Controller.InsertSchedule(obj);
-
-                                        if (obj.Id > 0)
-                                            resp.Add(serviceName, JsonConvert.SerializeObject(obj));
-                                        else
+                                        try
                                         {
+                                            obj.Id = DataLayer.Controller.InsertSchedule(obj);
+                                        }
+                                        catch (Exception ex)
+                                        { 
                                             item.SrvErrorMsg = "SRVERROR:Failed to create case";
+                                            item.SrvErrorException = ex.Message;
                                             resp.Add(serviceName, item.SrvErrorMsg);
                                             MTSUtilities.Logger.Log.MOBILEToDB(item);
                                         }
+
+                                        if (obj.Id > 0)
+                                            resp.Add(serviceName, JsonConvert.SerializeObject(obj));
                                     }
                                     else
                                     {
@@ -536,6 +546,7 @@ namespace FacadeRestService
             // Always send role and sync time
             responseEnvelope.Role = Session.userInfo.Role;
             responseEnvelope.SyncRequestTime = requestEnvelope.SyncRequestTime;
+            responseEnvelope.Commit = "true";
             return JsonConvert.SerializeObject(responseEnvelope);
         }
 

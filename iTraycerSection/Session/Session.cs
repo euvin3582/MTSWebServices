@@ -10,6 +10,7 @@ namespace iTraycerSection.Session
         public static UserInfo userInfo = new UserInfo();
         public static String errorMessage = null;
         public static DateTime? lastSync = null;
+        public static Boolean sessionValid = false;
 
         public static String[] CreateUserSession(String email, String pass, String deviceId)
         {
@@ -48,6 +49,7 @@ namespace iTraycerSection.Session
             {
                 userInfo = (UserInfo)MTSUtilities.Conversions.Serialization.ObjDeSerializer(its.UserInfo);
                 lastSync = GetLastSyncTime(Session.userInfo, its.DeviceId);
+                sessionValid = true;
                 return true;
             }
             else

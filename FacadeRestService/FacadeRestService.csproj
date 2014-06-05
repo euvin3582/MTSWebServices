@@ -76,13 +76,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\_ThirdPartyDll\Microsoft\Microsoft.Practices.Unity.Interception.dll</HintPath>
     </Reference>
-    <Reference Include="MTSLoggerLib">
-      <HintPath>..\_ThirdPartyDll\iTraycer\MTSLoggerLib.dll</HintPath>
-    </Reference>
-    <Reference Include="MTSUtilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\_ThirdPartyDll\iTraycer\MTSUtilities.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\_ThirdPartyDll\JSON\Newtonsoft.Json.dll</HintPath>
@@ -137,6 +130,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Other\MTSUtilities\MTSLoggerLib\MTSLoggerLib.csproj">
+      <Project>{ebfa4797-6226-483f-9b78-a108ccf5e45f}</Project>
+      <Name>MTSLoggerLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Other\MTSUtilities\MTSUtilities\MTSUtilities.csproj">
+      <Project>{2b502462-9dc2-4407-b935-d10215ce486a}</Project>
+      <Name>MTSUtilities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\WebSuite\DataLayer\DataLayer.csproj">
       <Project>{fe665455-9d20-4657-84d6-5883ed15ead0}</Project>
       <Name>DataLayer</Name>
