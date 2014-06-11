@@ -16,8 +16,8 @@ namespace iTraycerSection.Case
             try
             {
                 List<XmlNode> nodeList = new List<XmlNode>(){
+                                node.SelectSingleNode("//LocalID"),
                                 node.SelectSingleNode("//CaseId"),
-                                node.SelectSingleNode("//Surgeon"),
                                 node.SelectSingleNode("//SurgeonId"),
                                 node.SelectSingleNode("//SurgeryDate"),
                                 node.SelectSingleNode("//DeliverByDate"),
