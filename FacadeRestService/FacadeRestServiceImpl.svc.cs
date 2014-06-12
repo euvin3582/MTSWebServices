@@ -58,6 +58,9 @@ namespace FacadeRestService
             mobileErrorLogger.JsonRequestEnvelope = bodyRequest;
             mobileErrorLogger.RequestTime = Convert.ToDateTime(requestEnvelope.SyncRequestTime);
 
+            // rep role bool
+            bool isValidRole = false;
+
             if(serviceQueueNodes.Length > 1)
             {
                 // create response dictionary and create response envelope
@@ -69,7 +72,7 @@ namespace FacadeRestService
                     // creat the payload child
                     XmlDocument payloadChild = new XmlDocument();
 
-                    // The try catch will catch bad json envelope request and create an error log for end user
+                    // Will catch bad json envelope request and create an error log for end user
                     try
                     {
                         payloadChild.LoadXml(serviceQueueNodes[i + 1].ChildNodes[0].OuterXml);
@@ -127,6 +130,11 @@ namespace FacadeRestService
                             MTSUtilities.Logger.Log.MOBILEToDB(mobileErrorLogger);
                             break;
                         }
+
+                        // If the rep is not the right role then quit the loop
+                        isValidRole = iTraycerSection.InitData.InitData.isQualifiedRole();
+                        if (!isValidRole)
+                            goto stopProcessing;
                     }
                     else if (authObject.Count == 0)
                     {
@@ -168,6 +176,11 @@ namespace FacadeRestService
                                 responseEnvelope.RepID = authResponse[1];
                                 responseEnvelope.MtsToken = authResponse[2];
                                 resp.Add(serviceName, "Successfully authenticated user");
+
+                                // If the rep is not the right role then quit the loop
+                                isValidRole = iTraycerSection.InitData.InitData.isQualifiedRole();
+                                if (!isValidRole)
+                                    goto stopProcessing;
                             }
                             else
                             {
@@ -535,7 +548,15 @@ namespace FacadeRestService
                 }
             }
             stopProcessing:
-            
+
+            // If the rep role is not a valid user rep do not return data
+            if (!isValidRole)
+            {
+                Dictionary<object, string> temp =new Dictionary<object, string>();
+                temp.Add("SRVERROR", Session.errorMessage);
+                responseEnvelope.Response.Add(temp);
+            }
+
             // Always send role and sync time
             responseEnvelope.Role = Session.userInfo.Role;
             responseEnvelope.SyncRequestTime = requestEnvelope.SyncRequestTime;

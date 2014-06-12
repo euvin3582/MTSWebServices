@@ -193,5 +193,15 @@ namespace iTraycerSection.InitData
         {
             return (table.Rows.Count > 0) ? JsonConvert.SerializeObject(table) : null;
         }
+
+        public static bool isQualifiedRole()
+        {
+            if (Session.Session.userInfo.IsDS || Session.Session.userInfo.IsCS)
+            {
+                Session.Session.errorMessage = "Unable to get data from user role: " + Session.Session.userInfo.Role;
+                return false;
+            }
+            return true;
+        }
     }
 }
