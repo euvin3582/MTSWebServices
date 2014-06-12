@@ -130,6 +130,8 @@ namespace FacadeRestService
                             MTSUtilities.Logger.Log.MOBILEToDB(mobileErrorLogger);
                             break;
                         }
+                        // return token back to mobile client
+                        responseEnvelope.MtsToken = requestEnvelope.MtsToken;
 
                         // If the rep is not the right role then quit the loop
                         isValidRole = iTraycerSection.InitData.InitData.isQualifiedRole();
