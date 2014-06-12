@@ -16,8 +16,7 @@ namespace iTraycerSection.Case
             try
             {
                 List<XmlNode> nodeList = new List<XmlNode>(){
-                                node.SelectSingleNode("//LocalID"),
-                                node.SelectSingleNode("//CaseId"),
+                                node.SelectSingleNode("//LocalId"),
                                 node.SelectSingleNode("//SurgeonId"),
                                 node.SelectSingleNode("//SurgeryDate"),
                                 node.SelectSingleNode("//DeliverByDate"),
@@ -27,14 +26,14 @@ namespace iTraycerSection.Case
                                 node.SelectSingleNode("//MedicalRecordNumber"),
                                 node.SelectSingleNode("//PatientId"),
                                 node.SelectSingleNode("//SurgeryStatus"),
-                                node.SelectSingleNode("//LocationId"),
                                 node.SelectSingleNode("//LoanerFlag"),
                                 node.SelectSingleNode("//KitTypeNumber"),
                                 node.SelectSingleNode("//PartNumber"),
+                                node.SelectSingleNode("//LocationId"),
                                 node.SelectSingleNode("//CreatedDate")};
                 return new ScheduleInfo(nodeList);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Session.Session.errorMessage = "Fail to create node list";
                 return null;

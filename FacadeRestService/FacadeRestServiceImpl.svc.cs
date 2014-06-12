@@ -15,6 +15,7 @@ using iTraycerSection.Case;
 using iTraycerSection.Conflict;
 using iTraycerSection.Session;
 using MTSUtilities.Enums;
+using System.Configuration;
 
 namespace FacadeRestService
 {
@@ -130,8 +131,6 @@ namespace FacadeRestService
                             MTSUtilities.Logger.Log.MOBILEToDB(mobileErrorLogger);
                             break;
                         }
-                        // return token back to mobile client
-                        responseEnvelope.MtsToken = requestEnvelope.MtsToken;
 
                         // If the rep is not the right role then quit the loop
                         isValidRole = iTraycerSection.InitData.InitData.isQualifiedRole();
@@ -559,7 +558,9 @@ namespace FacadeRestService
                 responseEnvelope.Response.Add(temp);
             }
 
-            // Always send role and sync time
+            // Always send token, role and sync time
+            if(!String.IsNullOrEmpty(requestEnvelope.MtsToken))
+                responseEnvelope.MtsToken = (requestEnvelope.MtsToken + ":" + ConfigurationManager.AppSettings["SessionTimeout"]);
             responseEnvelope.Role = Session.userInfo.Role;
             responseEnvelope.SyncRequestTime = requestEnvelope.SyncRequestTime;
             responseEnvelope.Commit = "true";
