@@ -17,6 +17,7 @@ namespace iTraycerSection.Case
             {
                 List<XmlNode> nodeList = new List<XmlNode>(){
                                 node.SelectSingleNode("//LocalId"),
+                                node.SelectSingleNode("//CaseId"),
                                 node.SelectSingleNode("//SurgeonId"),
                                 node.SelectSingleNode("//SurgeryDate"),
                                 node.SelectSingleNode("//DeliverByDate"),
@@ -26,10 +27,10 @@ namespace iTraycerSection.Case
                                 node.SelectSingleNode("//MedicalRecordNumber"),
                                 node.SelectSingleNode("//PatientId"),
                                 node.SelectSingleNode("//SurgeryStatus"),
+                                node.SelectSingleNode("//LocationId"),
                                 node.SelectSingleNode("//LoanerFlag"),
                                 node.SelectSingleNode("//KitTypeNumber"),
                                 node.SelectSingleNode("//PartNumber"),
-                                node.SelectSingleNode("//LocationId"),
                                 node.SelectSingleNode("//CreatedDate")};
                 return new ScheduleInfo(nodeList);
             }
