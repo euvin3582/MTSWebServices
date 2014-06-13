@@ -83,7 +83,7 @@ namespace FacadeRestService
                         // Add info to Db Log Error object
                         mobileErrorLogger.SrvErrorMsg = "Service request objects envelope does not match";
                         mobileErrorLogger.ErrorObjectName = SrvErrorEnum.SrvErrorLevel.SRVERROR.ToString();
-                        mobileErrorLogger.SrvErrorException = ex.Message.ToString();
+                        mobileErrorLogger.SrvErrorException = ex.InnerException.ToString();
 
                         // store envelope and do forensics
                         resp = new Dictionary<object, string>();
@@ -376,14 +376,10 @@ namespace FacadeRestService
 
                             if (obj != null)
                             {
-                                if (obj.SurgeonId < 0)
-                                {
-                                    obj.RepId = Session.userInfo.Id;
-                                    obj.CompanyId = Session.userInfo.CustomerId;
-                                    obj.CreatedByRepId = Session.userInfo.Id;
-                                    obj.SurgeonId = CaseScheduler.CreateDoctor(obj);
-                                    obj.SurgeonInfo.Id = obj.SurgeonId;
-                                }
+                                obj.RepId = Session.userInfo.Id;
+                                obj.CompanyId = Session.userInfo.CustomerId;
+                                obj.CreatedByRepId = Session.userInfo.Id;
+                                obj.SurgeonInfo.Id = obj.SurgeonId;
 
                                 if (!ConflictResolution.CheckForConflict("SCheduledConflict", obj))
                                 {
@@ -397,7 +393,7 @@ namespace FacadeRestService
                                         catch (Exception ex)
                                         { 
                                             mobileErrorLogger.SrvErrorMsg = "SRVERROR:Failed to create case";
-                                            mobileErrorLogger.SrvErrorException = ex.Message;
+                                            mobileErrorLogger.SrvErrorException = ex.InnerException.ToString();
                                             resp.Add(serviceName, mobileErrorLogger.SrvErrorMsg);
                                             MTSUtilities.Logger.Log.MOBILEToDB(mobileErrorLogger);
                                         }
