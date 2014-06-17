@@ -380,6 +380,7 @@ namespace FacadeRestService
                                 obj.CompanyId = Session.userInfo.CustomerId;
                                 obj.CreatedByRepId = Session.userInfo.Id;
                                 obj.SurgeonInfo.Id = obj.SurgeonId;
+                                obj.ModifiedFrom = 'M';
 
                                 if (!ConflictResolution.CheckForConflict("SCheduledConflict", obj))
                                 {
