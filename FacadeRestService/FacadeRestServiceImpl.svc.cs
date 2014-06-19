@@ -381,6 +381,7 @@ namespace FacadeRestService
                                 obj.CreatedByRepId = Session.userInfo.Id;
                                 obj.SurgeonInfo.Id = obj.SurgeonId;
                                 obj.ModifiedFrom = 'M';
+                                obj.CreatedByRepId = Session.userInfo.Id;
 
                                 if (!ConflictResolution.CheckForConflict("SCheduledConflict", obj))
                                 {
