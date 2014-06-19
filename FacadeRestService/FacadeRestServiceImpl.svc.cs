@@ -405,6 +405,10 @@ namespace FacadeRestService
                                     }
                                     else
                                     {
+                                        // update modified fields in surgery info table
+                                        obj.ModifiedByRepId = Session.userInfo.Id;
+                                        obj.ModifiedDate = DateTime.Now;
+
                                         int update = DataLayer.Controller.UpdateScheduleByScheduleId(obj);
 
                                         if (update > 0)
