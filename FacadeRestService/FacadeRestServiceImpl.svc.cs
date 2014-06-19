@@ -401,6 +401,7 @@ namespace FacadeRestService
                                         }
 
                                         if (obj.Id > 0)
+                                            obj = DataLayer.Controller.GetScheduleInfoById(obj.Id);
                                             resp.Add(serviceName, JsonConvert.SerializeObject(obj));
                                     }
                                     else
@@ -412,7 +413,10 @@ namespace FacadeRestService
                                         int update = DataLayer.Controller.UpdateScheduleByScheduleId(obj);
 
                                         if (update > 0)
+                                        {
+                                            obj = DataLayer.Controller.GetScheduleInfoById(obj.Id);
                                             resp.Add(serviceName, JsonConvert.SerializeObject(obj));
+                                        }
                                         else
                                         {
                                             mobileErrorLogger.SrvErrorMsg = "SRVERROR:Failed update case";
