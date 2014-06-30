@@ -380,8 +380,16 @@ namespace FacadeRestService
                                 obj.CompanyId = Session.userInfo.CustomerId;
                                 obj.CreatedByRepId = Session.userInfo.Id;
                                 obj.SurgeonInfo.Id = obj.SurgeonId;
-                                obj.ModifiedFrom = 'M';
                                 obj.CreatedByRepId = Session.userInfo.Id;
+
+                                if (!iTraycerSection.Validation.CaseData.ValidateCaseSchedule(obj))
+                                {
+                                    mobileErrorLogger.ErrorObjectName = serviceName;
+                                    mobileErrorLogger.SrvErrorMsg = iTraycerSection.Session.Session.errorMessage;
+                                    resp.Add(serviceName, mobileErrorLogger.SrvErrorMsg);
+                                    MTSUtilities.Logger.Log.MOBILEToDB(mobileErrorLogger);
+                                    break;
+                                }
 
                                 if (!ConflictResolution.CheckForConflict("SCheduledConflict", obj))
                                 {
