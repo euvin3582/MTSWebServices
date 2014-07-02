@@ -20,7 +20,7 @@ using System.Configuration;
 namespace FacadeRestService
 {
     // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "FacadeRestServiceImpl" in code, svc and config file together.
-    public class FacadeRestServiceImpl : IFacadeRestServiceImpl
+    public class FacadeRestServiceImpl : IFacadeRestServiceImpl  
     {
         public string CreateSession()
         {
@@ -131,15 +131,18 @@ namespace FacadeRestService
                             MTSUtilities.Logger.Log.MOBILEToDB(mobileErrorLogger);
                             break;
                         }
-
+                        
                         // If the rep is not the right role then quit the loop
                         isValidRole = iTraycerSection.InitData.InitData.isQualifiedRole();
                         if (!isValidRole)
                             goto stopProcessing;
+
+                        // assign deveice id to session object
+                        Session.deviceId = requestEnvelope.DevID;
                     }
                     else if (authObject.Count == 0)
                     {
-                        mobileErrorLogger.SrvErrorMsg = "MTSMobileAuth was not sent or a valid authorization token found";
+                        mobileErrorLogger.SrvErrorMsg = "JSON Object MTSMobileAuth was not sent or a valid authorization token was not found";
                         mobileErrorLogger.ErrorObjectName = SrvErrorEnum.SrvErrorLevel.SRVERROR.ToString();
 
                         resp = new Dictionary<object, string>();
@@ -231,6 +234,7 @@ namespace FacadeRestService
                                         resp.Add(serviceName, "Successfully resgistered device");
                                         responseEnvelope.Response.Add(resp);
                                         responseEnvelope.Commit = "true";
+                                        device.Dispose();
                                         break;
                                     }
                                 }
@@ -448,6 +452,7 @@ namespace FacadeRestService
                                 resp.Add(serviceName,  mobileErrorLogger.SrvErrorMsg);
                                 MTSUtilities.Logger.Log.MOBILEToDB(mobileErrorLogger);
                             }
+                            obj.Dispose();
                             responseEnvelope.Response.Add(resp);
                             break;
 
@@ -547,9 +552,7 @@ namespace FacadeRestService
                             break;
 
                         case "UpdateSyncTime":
-                            DateTime sync = Convert.ToDateTime(responseEnvelope.SyncResponseTime);
-                            
-                            if (!Session.UpdateLastSyncTime(Session.userInfo, requestEnvelope.DevID, sync))
+                            if (!Session.UpdateLastSyncTime(Session.userInfo, requestEnvelope.DevID, Convert.ToDateTime(responseEnvelope.SyncResponseTime).ToUniversalTime()))
                             {
                                 mobileErrorLogger.ErrorObjectName = SrvErrorEnum.SrvErrorLevel.SRVERROR.ToString();
                                 mobileErrorLogger.SrvErrorMsg = "Fail to update sync time for request";

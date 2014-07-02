@@ -8,6 +8,7 @@ namespace iTraycerSection.Session
     public class Session : iTraycerSection.Validation.Validate
     {
         public static UserInfo userInfo = new UserInfo();
+        public static String deviceId = null;
         public static String errorMessage = null;
         public static DateTime? lastSync = null;
         public static Boolean sessionValid = false;
@@ -69,7 +70,12 @@ namespace iTraycerSection.Session
 
         public static bool UpdateLastSyncTime(UserInfo userInfo, String deviceId, DateTime sync)
         {
-            return DataLayer.Controller.UpdateiTraycerSyncTime(userInfo, deviceId, sync) >= 1;
+            return DataLayer.Controller.UpdateiTraycerSyncTime(userInfo, deviceId, sync) > 0;
+        }
+
+        public static bool UpdateSessionStartTime(string guid)
+        {
+            return DataLayer.Controller.UpdateiTraycerSyncTime(userInfo, deviceId, sync) > 0;
         }
 
         public static bool UpdateApplicationInfo(UserInfo userInfo, String deviceId)
